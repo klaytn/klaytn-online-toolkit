@@ -2,7 +2,6 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
 
-
 const SIcon = styled.img`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};

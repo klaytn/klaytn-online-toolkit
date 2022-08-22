@@ -42,7 +42,6 @@ const SActiveChain = styled(SActiveAccount)`
 //   margin-right: 10px;
 // `;
 
-
 const SAddress = styled.p`
   transition: ${transitions.base};
   font-weight: bold;

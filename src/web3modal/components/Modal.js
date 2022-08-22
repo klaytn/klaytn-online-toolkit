@@ -3,7 +3,6 @@ import * as PropTypes from "prop-types";
 import styled from "styled-components";
 import { colors, transitions } from "../styles";
 
-
 const SLightbox = styled.div`
   transition: opacity 0.1s ease-in-out;
   text-align: center;

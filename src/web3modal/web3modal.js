@@ -12,7 +12,7 @@ import { Web3Auth } from "@web3auth/web3auth";
 // @ts-ignore
 import { KaikasWeb3Provider } from "@klaytn/kaikas-web3-provider"
 import React, {Component }from "react";
-import { Row, Col, Button } from "reactstrap";
+import { Button } from "reactstrap";
 import {
     formatTestTransaction,
     getChainData,

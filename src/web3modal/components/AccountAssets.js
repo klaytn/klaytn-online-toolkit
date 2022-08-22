@@ -1,6 +1,5 @@
 import * as React from "react";
-// import Column from "./Column";
-// import AssetRow from "./AssetRow";
+import Column from "./Column";
 import AssetRow from "./AssetRow";
 
 const AccountAssets = (props) => {
@@ -41,12 +40,12 @@ const AccountAssets = (props) => {
     );
   }
   return (
-    <div>    
+    <Column center>
       <AssetRow key={nativeCurrency.name} asset={nativeCurrency} />
       {tokens.map((token) => (
         <AssetRow key={token.symbol} asset={token} />
       ))}
-    </div>
+    </Column>
   );
 };
 

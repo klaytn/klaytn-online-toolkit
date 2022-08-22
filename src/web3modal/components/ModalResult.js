@@ -12,7 +12,6 @@ const SContainer = styled.div`
   word-break: break-word;
 `;
 
-
 const STable = styled(SContainer)`
   flex-direction: column;
   min-height: ${({ nested }) => (nested ? "auto" : "200px")};

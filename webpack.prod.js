@@ -20,7 +20,7 @@ module.exports = merge(baseConfig, {
   output: {
     filename: '[name].[hash].bundle.js',
     chunkFilename: '[name].[chunkhash].js',
-    publicPath: '/klaytn-online-examples/',
+    publicPath: '/klaytn-online-toolkit/',
     path: path.resolve(__dirname, 'build'),
   },
   module: {
