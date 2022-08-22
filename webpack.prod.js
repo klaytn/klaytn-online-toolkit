@@ -11,7 +11,6 @@ const CompressionPlugin = require('compression-webpack-plugin')
 const baseConfig = require('./webpack.base')
 
 const ENV = process.env.NODE_ENV
-const isProduction = ENV === 'production'
 const isDev = ENV === 'dev'
 
 module.exports = merge(baseConfig, {

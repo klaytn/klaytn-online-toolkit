@@ -1,9 +1,8 @@
 import Caver from 'caver-js'
 import InputField from '../components/inputField';
 import React, { Component }from "react";
-import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button, ButtonGroup, CardText, Input, Label, InputGroup, FormGroup, Form} from 'reactstrap';
+import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button, ButtonGroup, Input, FormGroup } from 'reactstrap';
 import classNames from "classnames";
-
 
 class RoleBasedKey extends Component {
     constructor(props){
@@ -319,39 +318,34 @@ class GenerateKeystore extends Component {
                 <Col md="8">
                 <Card>
                     <CardHeader>
-                    <ButtonGroup
-                      className="btn-group-toggle float-right"
-                      data-toggle="buttons"
-                    >
-                    {checkboxIdList.map((id, idx) => {
-                    return (
-                        <Button
-                            tag="label"
-                            className={classNames("btn-simple", {
-                            active: isCheckedList[idx]
-                            })}
-                            color="info"
-                            id="0"
-                            size="sm"
-                            onClick={() => this.checkBoxClicked(id)}
+                        <ButtonGroup
+                        className="btn-group-toggle float-right"
+                        data-toggle="buttons"
                         >
-                            <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                            {id}
-                            </span>
-                            <span className="d-block d-sm-none">
-                            <i className="tim-icons icon-map-02" />
-                            </span>
-                        </Button>)})}
-                      </ButtonGroup>
-
+                        {checkboxIdList.map((id, idx) => {
+                        return (
+                            <Button
+                                tag="label"
+                                className={classNames("btn-simple", {
+                                active: isCheckedList[idx]
+                                })}
+                                color="info"
+                                id="0"
+                                size="sm"
+                                onClick={() => this.checkBoxClicked(id)}
+                            >
+                                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                                {id}
+                                </span>
+                                <span className="d-block d-sm-none">
+                                <i className="tim-icons icon-map-02" />
+                                </span>
+                            </Button>)})}
+                        </ButtonGroup>
                         <h3 className="title">Generate Keystore</h3>
-                        Generate Private Key(s) and Keystore Files.
-                        
-                    
+                        Generate Private Key(s) and Keystore Files.                    
                     </CardHeader>
                     <CardBody>
-
-
                         <Row>
                             <Col>
                                 {this.getKeystore()}
@@ -394,9 +388,6 @@ class GenerateKeystore extends Component {
                             </Col>
                         </Row>
                     </CardBody>
-                    <CardFooter>
-                                    
-                    </CardFooter>
                 </Card>
                 </Col>
                 </Row>

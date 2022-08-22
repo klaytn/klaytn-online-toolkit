@@ -1,7 +1,8 @@
 import Caver from 'caver-js'
 import InputField from '../components/inputField';
-import React, { Component }from "react";
-import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button, CardText} from 'reactstrap';
+import React, { Component } from "react";
+import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button } from 'reactstrap';
+
 class KeccakFromString extends Component {
     constructor(props){
         super(props);

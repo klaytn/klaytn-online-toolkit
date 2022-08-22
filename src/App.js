@@ -4,7 +4,7 @@ import '../assets/css/black-dashboard-react.css';
 import { Card, CardBody } from "reactstrap";
 import Navigator from "./components/navbar";
 import routes from "./routes"
-import { Switch, Routes, Route, BrowserRouter, HashRouter } from "react-router-dom";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 import web3modalExample from "./web3modal/web3modal";
 
 const getRoutes = (routes) =>{
@@ -17,7 +17,7 @@ const getRoutes = (routes) =>{
           <Route 
           key={item.name} 
           exact 
-          path={ prop.path + item.path}
+          path={prop.path + item.path}
           component={mainPage}
           />
         )
@@ -27,7 +27,7 @@ const getRoutes = (routes) =>{
           <Route 
             key={item.name}
             exact 
-            path={ prop.path + item.path}
+            path={prop.path + item.path}
             component={item.component}
           />
         )
@@ -41,10 +41,11 @@ const mainPage = () => {
     <div>
       <Card>
         <CardBody>
-          <h3> Klaytn Online Tools </h3>
+          <h3> Klaytn Online Toolkit </h3>
           <p>
-            These are simple examples using caver-js SDK. 
-          </p>  
+            <a href="https://github.com/klaytn/klaytn-online-toolkit">Klaytn-online-toolkit</a> provides code samples and github-page to
+             help you utilize the Klaytn SDK(caver-js).
+          </p>
         </CardBody>
       </Card>
     </div>
@@ -52,7 +53,6 @@ const mainPage = () => {
 }
 
 function App() {
-  console.log("klaytnnn")
   return (
     <BrowserRouter basename="/klaytn-online-toolkit">
     <div className="content">
