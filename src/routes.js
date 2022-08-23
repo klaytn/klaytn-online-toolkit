@@ -1,5 +1,6 @@
 import GenerateKeystore from "./views/generateKeystore";
 import KeccakFromString from "./views/keccak256";
+import LoadKeystore from "./views/loadKeystore";
 import SendAndSignTx from "./views/multisigTx";
 
 var routes =
@@ -78,7 +79,7 @@ var routes =
             {
                 path: "/loadKeystore",
                 name: "Load Keystore",
-                component: null,
+                component: LoadKeystore,
             },
             {
                 path: "/generateKeystore",

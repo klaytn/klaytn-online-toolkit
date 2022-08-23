@@ -1,7 +1,7 @@
 import Caver from 'caver-js'
 import InputField from '../components/inputField';
 import React, { Component } from "react";
-import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 
 class KeccakFromString extends Component {
     constructor(props){
@@ -9,12 +9,10 @@ class KeccakFromString extends Component {
         this.state = {
             input: "",
             result: "",
-            hashShown: false,
         }
     }
     
     handleInputChange = async(e) =>{
-        console.log(e.target.value)  
         this.setState({
             input: e.target.value
         })
@@ -25,7 +23,6 @@ class KeccakFromString extends Component {
         const result = Caver.utils.sha3(input) // Same with ethUtil.bufferToHex(ethUtil.keccak256(Buffer.from(input)))
         this.setState({
             result,
-            hashShown: true
         })
     }
 
@@ -36,7 +33,7 @@ class KeccakFromString extends Component {
     }
 
     render(){
-        const {input, result, hashShown} = this.state;
+        const {input, result} = this.state;
         return (
             <div>
                 <Row>
@@ -63,11 +60,9 @@ class KeccakFromString extends Component {
                             </Button>
                             </Col>
                         </Row>
-                    </CardBody>
-                    <CardFooter>
                         <Row>
                             <Col md = "12">
-                            <textarea style={{width:"100%", display: hashShown? "inline" : "none", backgroundColor: "black", color: "white"}}
+                            <textarea
                                 ref={(textarea) => this.textArea = textarea}
                                 value={result}
                                 readOnly
@@ -76,12 +71,12 @@ class KeccakFromString extends Component {
                         </Row>
                         <Row>
                         <Col md="8">
-                            <Button onClick={() => this.copyCodeToClipboard()} style={{display: hashShown? "inline" : "none",}}>
+                            <Button onClick={() => this.copyCodeToClipboard()}>
                                 Copy To Clipboard
                             </Button>
                         </Col>
                         </Row>
-                    </CardFooter>
+                    </CardBody>
                 </Card>
                 </Col>
                 </Row>
