@@ -1,6 +1,6 @@
 import InputField from '../components/inputField';
 import React, { Component }from "react";
-import { Card, CardHeader, CardBody, Row, Col, Button, CardText, CardFooter } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 
 class LoadKeystore extends Component {
     constructor(props){
