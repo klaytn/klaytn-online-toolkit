@@ -43,6 +43,7 @@ class Navigator extends React.Component{
             dropdownOpen
         });
     }
+
     render(){
         const {routes} = this.props;
         return(
@@ -66,7 +67,7 @@ class Navigator extends React.Component{
                                     <DropdownMenu>
                                     {prop.items.map((item, _) => {
                                         return (
-                                            <DropdownItem href = {"/klaytn-online-toolkit" + prop.path + item.path}>
+                                            <DropdownItem disabled={item.component===null} href = {"/klaytn-online-toolkit" + prop.path + item.path}>
                                                 {item.name}
                                             </DropdownItem>
                                         )

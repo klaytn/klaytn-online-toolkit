@@ -15,10 +15,10 @@ const getRoutes = (routes) =>{
       {
         buffer.push(
           <Route 
-          key={item.name} 
-          exact 
-          path={prop.path + item.path}
-          component={mainPage}
+            key={item.name} 
+            exact 
+            path={prop.path + item.path}
+            component={mainPage}
           />
         )
       }
