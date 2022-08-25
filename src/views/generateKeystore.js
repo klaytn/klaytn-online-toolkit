@@ -1,7 +1,7 @@
 import Caver from 'caver-js'
 import InputField from '../components/inputField';
 import React, { Component }from "react";
-import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button, ButtonGroup, Input, FormGroup, InputGroup, Form } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Col, Button, ButtonGroup, Input, FormGroup } from 'reactstrap';
 import classNames from "classnames";
 
 class RoleBasedKey extends Component {
@@ -9,7 +9,7 @@ class RoleBasedKey extends Component {
         super(props);
         this.state = {
             type: ["roleTransactionKey", "roleAccountUpdateKey", "roleFeePayerKey"],
-            numOfKeys: [1, 1, 1],
+            numOfKeys: [null, null, null],
             keys: [[""], [""], [""]]
         }
     }
@@ -53,6 +53,7 @@ class RoleBasedKey extends Component {
                     <Col md="4">
                         <InputField
                             label={type[idx]}
+                            placeholder={`Number of ${type[idx]}s`}
                             type="number"
                             value={val}
                             onChange={(e)=>this.handleNumberChange(e, idx)}
@@ -87,7 +88,7 @@ class MultipleKey extends Component {
         super(props);
         this.state = {
             keys: [""],
-            numOfKeys: 1,
+            numOfKeys: null,
         }
     }
 
@@ -126,6 +127,7 @@ class MultipleKey extends Component {
                         <InputField
                             type="number"
                             value={numOfKeys}
+                            placeholder="Number of Private Keys"
                             label="Number of Private Keys"
                             onChange={this.handleNumberChange}
                         />
@@ -167,8 +169,6 @@ class SingleKey extends Component{
         super(props);
         this.state = {
             key: "",
-            keystoreType: ["V3 Standard", "V4 Standard"],
-            isCheckedList: [true, false],
         }
     }
 
@@ -188,56 +188,10 @@ class SingleKey extends Component{
         this.props.setPrivateKey(e.target.value)
     }
 
-    checkBoxClicked(id) {
-        let {isCheckedList} = this.state;
-        for(let i = 0; i < isCheckedList.length; i ++ )
-        {
-            if(id == i){
-                isCheckedList[i] = true;
-            }
-            else{
-                isCheckedList[i] = false;
-            }
-        }
-        this.setState({
-            isCheckedList
-        })
-        this.props.setStandardFormat(isCheckedList[0])
-    }
-
     render() {
-        const { key, keystoreType, isCheckedList } = this.state
+        const { key } = this.state
         return (
             <div>
-                <Row>
-                    <Col md="8">
-                    <ButtonGroup
-                        className="btn-group-toggle"
-                        data-toggle="buttons"
-                        >
-                        {keystoreType.map((type, idx) => {
-                        return (
-                            <Button
-                                tag="label"
-                                className={classNames("btn-simple", {
-                                active: isCheckedList[idx]
-                                })}
-                                color="info"
-                                id="0"
-                                size="sm"
-                                onClick={() => this.checkBoxClicked(idx)}
-                                style={{marginBottom: "1rem"}}
-                            >
-                                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                                {type}
-                                </span>
-                                <span className="d-block d-sm-none">
-                                <i className="tim-icons icon-map-02" />
-                                </span>
-                            </Button>)})}
-                    </ButtonGroup>
-                    </Col>
-                </Row>
                 <Row>
                     <Col md ="8">
                         <InputField
@@ -270,7 +224,6 @@ class GenerateKeystore extends Component {
             address:"",
             password: "",
             privateKey: null,
-            isV3Standard: true,
         }
     }
 
@@ -301,12 +254,6 @@ class GenerateKeystore extends Component {
         })
     }
 
-    setStandardType = (isV3Standard)=>{
-        this.setState({
-            isV3Standard
-        })
-    }
-
     hanldInputChange = (e) => {
         const { name, value } = e.target;
         this.setState({
@@ -332,24 +279,31 @@ class GenerateKeystore extends Component {
         }
     }
 
-    generateKeystore = (e) => {
+    generateKeystoreV3 = (e) => {
         try {
-            const {address, privateKey, password, isV3Standard} = this.state
+            const {address, privateKey, password } = this.state
             const caver = new Caver();
             const keyring = caver.wallet.keyring.create(address, privateKey)
-            let keystore;
-            // For single keyring, user can choose either v3 standard or v4 standard. Otherwise, v4 standard.
-            if (keyring.type === "SingleKeyring"){
-                if (isV3Standard){
-                    keystore = JSON.stringify(keyring.encryptV3(password));
-                }
-                else{
-                    keystore = JSON.stringify(keyring.encrypt(password));
-                }
-            }
-            else {
-                keystore = JSON.stringify(keyring.encrypt(password));
-            }
+            const keystore = JSON.stringify(keyring.encryptV3(password));
+
+            this.setState({
+                keystore,
+                keystoreShown: true
+             })
+        }catch(e){
+            this.setState({
+                keystore: e.toString(),
+                keystoreShown:true
+            })
+        }
+    }
+
+    generateKeystoreV4 = (e) => {
+        try {
+            const {address, privateKey, password } = this.state
+            const caver = new Caver();
+            const keyring = caver.wallet.keyring.create(address, privateKey)
+            const keystore = JSON.stringify(keyring.encrypt(password));
 
             this.setState({
                 keystore,
@@ -434,9 +388,13 @@ class GenerateKeystore extends Component {
                         </Row>
                         <Row>
                             <Col md= "8">
-                                <Button onClick={this.generateKeystore}>
-                                    Generate Keystore 
+                                <Button style={{display: isCheckedList[0]? "inline": "none"}}onClick={this.generateKeystoreV3}>
+                                    Generate Keystore(v3)
                                 </Button>
+                                <Button onClick={this.generateKeystoreV4}>
+                                    Generate Keystore(v4)
+                                </Button>
+                                {/* <Button onClick= */}
                             </Col>
                         </Row>
                         <Row>
