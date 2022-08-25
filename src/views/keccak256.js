@@ -1,7 +1,7 @@
 import Caver from 'caver-js'
 import InputField from '../components/inputField';
 import React, { Component } from "react";
-import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Col, Button, Label } from 'reactstrap';
 
 class KeccakFromString extends Component {
     constructor(props){
@@ -13,15 +13,10 @@ class KeccakFromString extends Component {
     }
     
     handleInputChange = async(e) =>{
-        this.setState({
-            input: e.target.value
-        })
-    }
-
-    buttonClicked = (e) => {
-        const { input } = this.state
+        const input = e.target.value
         const result = Caver.utils.sha3(input) // Same with ethUtil.bufferToHex(ethUtil.keccak256(Buffer.from(input)))
         this.setState({
+            input,
             result,
         })
     }
@@ -46,27 +41,25 @@ class KeccakFromString extends Component {
                     </CardHeader>
                     <CardBody>
                         <Row>
-                            <Col md="8">
-                                <InputField
-                                    type="text"
+                            <Col md="12">
+                                <Label>Input</Label>
+                                <textarea
+                                    ref={(textarea) => this.inputArea = textarea}
                                     value={input}
-                                    placeholder="String Input"
-                                    label="Input"
-                                    name="Input"
                                     onChange={this.handleInputChange}
+                                    style={{height:"120px"}}
                                 />
-                            <Button onClick= {this.buttonClicked}> 
-                                Hash
-                            </Button>
                             </Col>
                         </Row>
                         <Row>
                             <Col md = "12">
-                            <textarea
-                                ref={(textarea) => this.textArea = textarea}
-                                value={result}
-                                readOnly
-                            />
+                                <Label>Hash</Label>
+                                <textarea
+                                    ref={(textarea) => this.textArea = textarea}
+                                    style={{height:"50px"}}
+                                    value={result}
+                                    readOnly
+                                />
                             </Col>
                         </Row>
                         <Row>
