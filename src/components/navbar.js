@@ -11,6 +11,7 @@ import {
   NavLink,
 } from 'reactstrap';
 import '../../assets/css/black-dashboard-react.css';
+import githubIcon from '../../assets/img/Github-Mark-Light-64px.png';
 
 class Navigator extends React.Component{
     constructor(props) {
@@ -57,7 +58,6 @@ class Navigator extends React.Component{
                     <Nav navbar>
                         <NavLink href="/klaytn-online-toolkit"> Home </NavLink>
                         <NavLink href="/klaytn-online-toolkit/web3modal"> Web3Modal </NavLink>
-
                         {routes.map((prop, key) => {
                             return (
                                 <Dropdown tag="nav" isOpen={this.state.dropdownOpen[key]} toggle={(e) => this.dropdownToggle(e, key)}>
@@ -76,6 +76,9 @@ class Navigator extends React.Component{
                                 </Dropdown>
                             )
                         })}
+                        <NavLink href="https://github.com/klaytn/klaytn-online-toolkit">
+                            <img src={githubIcon} style={{height: "25px", width: "25px"}} />
+                        </NavLink>
                     </Nav>
                 </Collapse>
             </Navbar>

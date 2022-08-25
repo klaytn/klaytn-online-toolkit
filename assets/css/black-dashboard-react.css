@@ -3307,7 +3307,7 @@ input[type="button"].btn-block {
 
 .nav-link {
   display: block;
-  padding: 0.5rem 1rem; 
+  padding: 0.5rem 0 0.2rem 0;
   color: white; }
   .nav-link:hover, .nav-link:focus {
     text-decoration: none; }

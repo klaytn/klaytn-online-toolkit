@@ -5,11 +5,11 @@ import AssetRow from "./AssetRow";
 const AccountAssets = (props) => {
   const { assets, chainId } = props;
   const defaultNativeCurrency =
-    chainId === 100
+    (chainId === 1001) || (chainId === 8217)
       ? {
           contractAddress: "",
-          symbol: "xDAI",
-          name: "xDAI",
+          symbol: "KLAY",
+          name: "Klaytn",
           decimals: "18",
           balance: "0",
         }

@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Icon from "./Icon";
 import ERC20Icon from "./ERC20Icon";
+import KlaytnIcon from "../assets/klaytn-logo.png"
 import eth from "../assets/eth.svg";
 import {
   handleSignificantDecimals,
@@ -33,7 +34,7 @@ const AssetRow = (props) => {
   const nativeCurrencyIcon =
     asset.symbol && asset.symbol.toLowerCase() === "eth"
       ? eth
-      : null;
+      : asset.symbol.toLowerCase() == "klay" ? KlaytnIcon : null;
   return (
     <SAssetRow {...props}>
       <SAssetRowLeft>
