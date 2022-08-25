@@ -3032,7 +3032,7 @@ input[type="button"].btn-block {
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
   border-color: #e14eca;
   background-color: #e14eca;
-  box-shadow:; }
+  box-shadow: none; }
 
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::after {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3e%3cpath stroke='%23ffffff' d='M0 2h4'/%3e%3c/svg%3e"); }
@@ -11083,10 +11083,12 @@ select {
 }
 
 textarea {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   font-family: "Poppins", sans-serif; 
   margin-bottom: 1rem;
-  background-color: black;
-  color: white;
+  background-color: var(--light);
+  color: black;
   width: 100%;
 }
 
