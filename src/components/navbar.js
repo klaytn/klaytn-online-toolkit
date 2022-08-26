@@ -19,6 +19,8 @@ class Navigator extends React.Component{
         super(props);
         this.toggle = this.toggle.bind(this);
         this.dropdownToggle = this.dropdownToggle.bind(this);
+        this.onMouseOver = this.onMouseOver.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
         this.state = {
             isOpen: false,
             dropdownOpen: new Array(this.props.routes.length).fill(false)
@@ -29,12 +31,31 @@ class Navigator extends React.Component{
             isOpen: !this.state.isOpen
         });
     }
+
     dropdownToggle(e, idx){
+        const {dropdownOpen} = this.state;
+        dropdownOpen[idx] = !dropdownOpen[idx];
+        
+        this.setState({
+            dropdownOpen
+        })
+    }
+
+    onMouseLeave(e, idx){
+        const { dropdownOpen } = this.state;
+        dropdownOpen[idx] = false;
+
+        this.setState({
+            dropdownOpen
+        });
+    }
+
+    onMouseOver(e, idx){
         const { dropdownOpen } = this.state;
         for (let i = 0; i< dropdownOpen.length ; i++)
         {
             if(i == idx){
-                dropdownOpen[i] = !dropdownOpen[i]
+                dropdownOpen[i] = true;
             }
             else{
                 dropdownOpen[i] = false;
@@ -61,7 +82,13 @@ class Navigator extends React.Component{
                         <NavLink href="/klaytn-online-toolkit/web3modal"> Web3Modal </NavLink>
                         {routes.map((prop, key) => {
                             return (
-                                <Dropdown tag="nav" isOpen={this.state.dropdownOpen[key]} toggle={(e) => this.dropdownToggle(e, key)}>
+                                <Dropdown 
+                                    tag="nav" 
+                                    isOpen={this.state.dropdownOpen[key]}
+                                    onMouseOver={(e) => this.onMouseOver(e, key)}
+                                    onMouseLeave={(e) => this.onMouseLeave(e, key)}
+                                    toggle={(e)=>this.dropdownToggle(e, key)}
+                                >    
                                     <DropdownToggle caret nav>
                                         {prop.name}
                                     </DropdownToggle>
