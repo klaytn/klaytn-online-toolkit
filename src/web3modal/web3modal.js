@@ -1,15 +1,7 @@
 import styled from "styled-components";
 import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils";
-// @ts-ignore
 import Web3Modal from "@klaytn/web3modal";
-// @ts-ignore
-import WalletConnect from "@walletconnect/web3-provider";
-// @ts-ignore
-import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
-// @ts-ignore
-import { Web3Auth } from "@web3auth/web3auth";
-// @ts-ignore
 import { KaikasWeb3Provider } from "@klaytn/kaikas-web3-provider"
 import React, {Component }from "react";
 import { Button } from "reactstrap";
@@ -33,7 +25,7 @@ import {
     ETH_SIGN,
     PERSONAL_SIGN,
   } from "./constants";
-  
+
 const SLayout = styled.div`
   position: relative;
   width: 100%;
@@ -119,7 +111,7 @@ const INITIAL_STATE = {
 
 function initWeb3(provider) {
     const web3 = new Web3(provider);
-  
+
     web3.eth.extend({
       methods: [
         {
@@ -218,27 +210,7 @@ class web3modalExample extends Component{
     getNetwork = () => getChainData(this.state.chainId).network;
 
     getProviderOptions = () => {
-        const infuraId = process.env.REACT_APP_INFURA_ID;
         const providerOptions = {
-            walletconnect: {
-                package: WalletConnect,
-                options: {
-                    infuraId
-                }
-            },
-            coinbasewallet: {
-                package: CoinbaseWalletSDK,
-                options: {
-                appName: "Web3Modal Example App",
-                    infuraId
-                }
-            },
-            web3auth: {
-                package: Web3Auth,
-                options: {
-                    infuraId
-                }
-            },
             kaikas: {
                 package: KaikasWeb3Provider,
             }
@@ -255,7 +227,7 @@ class web3modalExample extends Component{
 
         this.setState({ fetching: false, assets });
         } catch (error) {
-            console.error(error); 
+            console.error(error);
             this.setState({ fetching: false });
         }
     };
@@ -265,7 +237,7 @@ class web3modalExample extends Component{
     testSendTransaction = async () => {
         const { web3, address, chainId } = this.state;
 
-        if (!web3) { 
+        if (!web3) {
             return;
         }
 
@@ -420,7 +392,7 @@ class web3modalExample extends Component{
         await this.web3Modal.clearCachedProvider();
         this.setState({ ...INITIAL_STATE });
     };
-    
+
     render = () => {
         const {
           assets,
@@ -456,11 +428,11 @@ class web3modalExample extends Component{
                         <STestButton onClick={this.testSendTransaction}>
                         {ETH_SEND_TRANSACTION}
                         </STestButton>
-    
+
                         <STestButton onClick={this.testSignMessage}>
                         {ETH_SIGN}
                         </STestButton>
-    
+
                         <STestButton onClick={this.testSignPersonalMessage}>
                         {PERSONAL_SIGN}
                         </STestButton>

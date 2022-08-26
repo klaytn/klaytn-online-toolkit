@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
@@ -19,7 +20,7 @@
           // the single page app to route accordingly.
           (function(l) {
             if (l.search[1] === '/' ) {
-              var decoded = l.search.slice(1).split('&').map(function(s) { 
+              var decoded = l.search.slice(1).split('&').map(function(s) {
                 return s.replace(/~and~/g, '&')
               }).join('?');
               window.history.replaceState(null, null,
