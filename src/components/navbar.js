@@ -9,6 +9,7 @@ import {
   DropdownMenu,
   DropdownItem,
   NavLink,
+  Form,
 } from 'reactstrap';
 import '../../assets/css/black-dashboard-react.css';
 import githubIcon from '../../assets/img/Github-Mark-Light-64px.png';
@@ -76,10 +77,12 @@ class Navigator extends React.Component{
                                 </Dropdown>
                             )
                         })}
+                    </Nav>
+                    <Form inline className="ml-auto">
                         <NavLink href="https://github.com/klaytn/klaytn-online-toolkit">
                             <img src={githubIcon} style={{height: "25px", width: "25px"}} />
                         </NavLink>
-                    </Nav>
+                    </Form>
                 </Collapse>
             </Navbar>
         );
