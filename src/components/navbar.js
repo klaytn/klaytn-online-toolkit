@@ -34,8 +34,8 @@ class Navigator extends React.Component{
 
     dropdownToggle(e, idx){
         const {dropdownOpen} = this.state;
-        dropdownOpen[idx] = !dropdownOpen[idx];
-        
+        dropdownOpen[idx] = !dropdownOpen[idx]
+
         this.setState({
             dropdownOpen
         })
@@ -82,13 +82,13 @@ class Navigator extends React.Component{
                         <NavLink href="/klaytn-online-toolkit/web3modal"> Web3Modal </NavLink>
                         {routes.map((prop, key) => {
                             return (
-                                <Dropdown 
-                                    tag="nav" 
+                                <Dropdown
+                                    tag="nav"
                                     isOpen={this.state.dropdownOpen[key]}
                                     onMouseOver={(e) => this.onMouseOver(e, key)}
                                     onMouseLeave={(e) => this.onMouseLeave(e, key)}
                                     toggle={(e)=>this.dropdownToggle(e, key)}
-                                >    
+                                >
                                     <DropdownToggle caret nav>
                                         {prop.name}
                                     </DropdownToggle>

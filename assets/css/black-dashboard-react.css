@@ -3309,8 +3309,13 @@ input[type="button"].btn-block {
   display: block;
   padding: 0.5rem 0 0.2rem 0;
   color: white; }
-  .nav-link:hover, .nav-link:focus {
-    text-decoration: none; }
+  .nav-link:hover {
+    text-decoration: none;
+  }
+  .nav-link:focus {
+    text-decoration: none;
+    color: white;
+  }
   .nav-link.disabled {
     color: #6c757d;
     pointer-events: none;
