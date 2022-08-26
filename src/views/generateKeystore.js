@@ -17,8 +17,8 @@ class RoleBasedKey extends Component {
     handleNumberChange = (e, idx) => {
         const {numOfKeys, keys} = this.state
         numOfKeys[idx] = e.target.value != "" ? Math.max(Number(e.target.value), 1) : null;
-        keys[idx] = numOfKeys[idx] ? new Array(numOfKeys[idx]).fill("") : new Array(1).fill("") 
-        
+        keys[idx] = numOfKeys[idx] ? new Array(numOfKeys[idx]).fill("") : new Array(1).fill("")
+
         this.setState({
             numOfKeys,
             keys
@@ -49,7 +49,7 @@ class RoleBasedKey extends Component {
             <div>
                 <Row>
                 {numOfKeys.map((val, idx) => {
-                    return(         
+                    return(
                     <Col md="4">
                         <InputField
                             label={type[idx]}
@@ -113,7 +113,7 @@ class MultipleKey extends Component {
     handleNumberChange = (e) => {
         const numOfKeys = e.target.value != "" ? Math.max(Number(e.target.value), 1): null
         this.setState({
-            numOfKeys, 
+            numOfKeys,
             keys: new Array(numOfKeys).fill("")
         })
     }
@@ -151,7 +151,7 @@ class MultipleKey extends Component {
                         </FormGroup>
                     </Col>
                 </Row>
-                {keys.length > 0 && 
+                {keys.length > 0 &&
                 (<div>
                     <Row>
                         <Col md="4">
@@ -176,7 +176,7 @@ class SingleKey extends Component{
         const caver = new Caver();
         const singleKey = caver.wallet.keyring.generateSingleKey();
         this.setState({
-            key: singleKey, 
+            key: singleKey,
         })
         this.props.setPrivateKey(singleKey)
     }
@@ -231,15 +231,15 @@ class GenerateKeystore extends Component {
         const { checkboxIdList, isCheckedList } = this.state;
         for(let i = 0; i < checkboxIdList.length; i ++ )
         {
-            if (checkboxIdList[i] == id ) 
+            if (checkboxIdList[i] == id )
             {
                 isCheckedList[i] = !isCheckedList[i]
             }
             else{
                 isCheckedList[i] = false
             }
-        }   
-        
+        }
+
         this.setState({
             isCheckedList,
             address: "",
@@ -262,7 +262,7 @@ class GenerateKeystore extends Component {
     }
 
     getKeystore = ()=>{
-        const { isCheckedList } = this.state 
+        const { isCheckedList } = this.state
         if (isCheckedList[0])
         {
             return (
@@ -315,7 +315,7 @@ class GenerateKeystore extends Component {
                 keystoreShown:true
             })
         }
-    }    
+    }
 
     copyCodeToClipboard = (e)=>{
         const el = this.textArea
@@ -325,7 +325,7 @@ class GenerateKeystore extends Component {
 
     render(){
         const {address, password, keystore, keystoreShown,isCheckedList, checkboxIdList} = this.state;
-        
+
         return (
             <div>
                 <Row>
@@ -358,7 +358,7 @@ class GenerateKeystore extends Component {
                             </Button>)})}
                         </ButtonGroup>
                         <h3 className="title">Generate Keystore</h3>
-                        Generate Private Key(s), encrypt a keyring, and return a keystore.                   
+                        Generate Private Key(s), encrypt a keyring, and return a keystore.
                     </CardHeader>
                     <CardBody>
                         <Row>
@@ -399,7 +399,7 @@ class GenerateKeystore extends Component {
                         </Row>
                         <Row>
                             <Col md="12">
-                                <textarea 
+                                <textarea
                                     style={{display: keystoreShown? "inline" : "none", height: "120px"}}
                                     value={keystore}
                                     readOnly
@@ -412,7 +412,7 @@ class GenerateKeystore extends Component {
                                 <Button style={{display: keystoreShown? "inline" : "none"}} onClick={() => this.copyCodeToClipboard()}>
                                     Copy To Clipboard
                                 </Button>
-                            </Col>   
+                            </Col>
                         </Row>
                     </CardBody>
                 </Card>

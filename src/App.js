@@ -14,9 +14,9 @@ const getRoutes = (routes) =>{
       if(item.component == null)
       {
         buffer.push(
-          <Route 
-            key={item.name} 
-            exact 
+          <Route
+            key={item.name}
+            exact
             path={prop.path + item.path}
             component={mainPage}
           />
@@ -24,9 +24,9 @@ const getRoutes = (routes) =>{
       }
       else{
         buffer.push(
-          <Route 
+          <Route
             key={item.name}
-            exact 
+            exact
             path={prop.path + item.path}
             component={item.component}
           />
@@ -41,7 +41,7 @@ const mainPage = () => {
     <div>
       <Card>
         <CardBody>
-          <h3> Klaytn Online Toolkit </h3>
+          <h3 style={{fontWeight:"600"}}> Klaytn Online Toolkit </h3>
           <p>
             <a href="https://github.com/klaytn/klaytn-online-toolkit">Klaytn-online-toolkit</a> provides code samples and github-page to
              help you utilize the Klaytn SDK(caver-js).

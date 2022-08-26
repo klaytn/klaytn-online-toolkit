@@ -11,7 +11,7 @@ class LoadKeystore extends Component {
             decryptMessage: ""
         }
     }
-    
+
     handleKeystoreChange = (e) => {
         if (e.target.files.length > 0)
         {
@@ -26,7 +26,7 @@ class LoadKeystore extends Component {
             };
         }
     }
-    
+
     handlePasswordChange = (e)=>{
         const {value} = e.target;
         this.setState({

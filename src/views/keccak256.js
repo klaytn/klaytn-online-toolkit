@@ -11,7 +11,7 @@ class KeccakFromString extends Component {
             result: "",
         }
     }
-    
+
     handleInputChange = async(e) =>{
         const input = e.target.value
         const result = Caver.utils.sha3(input) // Same with ethUtil.bufferToHex(ethUtil.keccak256(Buffer.from(input)))

@@ -258,12 +258,12 @@ input[type="radio"],
 input[type="checkbox"] {
   box-sizing: border-box;
   padding: 0; }
-  
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none; 
+  appearance: none;
 }
 
 textarea {
@@ -333,7 +333,7 @@ h2, .h2 {
   font-size: 1.6875rem; }
 
 h3, .h3 {
-  font-size: 1.4375rem; 
+  font-size: 1.4375rem;
 }
 
 h4, .h4 {
@@ -521,13 +521,13 @@ pre {
   position: relative;
   width: 100%;
   padding-right: 15px;
-  padding-left: 15px; 
+  padding-left: 15px;
 }
 
 .col {
   flex-basis: 0;
   flex-grow: 1;
-  max-width: 100%; 
+  max-width: 100%;
   vertical-align: middle;
 }
 
@@ -2520,7 +2520,7 @@ input[type="button"].btn-block {
   position: relative; }
 
 .dropdown-toggle {
-  white-space: nowrap; 
+  white-space: nowrap;
   color: white;
   }
   .dropdown-toggle::after {
@@ -3666,7 +3666,7 @@ input[type="button"].btn-block {
   margin-bottom: 0; }
 
 .card-text:last-child {
-  margin-bottom: 0; 
+  margin-bottom: 0;
 }
 .card-text{
   margin-top: 0.5rem;
@@ -10754,7 +10754,7 @@ img {
     padding-left: 15px; }
   .navbar .navbar-collapse .input-group {
     margin: 0;
-    margin-top: 5px; 
+    margin-top: 5px;
   }
   .navbar .navbar-nav .btn {
     margin-left: -3px;
@@ -11079,13 +11079,13 @@ button,
 input,
 optgroup,
 select {
-  font-family: "Poppins", sans-serif; 
+  font-family: "Poppins", sans-serif;
 }
 
 textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  font-family: "Poppins", sans-serif; 
+  font-family: "Poppins", sans-serif;
   margin-bottom: 1rem;
   background-color: var(--light);
   color: black;
@@ -11093,9 +11093,13 @@ textarea {
 }
 
 .card h1, .card h2, .card h3, .card h4, .card h5, .card h6, .card p {
-  color: rgba(255, 255, 255, 0.8); 
+  color: rgba(255, 255, 255, 0.8);
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.card h3.title {
+  font-weight: 550;
 }
 
 h1, h2, h3, h4, h5, h6 {

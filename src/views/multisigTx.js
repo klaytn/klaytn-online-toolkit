@@ -19,7 +19,7 @@ const networkLinks ={
         "finder": "https://baobab.klaytnfinder.io/tx/"
     },
     "mainnet": {
-        "rpc": "https://public-node-api.klaytnapi.com/v1/cypress", 
+        "rpc": "https://public-node-api.klaytnapi.com/v1/cypress",
         "finder": "https://www.klaytnfinder.io/tx/"
     },
 }
@@ -59,26 +59,26 @@ class SendAndSignTx extends Component {
     handleKeystoreChange = (e) => {
         if (e.target.files.length > 0)
         {
-            const filename = e.target.files[0].name            
+            const filename = e.target.files[0].name
             const fileReader = new FileReader();
             fileReader.readAsText(e.target.files[0], "UTF-8")
             fileReader.onload = (event) =>{
                 const parsedKeystore = JSON.parse(event.target.result)
                 this.setState({
-                    keystoreFileName: filename, 
+                    keystoreFileName: filename,
                     keystoreJSON: parsedKeystore,
                 })
             };
         }
     }
-    
+
     handlePasswordChange = (e)=>{
-        const {value} = e.target;        
+        const {value} = e.target;
         this.setState({
             keystorePassword: value
         })
     }
-    
+
     onFileAndPasswordUpload = (e)=>{
         //decrypt and add priv key to PrivKey list
         const {privateKeyList, keystoreFileName, keystoreJSON, keystorePassword} = this.state
@@ -92,7 +92,7 @@ class SendAndSignTx extends Component {
                     keyList.push(keyring.key.privateKey)
                 }
                 else if(keyring.type == "MultipleKeyring")
-                {   
+                {
                     for (const element of keyring.keys)
                     {
                         keyList.push(element.privateKey)
@@ -140,7 +140,7 @@ class SendAndSignTx extends Component {
 
     handleKeystoreRemove = (index) => {
         const {privateKeyList} = this.state
-    
+
         const privKeyList = [...privateKeyList]
         privKeyList.splice(index, 1);
 
@@ -164,7 +164,7 @@ class SendAndSignTx extends Component {
         try{
             this.setState({
                 buttonDisabled: true,
-                sendAndSignMsg: null, 
+                sendAndSignMsg: null,
                 txHash: null,
             })
             const vtReceipt = await caver.rpc.klay.sendRawTransaction(this.state.rawTransaction)
@@ -177,7 +177,7 @@ class SendAndSignTx extends Component {
                 txHash: vtReceipt.transactionHash,
             })
         } catch(e){
-            //Raw transaction is not changed once error occurs during sending tx. 
+            //Raw transaction is not changed once error occurs during sending tx.
             this.setState({
                 sendAndSignMsg: e.toString(),
                 buttonDisabled: false,
@@ -187,7 +187,7 @@ class SendAndSignTx extends Component {
      }
 
     onSignTxButtonClick = async(e) =>{
-        // Sign transaction with provided keys 
+        // Sign transaction with provided keys
         try{
             const {sender, recipient, amount} = this.state
             this.setState({
@@ -206,7 +206,7 @@ class SendAndSignTx extends Component {
                 caver.wallet.updateKeyring(newKeyring)
             }
             else{
-                caver.wallet.add(newKeyring) // caver wallet add keyring if keyring hasn't been updated. 
+                caver.wallet.add(newKeyring) // caver wallet add keyring if keyring hasn't been updated.
             }
 
             const vt = caver.transaction.valueTransfer.create({
@@ -219,7 +219,7 @@ class SendAndSignTx extends Component {
             let signed = await caver.wallet.sign(sender, vt)
             this.setState({
                 rawTransaction: signed.getRawTransaction(),
-                sendAndSignMsg: "Transaction is signed!", 
+                sendAndSignMsg: "Transaction is signed!",
                 txHash: signed.getTransactionHash(),
                 buttonDisabled: false
             })
@@ -234,7 +234,7 @@ class SendAndSignTx extends Component {
     }
 
     render(){
-        const {network, buttonDisabled, txHash, sendAndSignMsg, sender, recipient, amount, privateKeyList, decryptMessageVisible, keystorePassword, decryptMessage} = this.state        
+        const {network, buttonDisabled, txHash, sendAndSignMsg, sender, recipient, amount, privateKeyList, decryptMessageVisible, keystorePassword, decryptMessage} = this.state
         return (
             <div>
                 <Row>
@@ -294,7 +294,7 @@ class SendAndSignTx extends Component {
                             <CardFooter>
                                 <Col md="8">
                                     <Row>
-                                        <Button disabled={buttonDisabled} onClick={this.onSignTxButtonClick}>Sign Transaction</Button> 
+                                        <Button disabled={buttonDisabled} onClick={this.onSignTxButtonClick}>Sign Transaction</Button>
                                         <Button disabled={buttonDisabled || this.state.rawTransaction == null} onClick={this.onSendTxButtonClick}>Send Transaction</Button>
                                     </Row>
                                     <Row>
@@ -302,7 +302,7 @@ class SendAndSignTx extends Component {
                                             {sendAndSignMsg}
                                         </CardText>
                                         <CardText style={{display: sendAndSignMsg!=null && txHash!=null? "inline" : "none"}}>
-                                            {sendAndSignMsg} Transaction Hash: <a href={networkLinks[network]["finder"]+txHash}>{txHash}</a> 
+                                            {sendAndSignMsg} Transaction Hash: <a href={networkLinks[network]["finder"]+txHash}>{txHash}</a>
                                         </CardText>
                                     </Row>
                                 </Col>
@@ -325,7 +325,7 @@ class SendAndSignTx extends Component {
                                             </Col>
                                             <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
                                         </Row>
-                                    ))}   
+                                    ))}
                                     </Col>
                                 </Row>
                             </CardBody>
@@ -365,7 +365,7 @@ class SendAndSignTx extends Component {
                                     <Button onClick={(e)=> this.onFileAndPasswordUpload(e)}>Decrypt</Button>
                                 </Col>
                             </Row>
-                                {decryptMessageVisible && 
+                                {decryptMessageVisible &&
                                 <Row>
                                     <Col md="8">
                                         <CardText style={{color:"#c221a9"}}>
