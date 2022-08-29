@@ -3,8 +3,8 @@ import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils";
 import Web3Modal from "@klaytn/web3modal";
 import { KaikasWeb3Provider } from "@klaytn/kaikas-web3-provider"
-import React, {Component }from "react";
-import { Button } from "reactstrap";
+import React, { Component } from "react";
+import { Button, Card, FormGroup, Label, Input, CardHeader, CardBody } from "reactstrap";
 import {
     formatTestTransaction,
     getChainData,
@@ -19,12 +19,14 @@ import AccountAssets from "./components/AccountAssets";
 import ModalResult from "./components/ModalResult";
 import Modal from "./components/Modal";
 import Column from "./components/Column";
-
 import {
+    KIP7_BALANCE_OF,
+    KIP7_TRANSFER,
     ETH_SEND_TRANSACTION,
     ETH_SIGN,
     PERSONAL_SIGN,
   } from "./constants";
+import { callBalanceOf, callTransfer } from "./helpers/web3";
 
 const SLayout = styled.div`
   position: relative;
@@ -91,7 +93,7 @@ const STestButton = styled(Button)`
   border-radius: 8px;
   height: 44px;
   width: 100%;
-  max-width: 200px;
+  max-width: 220px;
   font-size: 12px;
 `;
 
@@ -106,8 +108,9 @@ const INITIAL_STATE = {
     assets: [],
     showModal: false,
     pendingRequest: false,
-    result: null
-  };
+    result: null,
+    contractAddress: ""
+};
 
 function initWeb3(provider) {
     const web3 = new Web3(provider);
@@ -139,7 +142,8 @@ class web3modalExample extends Component{
             assets: [],
             showModal: false,
             pendingRequest: false,
-            result: null
+            result: null,
+            contractAddress: "",
         }
         this.web3Modal = new Web3Modal({
             network: this.getNetwork(),
@@ -233,6 +237,12 @@ class web3modalExample extends Component{
     };
 
     toggleModal = () => this.setState({ showModal: !this.state.showModal });
+
+    onChangeInput = (e) => {
+        this.setState({
+            contractAddress: e.target.value
+        });
+    }
 
     testSendTransaction = async () => {
         const { web3, address, chainId } = this.state;
@@ -335,7 +345,6 @@ class web3modalExample extends Component{
         }
     };
 
-
     testSignPersonalMessage = async () => {
         const { web3, address } = this.state;
 
@@ -384,6 +393,54 @@ class web3modalExample extends Component{
         }
     };
 
+    testContractCall = async (functionSig) => {
+        let contractCall = null;
+        switch (functionSig) {
+            case KIP7_BALANCE_OF:
+                contractCall = callBalanceOf;
+                break;
+            case KIP7_TRANSFER:
+                contractCall = callTransfer;
+                break;
+            default:
+                break;
+        }
+
+        if (!contractCall || contractAddress === "") {
+            throw new Error(
+                `No matching contract calls for functionSig=${functionSig}`
+            );
+        }
+
+        const { web3, address, contractAddress, chainId } = this.state;
+        try{
+            // open modal
+            this.toggleModal();
+
+            // toggle pending request indicator
+            this.setState({ pendingRequest: true });
+
+            // send transaction
+            const result = await contractCall(address, chainId, contractAddress, web3);
+
+            // format displayed result
+            const formattedResult = {
+                action: functionSig,
+                result
+            };
+
+            // display result
+            this.setState({
+                web3,
+                pendingRequest: false,
+                result: formattedResult || null
+            });
+        } catch (error) {
+            console.error(error); // tslint:disable-line
+            this.setState({ web3, pendingRequest: false, result: null });
+        }
+    }
+
     resetApp = async () => {
         const { web3 } = this.state;
         if (web3 && web3.currentProvider && web3.currentProvider.close) {
@@ -402,7 +459,8 @@ class web3modalExample extends Component{
           fetching,
           showModal,
           pendingRequest,
-          result
+          result,
+          contractAddress
         } = this.state;
         return (
           <SLayout>
@@ -421,31 +479,62 @@ class web3modalExample extends Component{
                     </SContainer>
                 </Column>
                 ) : !!assets && !!assets.length ? (
+
                 <SBalances>
-                    <h3>Actions</h3>
-                    <Column center>
-                    <STestButtonContainer>
-                        <STestButton onClick={this.testSendTransaction}>
-                        {ETH_SEND_TRANSACTION}
-                        </STestButton>
-
-                        <STestButton onClick={this.testSignMessage}>
-                        {ETH_SIGN}
-                        </STestButton>
-
-                        <STestButton onClick={this.testSignPersonalMessage}>
-                        {PERSONAL_SIGN}
-                        </STestButton>
-                        {/* <STestButton onClick={() => this.testContractCall(DAI_BALANCE_OF)}>
-                        {DAI_BALANCE_OF}
-                        </STestButton>
-                        <STestButton onClick={() => this.testContractCall(DAI_TRANSFER)}>
-                        {DAI_TRANSFER}
-                        </STestButton> */}
-                    </STestButtonContainer>
-                    </Column>
                     <h3>Balances</h3>
                     <AccountAssets chainId={chainId} assets={assets} />{" "}
+                    <Card>
+                        <CardHeader>
+                            <h3 className="title">Actions</h3>
+                        </CardHeader>
+                        <CardBody>
+                            <Column center>
+                            <STestButtonContainer>
+                                <STestButton onClick={this.testSendTransaction}>
+                                {ETH_SEND_TRANSACTION}
+                                </STestButton>
+                                <STestButton onClick={this.testSignMessage}>
+                                {ETH_SIGN}
+                                </STestButton>
+                                <STestButton onClick={this.testSignPersonalMessage}>
+                                {PERSONAL_SIGN}
+                                </STestButton>
+                            </STestButtonContainer>
+                            </Column>
+                        </CardBody>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <h3>KIP-7 Token</h3>
+                            <p>
+                                Check <a href="/klaytn-online-toolkit/smartcontract/KCTDetection">here</a> which KCT the smart contract implements by using Contract Address.
+                            </p>
+                        </CardHeader>
+                            <CardBody>
+                                <Column center>
+                                <FormGroup style={{width: "440px"}}>
+                                <Label>
+                                    Contract Address
+                                </Label>
+                                <Input
+                                    label={"Token ontract Address"}
+                                    placeholder={"Token Contract Address"}
+                                    onChange={(e) => this.onChangeInput(e)}
+                                    value={contractAddress}
+                                />
+                                </FormGroup>
+                                <STestButtonContainer>
+                                    <STestButton onClick={() => this.testContractCall(KIP7_BALANCE_OF)}>
+                                    {KIP7_BALANCE_OF}
+                                    </STestButton>
+                                    <STestButton onClick={() => this.testContractCall(KIP7_TRANSFER)}>
+                                    {KIP7_TRANSFER}
+                                    </STestButton>
+                                </STestButtonContainer>
+                            </Column>
+                        </CardBody>
+                    </Card>
                 </SBalances>
                 ) : (
                 <SLanding center>

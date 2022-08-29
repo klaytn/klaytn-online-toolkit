@@ -10,7 +10,7 @@ var routes =
         items: [
             {
                 path: "/rlpDecode",
-                name: "Decoder from RLP", 
+                name: "Decoder from RLP",
                 component: null,
             },
             {
@@ -68,6 +68,11 @@ var routes =
             {
                 path: "/functionSig",
                 name: "Function Signature Generator",
+                component: null,
+            },
+            {
+                path: "/KCTDetection",
+                name: "KCT Detection",
                 component: null,
             }
         ]
