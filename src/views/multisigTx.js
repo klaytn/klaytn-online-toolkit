@@ -12,6 +12,7 @@ import {
 import '../../assets/css/black-dashboard-react.css';
 import InputField from "../components/inputField";
 import Caver from 'caver-js'
+import Column from "../components/Column";
 
 const networkLinks ={
     "testnet" : {
@@ -208,12 +209,11 @@ class SendAndSignTx extends Component {
             else{
                 caver.wallet.add(newKeyring) // caver wallet add keyring if keyring hasn't been updated.
             }
-
             const vt = caver.transaction.valueTransfer.create({
                 from: sender,
                 to: recipient,
-                value: amount,
-                gas: 100000,
+                value: caver.utils.toPeb(amount, 'KLAY'),
+                gas: 50000,
             })
 
             let signed = await caver.wallet.sign(sender, vt)
@@ -236,148 +236,143 @@ class SendAndSignTx extends Component {
     render(){
         const {network, buttonDisabled, txHash, sendAndSignMsg, sender, recipient, amount, privateKeyList, decryptMessageVisible, keystorePassword, decryptMessage} = this.state
         return (
-            <div>
-                <Row>
-                    <Col md="2"/>
-                    <Col md="8">
-                        <Card>
-                            <CardHeader>
-                                <h3 className="title">Transaction Information</h3>
-                                <Row>
-                                    <Col md="4">
-                                        <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
-                                            <option value="mainnet"> Mainnet</option>
-                                            <option value="testnet"> Testnet</option>
-                                        </select>
-                                    </Col>
-                                </Row>
-                            </CardHeader>
-                            <CardBody>
-                                <Row>
-                                    <Col md="8">
-                                        <InputField
-                                        type="text"
-                                        value={sender}
-                                        placeholder="Sender Address"
-                                        label="Sender"
-                                        name="sender"
-                                        onChange={this.handleInputChange}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md="8">
-                                        <InputField
-                                        type="text"
-                                        value={recipient}
-                                        placeholder="Recipient Address"
-                                        label="Recipient"
-                                        name="recipient"
-                                        onChange={this.handleInputChange}
-                                    />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md="4">
-                                        <InputField
-                                        type="number"
-                                        value={amount}
-                                        placeholder="Amount(KLAY)"
-                                        label="Amount"
-                                        name="amount"
-                                        unit="KLAY"
-                                        onChange={this.handleInputChange}
-                                        />
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                            <CardFooter>
-                                <Col md="8">
-                                    <Row>
-                                        <Button disabled={buttonDisabled} onClick={this.onSignTxButtonClick}>Sign Transaction</Button>
-                                        <Button disabled={buttonDisabled || this.state.rawTransaction == null} onClick={this.onSendTxButtonClick}>Send Transaction</Button>
-                                    </Row>
-                                    <Row>
-                                        <CardText style={{display: sendAndSignMsg!=null && txHash==null? "inline" : "none", backgroundColor:"black"}}>
-                                            {sendAndSignMsg}
-                                        </CardText>
-                                        <CardText style={{display: sendAndSignMsg!=null && txHash!=null? "inline" : "none"}}>
-                                            {sendAndSignMsg} Transaction Hash: <a href={networkLinks[network]["finder"]+txHash}>{txHash}</a>
-                                        </CardText>
-                                    </Row>
-                                </Col>
-                            </CardFooter>
-                        </Card>
-                        <Card>
-                            <CardHeader>
-                                <h3 className="title">Decrypted Keystore List</h3>
-                            </CardHeader>
-                            <CardBody>
-                                <Row>
-                                    <Col md = "8">
-                                    {privateKeyList.map((_, index) => (
-                                        privateKeyList[index]["key"].length > 0 &&
-                                        <Row>
-                                            <Col md= "8">
-                                                <CardText>
-                                                {privateKeyList[index]["fileName"]}
-                                                </CardText>
-                                            </Col>
-                                            <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
-                                        </Row>
-                                    ))}
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
-                        <Card>
-                            <CardHeader>
-                                <h3 className="title">Upload Keystore File</h3>
-                            </CardHeader>
-                            <CardBody>
+            <Column>
+                <Card>
+                    <CardHeader>
+                        <h3 className="title">Transaction Information</h3>
+                        <Row>
+                            <Col md="4">
+                                <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
+                                    <option value="mainnet"> Mainnet</option>
+                                    <option value="testnet"> Testnet</option>
+                                </select>
+                            </Col>
+                        </Row>
+                    </CardHeader>
+                    <CardBody>
+                        <Row>
+                            <Col md="8">
+                                <InputField
+                                type="text"
+                                value={sender}
+                                placeholder="Sender Address"
+                                label="Sender"
+                                name="sender"
+                                onChange={this.handleInputChange}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="8">
+                                <InputField
+                                    type="text"
+                                    value={recipient}
+                                    placeholder="Recipient Address"
+                                    label="Recipient"
+                                    name="recipient"
+                                    onChange={this.handleInputChange}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="4">
+                                <InputField
+                                    type="number"
+                                    value={amount}
+                                    placeholder="Amount(KLAY)"
+                                    label="Amount"
+                                    name="amount"
+                                    unit="KLAY"
+                                    onChange={this.handleInputChange}
+                                />
+                            </Col>
+                        </Row>
+                    </CardBody>
+                    <CardFooter>
+                        <Col md="8">
                             <Row>
-                                <Col md="8">
-                                    <InputField
-                                        name="keystore"
-                                        type="file"
-                                        id="Keystore"
-                                        label="Keystore"
-                                        placeholder="Keystore File"
-                                        accept=".json"
-                                        onChange={(e) => this.handleKeystoreChange(e)}
-                                    />
-                                </Col>
+                                <Button disabled={buttonDisabled} onClick={this.onSignTxButtonClick}>Sign Transaction</Button>
+                                <Button disabled={buttonDisabled || this.state.rawTransaction == null} onClick={this.onSendTxButtonClick}>Send Transaction</Button>
                             </Row>
                             <Row>
-                                <Col md="8">
-                                    <InputField
-                                        type="password"
-                                        name="password"
-                                        placeholder="Password"
-                                        label="Password"
-                                        onChange={(e)=> this.handlePasswordChange(e)}
-                                        value={keystorePassword}
-                                    />
-                                </Col>
+                                <CardText style={{display: sendAndSignMsg!=null && txHash==null? "inline" : "none", backgroundColor:"black"}}>
+                                    {sendAndSignMsg}
+                                </CardText>
+                                <CardText style={{display: sendAndSignMsg!=null && txHash!=null? "inline" : "none"}}>
+                                    {sendAndSignMsg} Transaction Hash: <a href={networkLinks[network]["finder"]+txHash}>{txHash}</a>
+                                </CardText>
                             </Row>
-                            <Row>
-                                <Col md="8">
-                                    <Button onClick={(e)=> this.onFileAndPasswordUpload(e)}>Decrypt</Button>
-                                </Col>
-                            </Row>
-                                {decryptMessageVisible &&
+                        </Col>
+                    </CardFooter>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <h3 className="title">Decrypted Keystore List</h3>
+                    </CardHeader>
+                    <CardBody>
+                        <Row>
+                            <Col md = "8">
+                            {privateKeyList.map((_, index) => (
+                                privateKeyList[index]["key"].length > 0 &&
                                 <Row>
-                                    <Col md="8">
-                                        <CardText style={{color:"#c221a9"}}>
-                                            {decryptMessage}
+                                    <Col md= "8">
+                                        <CardText>
+                                        {privateKeyList[index]["fileName"]}
                                         </CardText>
                                     </Col>
-                                </Row>}
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                    <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
+                                </Row>
+                            ))}
+                            </Col>
+                        </Row>
+                    </CardBody>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <h3 className="title">Upload Keystore File</h3>
+                    </CardHeader>
+                    <CardBody>
+                    <Row>
+                        <Col md="8">
+                            <InputField
+                                name="keystore"
+                                type="file"
+                                id="Keystore"
+                                label="Keystore"
+                                placeholder="Keystore File"
+                                accept=".json"
+                                onChange={(e) => this.handleKeystoreChange(e)}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md="8">
+                            <InputField
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                label="Password"
+                                onChange={(e)=> this.handlePasswordChange(e)}
+                                value={keystorePassword}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md="8">
+                            <Button onClick={(e)=> this.onFileAndPasswordUpload(e)}>Decrypt</Button>
+                        </Col>
+                    </Row>
+                        {decryptMessageVisible &&
+                        <Row>
+                            <Col md="8">
+                                <CardText style={{color:"#c221a9"}}>
+                                    {decryptMessage}
+                                </CardText>
+                            </Col>
+                        </Row>}
+                    </CardBody>
+                </Card>
+            </Column>
         )
     }
 }
