@@ -2,7 +2,7 @@ import GenerateKeystore from "./views/generateKeystore";
 import KeccakFromString from "./views/keccak256";
 import LoadKeystore from "./views/loadKeystore";
 import SendAndSignTx from "./views/multisigTx";
-
+import AccountUpdate from "./views/AccountUpdate";
 var routes =
     [{
         name: "Block Info",
@@ -74,7 +74,7 @@ var routes =
                 path: "/KCTDetection",
                 name: "KCT Detection",
                 component: null,
-            }
+            },
         ]
     },
     {
@@ -95,6 +95,11 @@ var routes =
                 path: "/hashFromStr",
                 name: "Hash From String(Keccak256)",
                 component: KeccakFromString
+            },
+            {
+                path: "/accountUpdate",
+                name: "Account Update Multisig",
+                component: AccountUpdate,
             }
         ]
     }]

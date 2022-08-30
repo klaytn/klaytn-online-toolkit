@@ -89,7 +89,7 @@ class Navigator extends React.Component{
                                     onMouseLeave={(e) => this.onMouseLeave(e, key)}
                                     toggle={(e)=>this.dropdownToggle(e, key)}
                                 >
-                                    <DropdownToggle caret nav>
+                                    <DropdownToggle caret={false} nav>
                                         {prop.name}
                                     </DropdownToggle>
                                     <DropdownMenu>
