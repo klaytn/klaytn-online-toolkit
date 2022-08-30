@@ -107,7 +107,6 @@ class AccountUpdate extends Component {
                 if (keyring.type == "SingleKeyring")
                 {
                     privateKey = keyring.key.privateKey
-                    console.log('private Key', privateKey)
                 }
                 else {
                     throw Error('Not Single Keyring Keystore!')
