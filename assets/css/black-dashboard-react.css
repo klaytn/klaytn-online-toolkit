@@ -9620,7 +9620,7 @@ fieldset[disabled]
     display: block;
     opacity: 0;
     filter: alpha(opacity=0);
-    top: 100% !important; }
+    top: 90% !important; }
   .dropdown-menu.bootstrap-datetimepicker-widget.top {
     -webkit-transform: translate3d(0, -20px, 0) !important;
     -moz-transform: translate3d(0, -20px, 0) !important;
