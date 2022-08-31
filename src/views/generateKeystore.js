@@ -3,6 +3,7 @@ import InputField from '../components/inputField';
 import React, { Component }from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button, ButtonGroup, Input, FormGroup } from 'reactstrap';
 import classNames from "classnames";
+import Column from '../components/Column';
 
 class RoleBasedKey extends Component {
     constructor(props){
@@ -327,10 +328,7 @@ class GenerateKeystore extends Component {
         const {address, password, keystore, keystoreShown,isCheckedList, checkboxIdList} = this.state;
 
         return (
-            <div>
-                <Row>
-                <Col md="2"></Col>
-                <Col md="8">
+            <Column>
                 <Card>
                     <CardHeader>
                         <ButtonGroup
@@ -416,9 +414,7 @@ class GenerateKeystore extends Component {
                         </Row>
                     </CardBody>
                 </Card>
-                </Col>
-                </Row>
-            </div>
+            </Column>
         )
     }
 

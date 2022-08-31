@@ -1,6 +1,7 @@
 import InputField from '../components/inputField';
 import React, { Component }from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
+import Column from '../components/Column';
 
 class LoadKeystore extends Component {
     constructor(props){
@@ -59,59 +60,54 @@ class LoadKeystore extends Component {
     render () {
         const { keystorePassword, decryptMessage } = this.state
         return (
-            <div>
-                <Row>
-                    <Col md="2"/>
-                    <Col md="8">
-                        <Card>
-                            <CardHeader>
-                                <h3 className="title">Load Keystore File</h3>
-                                <p>Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring instance. </p>
-                            </CardHeader>
-                            <CardBody>
-                                <Row>
-                                    <Col md="8">
-                                        <InputField
-                                            name="keystore"
-                                            type="file"
-                                            id="Keystore"
-                                            label="Keystore"
-                                            placeholder="Keystore File"
-                                            accept=".json"
-                                            onChange={(e) => this.handleKeystoreChange(e)}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md="8">
-                                        <InputField
-                                            type="password"
-                                            name="password"
-                                            placeholder="Password"
-                                            label="Password"
-                                            onChange={(e)=> this.handlePasswordChange(e)}
-                                            value={keystorePassword}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md="8">
-                                        <Button style={{marginBottom: "1rem"}} onClick={(e)=> this.decrypt(e)}>Decrypt</Button>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md="12">
-                                        <textarea style={{height:"120px"}}
-                                            value={decryptMessage}
-                                            readOnly
-                                        />
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+            <Column>
+                <Card>
+                    <CardHeader>
+                        <h3 className="title">Load Keystore File</h3>
+                        <p>Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring instance. </p>
+                    </CardHeader>
+                    <CardBody>
+                        <Row>
+                            <Col md="8">
+                                <InputField
+                                    name="keystore"
+                                    type="file"
+                                    id="Keystore"
+                                    label="Keystore"
+                                    placeholder="Keystore File"
+                                    accept=".json"
+                                    onChange={(e) => this.handleKeystoreChange(e)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="8">
+                                <InputField
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    label="Password"
+                                    onChange={(e)=> this.handlePasswordChange(e)}
+                                    value={keystorePassword}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="8">
+                                <Button style={{marginBottom: "1rem"}} onClick={(e)=> this.decrypt(e)}>Decrypt</Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="12">
+                                <textarea style={{height:"120px"}}
+                                    value={decryptMessage}
+                                    readOnly
+                                />
+                            </Col>
+                        </Row>
+                    </CardBody>
+                </Card>
+            </Column>
         )
     }
 }
