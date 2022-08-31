@@ -98,7 +98,7 @@ var routes =
             },
             {
                 path: "/accountUpdate",
-                name: "Account Update Multisig",
+                name: "Update Account with MultiSigKey",
                 component: AccountUpdate,
             }
         ]

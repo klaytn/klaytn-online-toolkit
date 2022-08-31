@@ -5,7 +5,7 @@ import '../../assets/css/black-dashboard-react.css'
 const InputField = ({ value, label, name, placeholder, type, unit, onChange }) => (
   <FormGroup>
     {<label>{label}</label>}
-    {unit != null ? 
+    {unit != null ?
       <InputGroup>
         <Input
           type={type}
@@ -16,7 +16,7 @@ const InputField = ({ value, label, name, placeholder, type, unit, onChange }) =
           onChange={onChange}
         />
         <InputGroupText>{unit}</InputGroupText>
-      </InputGroup> : 
+      </InputGroup> :
       <Input
         type={type}
         value={value}
@@ -25,8 +25,8 @@ const InputField = ({ value, label, name, placeholder, type, unit, onChange }) =
         placeholder={placeholder}
         onChange={onChange}
       />
-    }   
-  </FormGroup> 
+    }
+  </FormGroup>
 );
 
 export default InputField;

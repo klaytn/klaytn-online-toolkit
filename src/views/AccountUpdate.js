@@ -8,6 +8,9 @@ import {
     CardText,
     Row,
     Col,
+    Label,
+    FormGroup,
+    Input
 } from "reactstrap";
 import Column from '../components/Column';
 import { networkLinks } from '../constants/klaytnNetwork';
@@ -29,6 +32,10 @@ class AccountUpdate extends Component {
             senderDecryptMessage: "",
             senderDecryptMessageVisible: false,
             senderPrivateKey: "",
+            weightList: [],
+            threshold: "",
+            accountUpdateMsg: null,
+            accountUpdateMsgVisible: false,
         }
     }
 
@@ -43,14 +50,33 @@ class AccountUpdate extends Component {
         })
     }
 
+    handleWeightChange = (e, index)=>{
+        const { weightList } = this.state;
+        weightList[index] = Number(e.target.value);
+        this.setState({
+            weightList
+        })
+    }
+
+    handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        this.setState({
+            [name]: Number(value)
+        })
+    }
+
     handleKeystoreRemove = (index) => {
-        const {privateKeyList} = this.state
+        const {privateKeyList, weightList} = this.state
 
         const privKeyList = [...privateKeyList]
         privKeyList.splice(index, 1);
+        const weightListUpdated = [...weightList]
+        weightListUpdated.splice(index, 1);
 
         this.setState({
             privateKeyList: privKeyList,
+            weightList: weightListUpdated,
         })
     }
 
@@ -111,6 +137,7 @@ class AccountUpdate extends Component {
                 else {
                     throw Error('Not Single Keyring Keystore!')
                 }
+
                 this.setState ({
                     senderPrivateKey: privateKey,
                     senderDecryptMessage: "Decryption succeeds",
@@ -140,37 +167,71 @@ class AccountUpdate extends Component {
     }
 
     accountUpdate = async(e) => {
+        const { senderPrivateKey, privateKeyList, weightList, threshold} = this.state;
+        try {
+            if (senderPrivateKey === "") {
+                throw Error("Sender Keystore is not uploaded!")
+            }
 
-        const { senderPrivateKey, privateKeyList} = this.state;
-        let sender = caver.wallet.keyring.createFromPrivateKey(senderPrivateKey)
-        caver.wallet.add(sender)
-        console.log('sender address ',  sender.address)
+            if (privateKeyList.length == 0) {
+                throw Error("There's no keystore file uploaded for private keys!")
+            }
 
-        let newKeys = []
-        for (const element of privateKeyList)
-        {
-            newKeys.push(...element.key)
+            let sender = caver.wallet.keyring.createFromPrivateKey(senderPrivateKey)
+            if(caver.wallet.isExisted(sender.address)){
+                caver.wallet.updateKeyring(sender)
+            }
+            else {
+                caver.wallet.add(sender)
+
+            }
+
+            let newKeys = []
+            for (const element of privateKeyList)
+            {
+                newKeys.push(...element.key)
+            }
+
+            const newKeyring = caver.wallet.keyring.create(sender.address, newKeys)
+            const account = newKeyring.toAccount({threshold: threshold, weights: weightList})
+
+            const updateTx = caver.transaction.accountUpdate.create({
+                from: sender.address,
+                account: account,
+                gas: 100000,
+            })
+
+            await caver.wallet.sign(sender.address, updateTx)
+
+            const receipt = await caver.rpc.klay.sendRawTransaction(updateTx)
+            console.log(`Account Update Transaction receipt => `)
+            console.log(receipt)
+
+            const accountKey = await caver.rpc.klay.getAccountKey(sender.address)
+            console.log(JSON.stringify(accountKey))
+            this.setState({
+                accountUpdateMsgVisible: true,
+                accountUpdateMsg: JSON.stringify(accountKey)
+            })
+        } catch (e) {
+            this.setState({
+                accountUpdateMsg: e.toString(),
+                accountUpdateMsgVisible: true,
+            })
+
+            setTimeout(()=>{
+                this.setState({
+                    accountUpdateMsgVisible: false,
+                    accountUpdateMsg: ""
+                })
+            }, 5000)
         }
 
-        const newKeyring = caver.wallet.keyring.create(sender.address, newKeys)
-        const account = newKeyring.toAccount({threshold: 2, weights:[1,1,1]})
-
-        const updateTx = caver.transaction.accountUpdate.create({
-            from: sender.address,
-            account: account,
-            gas: 100000,
-        })
-
-        await caver.wallet.sign(sender.address, updateTx)
-
-        const receipt = await caver.rpc.klay.sendRawTransaction(updateTx)
-        console.log(`Account Update Transaction receipt => `)
-        console.log(receipt)
     }
 
     onFileAndPasswordUpload = (e)=>{
         //decrypt and add priv key to PrivKey list
-        const {privateKeyList, keystoreFileName, keystoreJSON, keystorePassword} = this.state
+        const {privateKeyList, weightList, keystoreFileName, keystoreJSON, keystorePassword} = this.state
         try {
             if (keystoreJSON != null)
             {
@@ -184,10 +245,10 @@ class AccountUpdate extends Component {
                     throw Error('Not Single Keyring Keystore!')
                 }
                 const list = [...privateKeyList, {"key": keyList, "fileName": keystoreFileName}]
+                const weight = [...weightList, ""]
                 this.setState({
+                    weightList: weight,
                     privateKeyList: list,
-                    keystoreFileName: "",
-                    keystoreJSON: null,
                     keystorePassword: "",
                     decryptMessage: "Decryption succeeds!",
                     decryptMessageVisible: true,
@@ -216,25 +277,47 @@ class AccountUpdate extends Component {
     }
 
     render () {
-        const { keystorePassword, decryptMessage,
-            senderKeystorePassword, decryptMessageVisible, privateKeyList,
-            senderDecryptMessage, senderDecryptMessageVisible  } = this.state
-        console.log('private key list length:  ', privateKeyList.length)
+        const {
+            keystorePassword,
+            decryptMessage,
+            senderKeystorePassword,
+            decryptMessageVisible,
+            privateKeyList,
+            senderDecryptMessage,
+            senderDecryptMessageVisible,
+            weightList,
+            threshold,
+            accountUpdateMsgVisible,
+            accountUpdateMsg
+        } = this.state
         return (
             <Column>
                  <Card>
                     <CardHeader>
-                        <h3 className="title">Transaction Information</h3>
-                        <Row>
-                            <Col md="4">
+                        <h3 className="title">Update AccountKey to MultiSigKey</h3>
+                        <p style={{color:"#6c757d"}}>
+                            Klaytn provides decoupled keys from addresses, so that you can update your keys in the account.
+                            This page can be used to update account keys to <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">AccountKeyWeightedMultiSig</a>.
+                        </p>
+
+                    </CardHeader>
+                    <CardBody>
+                        <h3 className='title'> Upload Sender Keystore File</h3>
+                        <p style={{color:"#6c757d"}}>
+                            Upload keystore file that is going to be updated.
+                            This account will be used for sending a AccountUpdate transaction to make the update to the key stored on the network, so it must possess sufficient KLAY.
+                        </p>
+                    <Row>
+                        <Col md="4">
+                            <FormGroup>
+                                <Label> Network </Label>
                                 <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
                                     <option value="mainnet"> Mainnet</option>
                                     <option value="testnet"> Testnet</option>
                                 </select>
-                            </Col>
-                        </Row>
-                    </CardHeader>
-                    <CardBody>
+                            </FormGroup>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col md="8">
                             <InputField
@@ -263,7 +346,6 @@ class AccountUpdate extends Component {
                     <Row>
                         <Col md="8">
                             <Button onClick={(e)=> this.decryptSenderKeystore(e)}>Decrypt</Button>
-                            <Button onClick={(e)=> this.accountUpdate(e)}>Account Update</Button>
                         </Col>
                     </Row>
                     {senderDecryptMessageVisible &&
@@ -276,31 +358,12 @@ class AccountUpdate extends Component {
                     </Row>}
                     </CardBody>
                 </Card>
-                <Card>
-                    <CardHeader>
-                        <h3 className="title">Decrypted Keystore List</h3>
-                    </CardHeader>
-                    <CardBody>
-                        <Row>
-                            <Col md = "8">
-                            {privateKeyList.map((_, index) => (
-                                privateKeyList[index]["key"].length > 0 &&
-                                <Row>
-                                    <Col md= "8">
-                                        <CardText>
-                                        {privateKeyList[index]["fileName"]}
-                                        </CardText>
-                                    </Col>
-                                    <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
-                                </Row>
-                            ))}
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
                  <Card>
                     <CardHeader>
-                        <h3 className="title">Upload Keystore File</h3>
+                        <h3 className="title">Upload Keystore File for Private Keys</h3>
+                        <p style={{color:"#6c757d"}}> You need private keys for your Klaytn account.
+                            Upload here keystore files to be used for private keys. Once decryption succeeds,
+                            you can see filename added in decrypted keystore list below. </p>
                     </CardHeader>
                     <CardBody>
                     <Row>
@@ -341,6 +404,72 @@ class AccountUpdate extends Component {
                                 </CardText>
                             </Col>
                         </Row>}
+                    </CardBody>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <h3 className="title">Update Account</h3>
+                        <p style={{color:"#6c757d"}}>
+                            Set threshold and the weight of each private key. Then send AccountUpdate transaction.
+                        </p>
+                    </CardHeader>
+                    <CardBody>
+                        {privateKeyList.length > 0 &&
+                            <Row>
+                                <Col md="2">
+                                    <InputField
+                                        name="threshold"
+                                        type="number"
+                                        value={threshold}
+                                        onChange={(e) => this.handleInputChange(e)}
+                                        label="Threshold"
+                                    />
+                                </Col>
+                            </Row>
+                        }
+                        {privateKeyList.length > 0  ?
+                            <Label>
+                            Decrypted Keystore List
+                            </Label>
+                            : <p style={{marginBottom: "1rem", color:"#c221a9"}}>There's no keystore uploaded.</p>
+                        }
+                        {privateKeyList.map((_, index) => (
+                            privateKeyList[index]["key"].length > 0 &&
+                            <Row>
+                                <Col md= "6">
+                                    <CardText style={{verticalAlign:"center"}}>
+                                    {privateKeyList[index]["fileName"]}
+                                    </CardText>
+                                </Col>
+                                <Col md="2">
+                                    <Input
+                                        placeholder="Weight"
+                                        style={{marginBottom:"1rem"}}
+                                        type="number"
+                                        value={weightList[index]}
+                                        onChange={(e)=>this.handleWeightChange(e, index)}
+                                    />
+                                </Col>
+                                <Col md="2">
+                                    <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
+                                </Col>
+                            </Row>
+                        ))}
+
+                        <Row>
+                        <Col md="8">
+                            <Button onClick={(e)=> this.accountUpdate(e)}>Account Update</Button>
+                        </Col>
+                        </Row>
+                        {accountUpdateMsgVisible &&
+                        <Row>
+                            <Col md="8">
+                                <CardText style={{color:"#c221a9"}}>
+                                    {accountUpdateMsg}
+                                </CardText>
+                            </Col>
+                        </Row>
+                        }
                     </CardBody>
                 </Card>
             </Column>
