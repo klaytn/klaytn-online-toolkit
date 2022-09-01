@@ -103,8 +103,6 @@ class SendAndSignTx extends Component {
                 const list = [...privateKeyList, {"key": keyList, "fileName": keystoreFileName}]
                 this.setState({
                     privateKeyList: list,
-                    keystoreFileName: "",
-                    keystoreJSON: null,
                     keystorePassword: "",
                     decryptMessage: "Decryption succeeds!",
                     decryptMessageVisible: true,
