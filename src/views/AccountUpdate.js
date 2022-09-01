@@ -36,6 +36,7 @@ class AccountUpdate extends Component {
             threshold: "",
             accountUpdateMsg: null,
             accountUpdateMsgVisible: false,
+            accountUpdateButtonDisabled: false,
         }
     }
 
@@ -140,7 +141,7 @@ class AccountUpdate extends Component {
 
                 this.setState ({
                     senderPrivateKey: privateKey,
-                    senderDecryptMessage: "Decryption succeeds",
+                    senderDecryptMessage: "Decryption succeeds!",
                     senderDecryptMessageVisible: true,
                 })
 
@@ -176,14 +177,15 @@ class AccountUpdate extends Component {
             if (privateKeyList.length == 0) {
                 throw Error("There's no keystore file uploaded for private keys!")
             }
-
+            this.setState({
+                accountUpdateButtonDisabled: true
+            })
             let sender = caver.wallet.keyring.createFromPrivateKey(senderPrivateKey)
             if(caver.wallet.isExisted(sender.address)){
                 caver.wallet.updateKeyring(sender)
             }
             else {
                 caver.wallet.add(sender)
-
             }
 
             let newKeys = []
@@ -211,12 +213,14 @@ class AccountUpdate extends Component {
             console.log(JSON.stringify(accountKey))
             this.setState({
                 accountUpdateMsgVisible: true,
-                accountUpdateMsg: JSON.stringify(accountKey)
+                accountUpdateMsg: `Account is successfully updated! `,
+                accountUpdateButtonDisabled: false
             })
         } catch (e) {
             this.setState({
                 accountUpdateMsg: e.toString(),
                 accountUpdateMsgVisible: true,
+                accountUpdateButtonDisabled: false,
             })
 
             setTimeout(()=>{
@@ -226,7 +230,6 @@ class AccountUpdate extends Component {
                 })
             }, 5000)
         }
-
     }
 
     onFileAndPasswordUpload = (e)=>{
@@ -288,7 +291,8 @@ class AccountUpdate extends Component {
             weightList,
             threshold,
             accountUpdateMsgVisible,
-            accountUpdateMsg
+            accountUpdateMsg,
+            accountUpdateButtonDisabled
         } = this.state
         return (
             <Column>
@@ -299,7 +303,6 @@ class AccountUpdate extends Component {
                             Klaytn provides decoupled keys from addresses, so that you can update your keys in the account.
                             This page can be used to update account keys to <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">AccountKeyWeightedMultiSig</a>.
                         </p>
-
                     </CardHeader>
                     <CardBody>
                         <h3 className='title'> Upload Sender Keystore File</h3>
@@ -458,7 +461,7 @@ class AccountUpdate extends Component {
 
                         <Row>
                         <Col md="8">
-                            <Button onClick={(e)=> this.accountUpdate(e)}>Account Update</Button>
+                            <Button disabled={accountUpdateButtonDisabled} onClick={(e)=> this.accountUpdate(e)}>Account Update</Button>
                         </Col>
                         </Row>
                         {accountUpdateMsgVisible &&

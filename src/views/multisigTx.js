@@ -8,22 +8,15 @@ import {
     CardText,
     Row,
     Col,
+    Label,
+    FormGroup
 } from "reactstrap";
 import '../../assets/css/black-dashboard-react.css';
 import InputField from "../components/inputField";
 import Caver from 'caver-js'
 import Column from "../components/Column";
+import { networkLinks } from "../constants/klaytnNetwork";
 
-const networkLinks ={
-    "testnet" : {
-        "rpc": "https://public-node-api.klaytnapi.com/v1/baobab",
-        "finder": "https://baobab.klaytnfinder.io/tx/"
-    },
-    "mainnet": {
-        "rpc": "https://public-node-api.klaytnapi.com/v1/cypress",
-        "finder": "https://www.klaytnfinder.io/tx/"
-    },
-}
 let caver;
 
 class SendAndSignTx extends Component {
@@ -239,26 +232,34 @@ class SendAndSignTx extends Component {
             <Column>
                 <Card>
                     <CardHeader>
-                        <h3 className="title">Transaction Information</h3>
-                        <Row>
-                            <Col md="4">
-                                <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
-                                    <option value="mainnet"> Mainnet</option>
-                                    <option value="testnet"> Testnet</option>
-                                </select>
-                            </Col>
-                        </Row>
+                        <h3 className="title"> Send MultiSig Transaction </h3>
+                        <p style={{color:"#6c757d"}}>
+                            This page is for sending a value transfer transaction with a <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">multisig account</a>(the account that owns Multiple Signing Keys).
+                        </p>
                     </CardHeader>
                     <CardBody>
+                        <h3 className="title">Transaction Information</h3>
+                        <p style={{color:"#6c757d"}}>Select Mainnet or Testnet. Enter the sender address, recipient address, and KLAY amount.</p>
+                        <Row>
+                            <Col md="4">
+                                <FormGroup>
+                                    <Label>Network</Label>
+                                    <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
+                                        <option value="mainnet"> Mainnet</option>
+                                        <option value="testnet"> Testnet</option>
+                                    </select>
+                                </FormGroup>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col md="8">
                                 <InputField
-                                type="text"
-                                value={sender}
-                                placeholder="Sender Address"
-                                label="Sender"
-                                name="sender"
-                                onChange={this.handleInputChange}
+                                    type="text"
+                                    value={sender}
+                                    placeholder="Sender Address"
+                                    label="Sender"
+                                    name="sender"
+                                    onChange={this.handleInputChange}
                                 />
                             </Col>
                         </Row>
@@ -307,29 +308,11 @@ class SendAndSignTx extends Component {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <h3 className="title">Decrypted Keystore List</h3>
-                    </CardHeader>
-                    <CardBody>
-                        <Row>
-                            <Col md = "8">
-                            {privateKeyList.map((_, index) => (
-                                privateKeyList[index]["key"].length > 0 &&
-                                <Row>
-                                    <Col md= "8">
-                                        <CardText>
-                                        {privateKeyList[index]["fileName"]}
-                                        </CardText>
-                                    </Col>
-                                    <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
-                                </Row>
-                            ))}
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-                <Card>
-                    <CardHeader>
                         <h3 className="title">Upload Keystore File</h3>
+                        <p style={{color:"#6c757d"}}>
+                            You need private keys to sign transaction. Upload here keystore files to be used for private keys.
+                            Once decryption succeeds, you can see filename added in decrypted keystore list below.
+                        </p>
                     </CardHeader>
                     <CardBody>
                     <Row>
@@ -370,6 +353,31 @@ class SendAndSignTx extends Component {
                                 </CardText>
                             </Col>
                         </Row>}
+                    </CardBody>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <h3 className="title">Decrypted Keystore List</h3>
+                        {privateKeyList.length === 0 &&
+                        <p style={{marginBottom: "1rem", color:"#c221a9"}}>There's no keystore uploaded.</p>
+                        }
+                    </CardHeader>
+                    <CardBody>
+                        <Row>
+                            <Col md = "8">
+                            {privateKeyList.map((_, index) => (
+                                privateKeyList[index]["key"].length > 0 &&
+                                <Row>
+                                    <Col md= "8">
+                                        <CardText>
+                                        {privateKeyList[index]["fileName"]}
+                                        </CardText>
+                                    </Col>
+                                    <Button onClick={() => this.handleKeystoreRemove(index)}>Remove</Button>
+                                </Row>
+                            ))}
+                            </Col>
+                        </Row>
                     </CardBody>
                 </Card>
             </Column>
