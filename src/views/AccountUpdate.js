@@ -216,6 +216,13 @@ class AccountUpdate extends Component {
                 accountUpdateMsg: `Account is successfully updated! `,
                 accountUpdateButtonDisabled: false
             })
+
+            setTimeout(()=>{
+                this.setState({
+                    accountUpdateMsgVisible: false,
+                    accountUpdateMsg: ""
+                })
+            }, 5000)
         } catch (e) {
             this.setState({
                 accountUpdateMsg: e.toString(),
