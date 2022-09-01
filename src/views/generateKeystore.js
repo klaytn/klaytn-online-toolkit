@@ -179,6 +179,8 @@ class SingleKey extends Component{
         this.setState({
             key: singleKey,
         })
+        const singleKeyring = caver.wallet.keyring.createFromPrivateKey(singleKey)
+        this.props.setAddress(singleKeyring.address)
         this.props.setPrivateKey(singleKey)
     }
 
@@ -249,6 +251,12 @@ class GenerateKeystore extends Component {
         })
     }
 
+    setAddress = (address) => {
+        this.setState({
+            address
+        })
+    }
+
     setPrivateKey = (keys)=>{
         this.setState({
             privateKey: keys
@@ -267,22 +275,34 @@ class GenerateKeystore extends Component {
         if (isCheckedList[0])
         {
             return (
-                <SingleKey setPrivateKey={this.setPrivateKey} setStandardFormat={this.setStandardFormat}/>
+                <SingleKey
+                    setAddress={this.setAddress}
+                    setPrivateKey={this.setPrivateKey}
+                    setStandardFormat={this.setStandardFormat}
+                />
             )
         }
         else if(isCheckedList[1])
         {
-            return (<MultipleKey setPrivateKey={this.setPrivateKey}/>)
+            return (
+                <MultipleKey
+                    setPrivateKey={this.setPrivateKey}
+                />
+            )
         }
         else if(isCheckedList[2])
         {
-            return (<RoleBasedKey setPrivateKey={this.setPrivateKey}/>)
+            return (
+                <RoleBasedKey
+                    setPrivateKey={this.setPrivateKey}
+                />
+            )
         }
     }
 
     generateKeystoreV3 = (e) => {
         try {
-            const {address, privateKey, password } = this.state
+            const { address, privateKey, password } = this.state
             const caver = new Caver();
             const keyring = caver.wallet.keyring.create(address, privateKey)
             const keystore = JSON.stringify(keyring.encryptV3(password));
@@ -322,6 +342,19 @@ class GenerateKeystore extends Component {
         const el = this.textArea
         el.select()
         document.execCommand("copy")
+    }
+
+    downloadFile = (e) => {
+        const { address, keystore } = this.state;
+        const date = new Date();
+        const filename = `keystore-${address}-${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}.json`;
+        let element = document.createElement('a');
+        element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(keystore));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
     }
 
     render(){
@@ -409,6 +442,9 @@ class GenerateKeystore extends Component {
                             <Col md="8">
                                 <Button style={{display: keystoreShown? "inline" : "none"}} onClick={() => this.copyCodeToClipboard()}>
                                     Copy To Clipboard
+                                </Button>
+                                <Button style={{display: keystoreShown? "inline" : "none"}} onClick={() => this.downloadFile()}>
+                                    Download
                                 </Button>
                             </Col>
                         </Row>
