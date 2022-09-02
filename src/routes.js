@@ -3,6 +3,7 @@ import KeccakFromString from "./views/keccak256";
 import LoadKeystore from "./views/loadKeystore";
 import SendAndSignTx from "./views/multisigTx";
 import AccountUpdate from "./views/AccountUpdate";
+import DetectKCT from "./views/detectKCT";
 var routes =
     [{
         name: "Block Info",
@@ -73,7 +74,7 @@ var routes =
             {
                 path: "/KCTDetection",
                 name: "KCT Detection",
-                component: null,
+                component: DetectKCT,
             },
         ]
     },
