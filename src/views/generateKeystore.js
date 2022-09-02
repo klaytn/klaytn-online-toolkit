@@ -15,6 +15,13 @@ class RoleBasedKey extends Component {
         }
     }
 
+    reset () {
+        this.setState({
+            numOfKeys: [null, null, null],
+            keys: [[""], [""], [""]]
+        })
+    }
+
     handleNumberChange = (e, idx) => {
         const {numOfKeys, keys} = this.state
         numOfKeys[idx] = e.target.value != "" ? Math.max(Number(e.target.value), 1) : null;
@@ -91,6 +98,13 @@ class MultipleKey extends Component {
             keys: [""],
             numOfKeys: null,
         }
+    }
+
+    reset () {
+        this.setState({
+            keys: [""],
+            numOfKeys: null,
+        })
     }
 
     generateMultipleKeys = (e) => {
@@ -173,6 +187,12 @@ class SingleKey extends Component{
         }
     }
 
+    reset() {
+        this.setState({
+            key: "",
+        })
+    }
+
     generateSingleKey = (e) => {
         const caver = new Caver();
         const singleKey = caver.wallet.keyring.generateSingleKey();
@@ -228,25 +248,31 @@ class GenerateKeystore extends Component {
             password: "",
             privateKey: null,
         }
+        this.child = React.createRef();
     }
 
     checkBoxClicked = (id)=> {
         const { checkboxIdList, isCheckedList } = this.state;
         for(let i = 0; i < checkboxIdList.length; i ++ )
         {
-            if (checkboxIdList[i] == id )
+            if (checkboxIdList[i] == id)
             {
-                isCheckedList[i] = !isCheckedList[i]
+                if (isCheckedList[i] == false){
+                    isCheckedList[i] = !isCheckedList[i]
+                }
             }
             else{
                 isCheckedList[i] = false
             }
         }
 
+        this.child.current.reset();
+
         this.setState({
             isCheckedList,
             address: "",
             password: "",
+            privateKey: null,
             keystoreShown: false,
         })
     }
@@ -276,9 +302,9 @@ class GenerateKeystore extends Component {
         {
             return (
                 <SingleKey
+                    ref={this.child}
                     setAddress={this.setAddress}
                     setPrivateKey={this.setPrivateKey}
-                    setStandardFormat={this.setStandardFormat}
                 />
             )
         }
@@ -286,6 +312,7 @@ class GenerateKeystore extends Component {
         {
             return (
                 <MultipleKey
+                    ref={this.child}
                     setPrivateKey={this.setPrivateKey}
                 />
             )
@@ -294,6 +321,7 @@ class GenerateKeystore extends Component {
         {
             return (
                 <RoleBasedKey
+                    ref={this.child}
                     setPrivateKey={this.setPrivateKey}
                 />
             )
@@ -430,7 +458,6 @@ class GenerateKeystore extends Component {
                                 <Button onClick={this.generateKeystoreV4}>
                                     Generate Keystore(v4)
                                 </Button>
-                                {/* <Button onClick= */}
                             </Col>
                         </Row>
                         <Row>
