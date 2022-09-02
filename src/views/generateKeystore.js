@@ -389,7 +389,12 @@ class GenerateKeystore extends Component {
                             </Button>)})}
                         </ButtonGroup>
                         <h3 className="title">Generate Keystore</h3>
-                        Generate Private Key(s), encrypt a keyring, and return a keystore.
+                        <p style={{color:"#6c757d"}}>
+                            Generate Private Key(s), encrypt a keyring, and return a keystore.
+                            Since Klaytn provides various account key types such as multi-signature and role-based keys,
+                            Klaytn introduces keystore format v4 which is suitable to store multiple private keys.
+                            Single Keyring keystore file can be generated in both v3 and v4 format, while other keyring types are encrypted in v4 format.
+                            For more details, please visit here: <a href="https://kips.klaytn.foundation/KIPs/kip-3">[KIP 3: Klaytn Keystore Format v4]</a>.                         </p>
                     </CardHeader>
                     <CardBody>
                         <Row>
