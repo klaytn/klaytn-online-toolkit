@@ -10,21 +10,21 @@ class RoleBasedKey extends Component {
         super(props);
         this.state = {
             type: ["roleTransactionKey", "roleAccountUpdateKey", "roleFeePayerKey"],
-            numOfKeys: [null, null, null],
+            numOfKeys: ["", "", ""],
             keys: [[""], [""], [""]]
         }
     }
 
     reset () {
         this.setState({
-            numOfKeys: [null, null, null],
+            numOfKeys: ["", "", ""],
             keys: [[""], [""], [""]]
         })
     }
 
     handleNumberChange = (e, idx) => {
         const {numOfKeys, keys} = this.state
-        numOfKeys[idx] = e.target.value != "" ? Math.max(Number(e.target.value), 1) : null;
+        numOfKeys[idx] = Math.max(Number(e.target.value), 1);
         keys[idx] = numOfKeys[idx] ? new Array(numOfKeys[idx]).fill("") : new Array(1).fill("")
 
         this.setState({
@@ -96,14 +96,14 @@ class MultipleKey extends Component {
         super(props);
         this.state = {
             keys: [""],
-            numOfKeys: null,
+            numOfKeys: "",
         }
     }
 
     reset () {
         this.setState({
             keys: [""],
-            numOfKeys: null,
+            numOfKeys: "",
         })
     }
 
@@ -126,7 +126,7 @@ class MultipleKey extends Component {
     }
 
     handleNumberChange = (e) => {
-        const numOfKeys = e.target.value != "" ? Math.max(Number(e.target.value), 1): null
+        const numOfKeys = Math.max(Number(e.target.value), 1);
         this.setState({
             numOfKeys,
             keys: new Array(numOfKeys).fill("")
@@ -489,4 +489,3 @@ class GenerateKeystore extends Component {
 }
 
 export default GenerateKeystore
-
