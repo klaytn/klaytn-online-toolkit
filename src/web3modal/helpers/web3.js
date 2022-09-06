@@ -11,19 +11,24 @@ export function getKIP7Contract(web3, contractAddress) {
 
 export function callBalanceOf(address, chainId, contractAddress, web3) {
     return new Promise(async(resolve, reject) => {
-        const contract = getKIP7Contract(web3, contractAddress)
+        try{
+            const contract = getKIP7Contract(web3, contractAddress)
 
-        await contract.methods
-        .balanceOf(address)
-        .call(
-            { from: '0x0000000000000000000000000000000000000000' },
-            (err, data) => {
-            if (err) {
-                reject(err)
-            }
-                resolve(data)
-            }
-        )
+            await contract.methods
+            .balanceOf(address)
+            .call(
+                { from: '0x0000000000000000000000000000000000000000' },
+                (err, data) => {
+                if (err) {
+                    console.log('err', err)
+                    reject(err)
+                }
+                    resolve(data)
+                }
+            )
+        } catch(err) {
+            reject(err)
+        }
     })
 }
 
