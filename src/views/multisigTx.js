@@ -9,13 +9,16 @@ import {
     Row,
     Col,
     Label,
-    FormGroup
+    FormGroup,
+    ButtonGroup
 } from "reactstrap";
 import '../../assets/css/black-dashboard-react.css';
 import InputField from "../components/inputField";
-import Caver from 'caver-js'
+import Caver from "caver-js";
 import Column from "../components/Column";
 import { networkLinks } from "../constants/klaytnNetwork";
+import BigNumber from "bignumber.js";
+import classNames from "classnames";
 
 let caver;
 
@@ -35,7 +38,10 @@ class SendAndSignTx extends Component {
             decryptMessage: "",
             privateKeyList: [],
             decryptMessageVisible: false,
-            network: "mainnet"
+            network: "mainnet",
+            tokenType: ["KLAY","KIP-7/ERC20"],
+            isTokenTypeSelected: [true, false],
+            tokenAddress: "",
         }
     }
 
@@ -176,12 +182,31 @@ class SendAndSignTx extends Component {
                 txHash: null,
             })
         }
-     }
+    }
+
+    checkBoxClicked = (idx) => {
+        const { isTokenTypeSelected } = this.state;
+        for (let i = 0; i<isTokenTypeSelected.length; i++){
+            if (i === idx){
+                if (isTokenTypeSelected[i] == false){
+                    isTokenTypeSelected[i] = !isTokenTypeSelected[i]
+                }
+            }
+            else{
+                isTokenTypeSelected[i] = false
+            }
+        }
+        this.setState({
+            isTokenTypeSelected,
+            amount: 0,
+            tokenAddress: "",
+        })
+    }
 
     onSignTxButtonClick = async(e) =>{
         // Sign transaction with provided keys
         try{
-            const {sender, recipient, amount} = this.state
+            const {sender, recipient, tokenAddress, amount, isTokenTypeSelected} = this.state
             this.setState({
                 buttonDisabled: true,
                 sendAndSignMsg: null,
@@ -200,14 +225,30 @@ class SendAndSignTx extends Component {
             else{
                 caver.wallet.add(newKeyring) // caver wallet add keyring if keyring hasn't been updated.
             }
-            const vt = caver.transaction.valueTransfer.create({
-                from: sender,
-                to: recipient,
-                value: caver.utils.toPeb(amount, 'KLAY'),
-                gas: 50000,
-            })
 
-            let signed = await caver.wallet.sign(sender, vt)
+            let signed;
+            if (isTokenTypeSelected[0]){
+                //KLAY
+                const vt = caver.transaction.valueTransfer.create({
+                    from: sender,
+                    to: recipient,
+                    value: caver.utils.toPeb(amount, 'KLAY'),
+                    gas: 50000,
+                })
+                signed = await caver.wallet.sign(sender, vt)
+            }
+            else if(isTokenTypeSelected[1]){
+                //KIP-7 & ERC20
+                const contractInstance = new caver.kct.kip7(tokenAddress)
+                const decimal = await contractInstance.decimals()
+                const value = BigNumber(amount * Math.pow(10, decimal))
+                signed = await contractInstance.sign(
+                    {from: sender, gas: 50000},
+                    "transfer",
+                    recipient,
+                    value
+                )
+            }
             this.setState({
                 rawTransaction: signed.getRawTransaction(),
                 sendAndSignMsg: "Transaction is signed!",
@@ -225,14 +266,19 @@ class SendAndSignTx extends Component {
     }
 
     render(){
-        const {network, buttonDisabled, txHash, sendAndSignMsg, sender, recipient, amount, privateKeyList, decryptMessageVisible, keystorePassword, decryptMessage} = this.state
+        const {network, buttonDisabled, txHash, sendAndSignMsg, sender,
+            recipient, amount, privateKeyList, decryptMessageVisible,
+            keystorePassword, decryptMessage, tokenType, isTokenTypeSelected,
+            tokenAddress
+        } = this.state
         return (
             <Column>
                 <Card>
                     <CardHeader>
                         <h3 className="title"> Send MultiSig Transaction </h3>
                         <p style={{color:"#6c757d"}}>
-                            This page is for sending a value transfer transaction with a <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">multisig account</a>(the account that owns Multiple Signing Keys).
+                            This page is for sending a value transfer transaction with a <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">multisig account</a>
+                            (the account that owns Multiple Signing Keys).
                         </p>
                     </CardHeader>
                     <CardBody>
@@ -274,6 +320,36 @@ class SendAndSignTx extends Component {
                             </Col>
                         </Row>
                         <Row>
+                            <Col md="8">
+                                <ButtonGroup
+                                    className="btn-group-toggle float-left"
+                                    data-toggle="buttons" style={{marginBottom:"1rem"}}
+                                    >
+                                    {tokenType.map((id, idx) => {
+                                    return (
+                                        <Button
+                                            tag="label"
+                                            className={classNames("btn-simple", {
+                                            active: isTokenTypeSelected[idx]
+                                            })}
+                                            color="info"
+                                            id="0"
+                                            size="sm"
+                                            onClick={() => this.checkBoxClicked(idx)}
+                                        >
+                                            <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                                            {id}
+                                            </span>
+                                            <span className="d-block d-sm-none">
+                                            <i className="tim-icons icon-map-02" />
+                                            </span>
+                                        </Button>)
+                                    })}
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                        {isTokenTypeSelected[0]?
+                        <Row>
                             <Col md="4">
                                 <InputField
                                     type="number"
@@ -286,6 +362,33 @@ class SendAndSignTx extends Component {
                                 />
                             </Col>
                         </Row>
+                        :<div>
+                            <Row>
+                                <Col md="8">
+                                    <InputField
+                                        type="text"
+                                        value={tokenAddress}
+                                        placeholder="Contract Address"
+                                        label="Contract Address(Token Address)"
+                                        name="tokenAddress"
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md="4">
+                                    <InputField
+                                        type="number"
+                                        value={amount}
+                                        placeholder="Amount"
+                                        label="Amount"
+                                        name="amount"
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
+                    }
                     </CardBody>
                     <CardFooter>
                         <Col md="8">
@@ -357,7 +460,7 @@ class SendAndSignTx extends Component {
                     <CardHeader>
                         <h3 className="title">Decrypted Keystore List</h3>
                         {privateKeyList.length === 0 &&
-                        <p style={{marginBottom: "1rem", color:"#c221a9"}}>There's no keystore uploaded.</p>
+                            <p style={{marginBottom: "1rem", color:"#c221a9"}}>There's no keystore uploaded.</p>
                         }
                     </CardHeader>
                     <CardBody>
