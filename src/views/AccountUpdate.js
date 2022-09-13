@@ -99,7 +99,6 @@ class AccountUpdate extends Component {
     handleSenderKeystoreChange = (e) =>{
         if (e.target.files.length > 0)
         {
-            const filename = e.target.files[0].name
             const fileReader = new FileReader();
             fileReader.readAsText(e.target.files[0], "UTF-8")
             fileReader.onload = (event) =>{
