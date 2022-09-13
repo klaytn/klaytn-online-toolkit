@@ -4,6 +4,8 @@ import LoadKeystore from "./views/loadKeystore";
 import SendAndSignTx from "./views/multisigTx";
 import AccountUpdate from "./views/AccountUpdate";
 import DetectKCT from "./views/detectKCT";
+import FunctionSignature from "./views/functionSignature";
+
 var routes =
     [{
         name: "Block Info",
@@ -68,8 +70,8 @@ var routes =
             },
             {
                 path: "/functionSig",
-                name: "Function Signature Generator",
-                component: null,
+                name: "Encode Function Signature",
+                component: FunctionSignature,
             },
             {
                 path: "/KCTDetection",
