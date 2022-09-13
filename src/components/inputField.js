@@ -2,7 +2,7 @@ import React  from "react";
 import {Row, Col, FormGroup, InputGroup, Input, InputGroupText} from "reactstrap"
 import '../../assets/css/black-dashboard-react.css'
 
-const InputField = ({ value, label, name, placeholder, type, unit, onChange }) => (
+const InputField = ({ value, label, name, placeholder, type, unit, onChange, readOnly}) => (
   <FormGroup>
     {<label>{label}</label>}
     {unit != null ?
@@ -14,6 +14,7 @@ const InputField = ({ value, label, name, placeholder, type, unit, onChange }) =
           className="form-control"
           placeholder={placeholder}
           onChange={onChange}
+          readOnly={readOnly}
         />
         <InputGroupText>{unit}</InputGroupText>
       </InputGroup> :
@@ -24,6 +25,7 @@ const InputField = ({ value, label, name, placeholder, type, unit, onChange }) =
         className="form-control"
         placeholder={placeholder}
         onChange={onChange}
+        readOnly={readOnly}
       />
     }
   </FormGroup>
