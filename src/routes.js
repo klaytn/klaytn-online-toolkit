@@ -5,6 +5,7 @@ import SendAndSignTx from "./views/multisigTx";
 import AccountUpdate from "./views/AccountUpdate";
 import DetectKCT from "./views/detectKCT";
 import FunctionSignature from "./views/functionSignature";
+import FunctionCall from "./views/functionCall";
 
 var routes =
     [{
@@ -66,7 +67,7 @@ var routes =
             {
                 path: "/functionCall",
                 name: "Function Call with ABI & Params",
-                component: null,
+                component: FunctionCall,
             },
             {
                 path: "/functionSig",
