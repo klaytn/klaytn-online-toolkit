@@ -39,7 +39,7 @@ class SendAndSignTx extends Component {
             privateKeyList: [],
             decryptMessageVisible: false,
             network: "mainnet",
-            tokenType: ["KLAY","KIP-7/ERC20"],
+            tokenType: ["KLAY","KIP-7/ERC-20"],
             isTokenTypeSelected: [true, false],
             tokenAddress: "",
         }
