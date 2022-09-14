@@ -3673,9 +3673,29 @@ input[type="button"].btn-block {
 .card-text:last-child {
   margin-bottom: 1rem;
 }
+
 .card-text{
   margin-top: 0.5rem;
 }
+
+.styled-card-text{
+  margin-top: 0rem;
+  background-color: transparent;
+  color: rgb(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #cad1d7;
+  border-color: #2b3553;
+  border-radius: 0.4285rem;
+  line-height: 1.42857;
+}
+
+.styled-card-text:focus {
+  outline-color: var(--primary);
+  background-color: transparent;
+  box-shadow: none;
+}
+
 .card-link:hover {
   text-decoration: none; }
 
