@@ -14,7 +14,7 @@ import { networkLinks } from '../constants/klaytnNetwork'
 import Column from "../components/Column"
 let caver;
 
-class ABIEncoder extends Component {
+class ABIDecoder extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -29,33 +29,28 @@ class ABIEncoder extends Component {
 
     handleInputChange = (e) => {
         const { name, value } = e.target;
-
         this.setState({
             [name]: value
         })
     }
 
-    encodeABI = async() => {
-        const { argumentTypes, argumentValues } = this.state;
+    decodeABI = async() => {
+        const { argumentTypes, encodedData } = this.state;
         let typesArray;
-        let parameters;
+        let hexstring;
         try{
             typesArray = argumentTypes.split(' ');
-            let temp = argumentValues.split(' ');
-            parameters = temp.map((elem) => {
-                if (elem[0] === '['){
-                    return elem.slice(1, -1).split(',')
-                }
-                else{
-                    return elem
-                }
-            })
+            hexstring = encodedData
             console.log('typesArray', typesArray);
-            console.log('parameters', parameters);
-            const res = await caver.abi.encodeParameters(typesArray, parameters)
+            console.log('hexstring', hexstring);
+            const res = await caver.abi.decodeParameters(typesArray, hexstring)
             console.log('res', res);
             if (res){
-                this.setState({ result: res })
+                let tempArr = []
+                for (let i = 0; i < res.__length__; i++){
+                    tempArr.push(res[i])
+                }
+                this.setState({ result: tempArr.toString() })
             }else{
                 this.setState({ result: "" })
             }
@@ -67,14 +62,14 @@ class ABIEncoder extends Component {
     }
 
     render() {
-        const { argumentTypes, argumentValues, result } = this.state;
+        const { argumentTypes, encodedData, result } = this.state;
         return (
             <Column>
                 <Card>
                     <CardHeader>
-                        <h3 className="title">ABI Encoder</h3>
+                        <h3 className="title">ABI Decoder</h3>
                         <p style={{color:"#6c757d"}}>
-                            The tool was designed to make easy encoding of Klaytn solidity ABI data.
+                            The tool was designed to make easy decoding of Klaytn ABI encoded parameters.
                         </p>
                     </CardHeader>
                     <CardBody>
@@ -83,35 +78,35 @@ class ABIEncoder extends Component {
                             Write the space-separated value types.
                         </p>
                         <Row>
-                            <Col md= "8">
+                            <Col md= "9">
                                 <InputField
                                     type="text"
                                     value={argumentTypes}
-                                    placeholder="Argument Types (input example : bool address)"
+                                    placeholder="Argument Types (input example : uint128)"
                                     name="argumentTypes"
                                     onChange={this.handleInputChange}
                                 />
                             </Col>
                         </Row>
-                        <h4 className='title'>Argument Values</h4>
+                        <h4 className='title'>Encoded Data</h4>
                         <p style={{color:"#6c757d"}}>
-                            Write the space-separated values to match the number of types indicated above, using square brackets [] to wrap arrays.<br></br>
+                            Write the encoded data to be decoded.
                         </p>
                         <Row>
-                            <Col md= "8">
+                            <Col md= "9">
                                 <InputField
                                     type="text"
-                                    value={argumentValues}
-                                    placeholder="Argument Values (input example : true 0x77656c636f6d6520746f20657468657265756d2e)"
-                                    name="argumentValues"
+                                    value={encodedData}
+                                    placeholder="Encoded Data (input example : 0x00000000000000000000000000000000000000000000000000000000004fdea7)"
+                                    name="encodedData"
                                     onChange={this.handleInputChange}
                                 />
                             </Col>
                         </Row>
                         <Row>
                             <Col md="4">
-                                <Button style={{marginTop: "1.75rem"}} onClick={(e) => this.encodeABI(e)}>
-                                    ENCODE
+                                <Button style={{marginTop: "1.75rem"}} onClick={(e) => this.decodeABI(e)}>
+                                    DECODE
                                 </Button>
                             </Col>
                         </Row>
@@ -127,4 +122,4 @@ class ABIEncoder extends Component {
     }
 }
 
-export default ABIEncoder;
+export default ABIDecoder;

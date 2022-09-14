@@ -7,6 +7,7 @@ import DetectKCT from "./views/detectKCT";
 import FunctionSignature from "./views/functionSignature";
 import FunctionCall from "./views/functionCall";
 import ABIEncoder from "./views/ABIEncoder";
+import ABIDecoder from "./views/ABIDecoder";
 
 var routes =
     [{
@@ -63,7 +64,7 @@ var routes =
             {
                 path: "/ABIDecoder",
                 name: "ABI Decoder",
-                component: null,
+                component: ABIDecoder,
             },
             {
                 path: "/functionCall",
