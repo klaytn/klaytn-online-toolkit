@@ -5,7 +5,8 @@ import SendAndSignTx from "./views/multisigTx";
 import AccountUpdate from "./views/AccountUpdate";
 import DetectKCT from "./views/detectKCT";
 import FunctionSignature from "./views/functionSignature";
-import FunctionCall from "./views/functionCall";
+import SendSmartContractExecutionTx from "./views/sendSmartContractExecutionTx";
+import FunctionCall from "./views/contractFunctionCall";
 
 var routes =
     [{
@@ -47,7 +48,7 @@ var routes =
                 path:"/sendMultisigTx",
                 name: "Send Multisig Transaction",
                 component: SendAndSignTx
-            }
+            },
         ]
     },
     {

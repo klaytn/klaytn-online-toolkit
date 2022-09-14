@@ -2,12 +2,11 @@ import Caver from 'caver-js'
 import React, { Component } from "react";
 import { Card, CardHeader, CardBody, Row, CardText, ButtonGroup, FormGroup, Col, Button, Label, CardFooter } from 'reactstrap';
 import Column from '../components/Column'
-import classNames from "classnames";
 import InputField from '../components/inputField';
 import { networkLinks } from "../constants/klaytnNetwork";
 let caver;
 
-class FunctionCall extends Component {
+class SendSmartContractExecutionTx extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -139,7 +138,6 @@ class FunctionCall extends Component {
 
     handleInputChange = (e) => {
         const { name, value } = e.target;
-        // console.log
         this.setState({
             [name]: value,
         })
@@ -201,11 +199,11 @@ class FunctionCall extends Component {
                         <Row>
                             <Col md="8">
                                 <InputField
-                                    name="keystore"
+                                    name="abi"
                                     type="file"
-                                    id="Keystore"
-                                    label="Keystore"
-                                    placeholder="Keystore File"
+                                    id="ABI"
+                                    label="ABI"
+                                    placeholder="ABI File"
                                     accept=".json"
                                     onChange={(e) => this.handleABIChange(e)}
                                 />
@@ -372,4 +370,4 @@ class FunctionCall extends Component {
     }
 }
 
-export default FunctionCall;
+export default SendSmartContractExecutionTx;
