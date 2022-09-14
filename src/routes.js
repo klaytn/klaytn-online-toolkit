@@ -5,8 +5,7 @@ import SendAndSignTx from "./views/multisigTx";
 import AccountUpdate from "./views/AccountUpdate";
 import DetectKCT from "./views/detectKCT";
 import FunctionSignature from "./views/functionSignature";
-import SendSmartContractExecutionTx from "./views/sendSmartContractExecutionTx";
-import FunctionCall from "./views/contractFunctionCall";
+import FunctionCall from "./views/functionCall";
 
 var routes =
     [{

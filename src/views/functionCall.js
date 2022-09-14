@@ -194,16 +194,18 @@ class FunctionCall extends Component {
                                 <Button onClick={(e)=> this.encodeFunctionCall(e)}>Encode</Button>
                             </Col>
                         </Row>
+                        {isEncodedDataShown &&
                         <Row>
-                            <Col md="8">
+                            <Col md="12">
                                 <textarea
-                                    style={{display: isEncodedDataShown? "inline" : "none", height: "120px"}}
+                                    className='form-control'
+                                    style={{backgroundColor: "#ced4da", color: "black", fontSize: "0.875rem"}}
                                     value={data != "" ? data : encodeFunctionCallErrorMsg}
                                     readOnly
                                     ref={(textarea) => this.textArea = textarea}
                                 />
                             </Col>
-                        </Row>
+                        </Row>}
                         <Row>
                             <Col md="8">
                                 <Button style={{display: isEncodedDataShown? "inline" : "none"}} onClick={() => this.copyCodeToClipboard()}>
@@ -237,11 +239,10 @@ class FunctionCall extends Component {
                                     Input(ABI Encoded Function Call)
                                 </Label>
                                 <textarea
-                                    className="styled-card-text"
+                                    className="form-control"
                                     name="input"
                                     value={input}
                                     onChange={this.handleInputChange}
-                                    style={{height:"120px"}}
                                 />
                             </Col>
                         </Row>
