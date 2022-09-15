@@ -4,6 +4,7 @@ import React, { Component }from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button, ButtonGroup, Input, FormGroup } from 'reactstrap';
 import classNames from "classnames";
 import Column from '../components/Column';
+let caver;
 
 class RoleBasedKey extends Component {
     constructor(props){
@@ -34,7 +35,6 @@ class RoleBasedKey extends Component {
     }
 
     generateRoleBasedKeys = () =>{
-        const caver = new Caver();
         const roleBasedKeys  = caver.wallet.keyring.generateRoleBasedKeys(this.state.numOfKeys);
         this.setState({
             keys: roleBasedKeys
@@ -108,7 +108,6 @@ class MultipleKey extends Component {
     }
 
     generateMultipleKeys = (e) => {
-        const caver = new Caver();
         const multipleKeys = caver.wallet.keyring.generateMultipleKeys(this.state.numOfKeys);
         this.setState({
             keys: multipleKeys
@@ -194,7 +193,6 @@ class SingleKey extends Component{
     }
 
     generateSingleKey = (e) => {
-        const caver = new Caver();
         const singleKey = caver.wallet.keyring.generateSingleKey();
         this.setState({
             key: singleKey,
@@ -249,6 +247,10 @@ class GenerateKeystore extends Component {
             privateKey: null,
         }
         this.child = React.createRef();
+    }
+
+    componentDidMount() {
+        caver = new Caver();
     }
 
     checkBoxClicked = (id)=> {
@@ -331,7 +333,6 @@ class GenerateKeystore extends Component {
     generateKeystoreV3 = (e) => {
         try {
             const { address, privateKey, password } = this.state
-            const caver = new Caver();
             const keyring = caver.wallet.keyring.create(address, privateKey)
             const keystore = JSON.stringify(keyring.encryptV3(password));
 
@@ -350,7 +351,6 @@ class GenerateKeystore extends Component {
     generateKeystoreV4 = (e) => {
         try {
             const {address, privateKey, password } = this.state
-            const caver = new Caver();
             const keyring = caver.wallet.keyring.create(address, privateKey)
             const keystore = JSON.stringify(keyring.encrypt(password));
 

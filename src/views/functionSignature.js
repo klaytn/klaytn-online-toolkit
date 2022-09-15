@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Card, CardHeader, CardBody, Row, ButtonGroup, Col, Button, Label } from 'reactstrap';
 import Column from '../components/Column'
 import classNames from "classnames";
+let caver;
 
 class FunctionSignature extends Component {
     constructor(props){
@@ -16,8 +17,11 @@ class FunctionSignature extends Component {
         }
     }
 
+    componentDidMount () {
+        caver = new Caver();
+    }
+
     handleInputChange = async(e) =>{
-        const caver = new Caver();
         const { isInputTypeSelected } = this.state;
         const input = e.target.value
         let result = "";

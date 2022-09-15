@@ -16,7 +16,7 @@ class LoadKeystore extends Component {
     }
 
     componentDidMount(){
-        caver = new Caver()
+        caver = new Caver();
     }
 
     handleKeystoreChange = (e) => {

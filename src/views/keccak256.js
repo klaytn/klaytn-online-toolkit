@@ -2,6 +2,7 @@ import Caver from 'caver-js'
 import React, { Component } from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button, Label } from 'reactstrap';
 import Column from '../components/Column'
+let caver;
 
 class KeccakFromString extends Component {
     constructor(props){
@@ -12,9 +13,12 @@ class KeccakFromString extends Component {
         }
     }
 
+    componentDidMount() {
+        caver = new Caver();
+    }
+
     handleInputChange = async(e) =>{
         const input = e.target.value
-        const caver = new Caver();
         const result = caver.utils.sha3(input) // Same with ethUtil.bufferToHex(ethUtil.keccak256(Buffer.from(input)))
         this.setState({
             input,
