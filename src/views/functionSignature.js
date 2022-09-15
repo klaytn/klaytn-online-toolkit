@@ -17,6 +17,7 @@ class FunctionSignature extends Component {
     }
 
     handleInputChange = async(e) =>{
+        const caver = new Caver();
         const { isInputTypeSelected } = this.state;
         const input = e.target.value
         let result = "";
@@ -29,13 +30,13 @@ class FunctionSignature extends Component {
         }
         if (isInputTypeSelected[1]){
             try {
-                result = Caver.abi.encodeFunctionSignature(JSON.parse(input))
+                result = caver.abi.encodeFunctionSignature(JSON.parse(input))
             } catch (e) {
                 result = e
             }
         }
         else{
-            result = Caver.abi.encodeFunctionSignature(input)
+            result = caver.abi.encodeFunctionSignature(input)
         }
         this.setState({
             input,

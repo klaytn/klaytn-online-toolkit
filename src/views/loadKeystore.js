@@ -2,6 +2,8 @@ import InputField from '../components/inputField';
 import React, { Component }from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 import Column from '../components/Column';
+import Caver from "caver-js"
+let caver;
 
 class LoadKeystore extends Component {
     constructor(props){
@@ -11,6 +13,10 @@ class LoadKeystore extends Component {
             keystorePassword: "",
             decryptMessage: ""
         }
+    }
+
+    componentDidMount(){
+        caver = new Caver()
     }
 
     handleKeystoreChange = (e) => {
@@ -42,8 +48,6 @@ class LoadKeystore extends Component {
             if (keystoreJSON != null)
             {
                 const keyring = caver.wallet.keyring.decrypt(keystoreJSON, keystorePassword)
-                console.log(typeof(keyring))
-                console.log(keyring)
                 const message =  keyring.type + " " + JSON.stringify(keyring)
                 this.setState({
                     keystorePassword: "",

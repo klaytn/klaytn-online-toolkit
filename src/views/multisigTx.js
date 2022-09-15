@@ -122,7 +122,6 @@ class SendAndSignTx extends Component {
                 }, 3000)
             }
         }catch (e){
-            console.log(e)
             this.setState({
                 decryptMessage: e.toString(),
                 decryptMessageVisible: true,
@@ -166,8 +165,6 @@ class SendAndSignTx extends Component {
                 txHash: null,
             })
             const vtReceipt = await caver.rpc.klay.sendRawTransaction(this.state.rawTransaction)
-            console.log(`Receipt of value transfer transaction after account update => `)
-            console.log(vtReceipt)
             this.setState({
                 sendAndSignMsg: "Transaction is confirmed!",
                 buttonDisabled: false,
