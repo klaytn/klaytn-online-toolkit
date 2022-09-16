@@ -40,7 +40,7 @@ class KeccakFromString extends Component {
                     <Card>
                         <CardHeader>
                             <h3 className="title">Keccak256 from String</h3>
-                            Keccak-256 online hash function
+                            <p style={{color: "#6c757d"}}>Keccak-256 online hash function</p>
                         </CardHeader>
                         <CardBody>
                             <Row>

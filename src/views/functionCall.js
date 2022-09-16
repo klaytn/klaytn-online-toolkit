@@ -155,7 +155,7 @@ class FunctionCall extends Component {
                     <CardBody>
                         <Row>
                             <Col md="12">
-                                <Label>ABI (JSON interface object of function)</Label>
+                                <Label>ABI(JSON interface object of function)</Label>
                                 <textarea
                                     ref={(textarea) => this.inputArea = textarea}
                                     value={abi}

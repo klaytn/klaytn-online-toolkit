@@ -68,7 +68,7 @@ class LoadKeystore extends Component {
                 <Card>
                     <CardHeader>
                         <h3 className="title">Load Keystore File</h3>
-                        <p>Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring instance. </p>
+                        <p style={{color: "#6c757d"}}>Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring instance. </p>
                     </CardHeader>
                     <CardBody>
                         <Row>
