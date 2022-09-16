@@ -134,7 +134,7 @@ class FunctionSignature extends Component {
                                     <textarea
                                         className='form-control'
                                         ref={(textarea) => this.textArea = textarea}
-                                        style={{height:"50px", backgroundColor: "#adb5bd", color: "black"}}
+                                        style={{height:"40px", backgroundColor: "#adb5bd", color: "black"}}
                                         value={result}
                                         readOnly
                                     />
