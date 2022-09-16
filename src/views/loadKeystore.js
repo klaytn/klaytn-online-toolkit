@@ -101,14 +101,16 @@ class LoadKeystore extends Component {
                                 <Button style={{marginBottom: "1rem"}} onClick={(e)=> this.decrypt(e)}>Decrypt</Button>
                             </Col>
                         </Row>
-                        <Row>
+                        {decryptMessage != "" && <Row>
                             <Col md="12">
-                                <textarea style={{height:"120px"}}
+                                <textarea
+                                    className='form-control'
+                                    style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                     value={decryptMessage}
                                     readOnly
                                 />
                             </Col>
-                        </Row>
+                        </Row>}
                     </CardBody>
                 </Card>
             </Column>

@@ -119,11 +119,12 @@ class FunctionSignature extends Component {
                                 <Col md="12">
                                     <Label>Input</Label>
                                     <textarea
+                                        className='form-control'
                                         ref={(textarea) => this.inputArea = textarea}
                                         value={input}
                                         onChange={this.handleInputChange}
                                         placeholder={isInputTypeSelected[0]? examples[0] : examples[1]}
-                                        style={{height:"120px"}}
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                     />
                                 </Col>
                             </Row>
@@ -131,8 +132,9 @@ class FunctionSignature extends Component {
                                 <Col md = "12">
                                     <Label>Function Signature</Label>
                                     <textarea
+                                        className='form-control'
                                         ref={(textarea) => this.textArea = textarea}
-                                        style={{height:"50px"}}
+                                        style={{height:"50px", backgroundColor: "#adb5bd", color: "black"}}
                                         value={result}
                                         readOnly
                                     />

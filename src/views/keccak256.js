@@ -50,7 +50,8 @@ class KeccakFromString extends Component {
                                         ref={(textarea) => this.inputArea = textarea}
                                         value={input}
                                         onChange={this.handleInputChange}
-                                        style={{height:"120px"}}
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
+                                        className="form-control"
                                     />
                                 </Col>
                             </Row>
@@ -58,8 +59,9 @@ class KeccakFromString extends Component {
                                 <Col md = "12">
                                     <Label>Hash</Label>
                                     <textarea
+                                        className='form-control'
                                         ref={(textarea) => this.textArea = textarea}
-                                        style={{height:"50px"}}
+                                        style={{height:"40px", backgroundColor: "#adb5bd", color: "black"}}
                                         value={result}
                                         readOnly
                                     />

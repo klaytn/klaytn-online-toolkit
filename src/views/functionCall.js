@@ -163,7 +163,7 @@ class FunctionCall extends Component {
                                     name="abi"
                                     onChange={(e) => this.handleInputChange(e)}
                                     placeholder={balanceOfABI}
-                                    style={{height: "120px", backgroundColor: "#ced4da", color: "black"}}
+                                    style={{height: "120px", backgroundColor: "#adb5bd", color: "black"}}
                                 />
                             </Col>
                         </Row>
@@ -199,7 +199,7 @@ class FunctionCall extends Component {
                                 <Label>Input(ABI Encoded Function Call)</Label>
                                 <textarea
                                     className='form-control'
-                                    style={{backgroundColor: "#ced4da", color: "black"}}
+                                    style={{backgroundColor: "#adb5bd", color: "black"}}
                                     value={data != "" ? data : encodeFunctionCallErrorMsg}
                                     readOnly
                                 />
