@@ -6,6 +6,17 @@ import InputField from '../components/inputField';
 import { networkLinks } from "../constants/klaytnNetwork";
 let caver;
 
+const balanceOfABI =
+    JSON.stringify({
+        constant: true,
+        inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+        name: 'balanceOf',
+        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+    })
+
 class FunctionCall extends Component {
     constructor(props){
         super(props);
@@ -16,11 +27,11 @@ class FunctionCall extends Component {
             data:"",
             parameters: [],
             abi: "",
+            abiParsed: null,
             encodeFunctionCallErrorMsg: "",
             buttonDisabled: false,
             functionCallErrorMsg: "",
             result: "",
-            input: ""
         }
     }
 
@@ -43,14 +54,14 @@ class FunctionCall extends Component {
     }
 
     functionCall = async() => {
-        const {contractAddress, input} = this.state;
+        const {contractAddress, data} = this.state;
         try {
             this.setState({
                 buttonDisabled: true
             })
             const result = await caver.rpc.klay.call({
                 to: contractAddress,
-                input
+                input: data
             })
             this.setState({
                 buttonDisabled: false,
@@ -68,8 +79,8 @@ class FunctionCall extends Component {
 
     encodeFunctionCall = (e) => {
         try {
-            const {abi, parameters} = this.state;
-            const data = caver.abi.encodeFunctionCall(abi, parameters)
+            const {abiParsed, parameters} = this.state;
+            const data = caver.abi.encodeFunctionCall(abiParsed, parameters)
             this.setState({
                 data,
                 buttonDisabled: false,
@@ -92,26 +103,24 @@ class FunctionCall extends Component {
         })
     }
 
-    parseABI (result) {
+    parseABI () {
         try {
-            console.log(result)
-            const abi = JSON.parse(result)
-            console.log(Object.keys(abi).includes("inputs"))
-            if (!Object.keys(abi).includes("inputs"))
+            const { abi } = this.state
+            const abiParsed = JSON.parse(abi)
+            if (!Object.keys(abiParsed).includes("inputs"))
             {
-                throw Error("This file doesn't include \"inputs\" field.")
+                throw Error("This JSON object doesn't include \"inputs\" field.")
             }
-            const parameters = new Array(abi["inputs"].length)
+            const parameters = new Array(abiParsed["inputs"].length)
             parameters.fill("")
             this.setState({
-                abi,
+                abiParsed,
                 parameters,
                 encodeFunctionCallErrorMsg: "",
                 data: ""
             })
         } catch (e) {
             this.setState({
-                abi: "",
                 parameters: [],
                 encodeFunctionCallErrorMsg: e.toString(),
                 data: ""
@@ -119,163 +128,128 @@ class FunctionCall extends Component {
         }
     }
 
-    handleABIChange = (e) =>{
-        if (e.target.files.length > 0)
-        {
-            const fileReader = new FileReader();
-            fileReader.readAsText(e.target.files[0], "UTF-8")
-            fileReader.onload = (event) => {
-                this.parseABI(event.target.result)
-            };
-        }
-    }
-
-    copyCodeToClipboard = (e)=>{
-        const el = this.textArea
-        el.select()
-        document.execCommand("copy")
-    }
-
     render () {
         const {
             data, contractAddress, parameters, abi, encodeFunctionCallErrorMsg,
-            buttonDisabled, result, functionCallErrorMsg, input
+            buttonDisabled, result, functionCallErrorMsg, abiParsed
         } = this.state;
-        const isEncodedDataShown = data != "" || encodeFunctionCallErrorMsg != "";
         return (
             <Column>
                 <Card>
                     <CardHeader>
                         <h3 className='title'> Function Call using ABI and Parameters</h3>
                         <p style={{color: "#6c757d"}}>
-                            First you can encode a function call using JSON interface object and parameters.
-                            Encoded function call is used for input data of transaction call object.
-                            Then you can execute a new message call using the encoded data and contract address.
+                            1. Enter the JSON interface object of a function and click the ParseABI button.
+                            Input fields are generated according to the parsed ABI.
+                        </p>
+                        <p style={{color: "#6c757d"}}>
+                            2. When all parameters are entered, click the Encode button to encode the function call.
+                            The encoded function call is used as input data of the transaction call object.
+                        </p>
+                        <p style={{color: "#6c757d"}}>
+                            3. Select which network to send a message call to and enter the contract address.
+                            Then click the Execute button to execute a new message call.
                             This execution does not alter the state of the contract and does not consume gas.
                         </p>
                     </CardHeader>
                     <CardBody>
-                        <h3 className="title">Encode Function Call </h3>
-                        <p style={{color: "#6c757d"}}>
-                            Upload ABI file. Input fields will be generated according to parsed ABI.
-                            Once you complete to enter all parameters, press Encode button to
-                            encode function call.
-                        </p>
+                        <Row>
+                            <Col md="12">
+                                <Label>ABI (JSON interface object of function)</Label>
+                                <textarea
+                                    ref={(textarea) => this.inputArea = textarea}
+                                    value={abi}
+                                    className="form-control"
+                                    name="abi"
+                                    onChange={(e) => this.handleInputChange(e)}
+                                    placeholder={balanceOfABI}
+                                    style={{height: "120px", backgroundColor: "#ced4da", color: "black"}}
+                                />
+                            </Col>
+                        </Row>
                         <Row>
                             <Col md="8">
-                                <InputField
-                                    name="abi"
-                                    type="file"
-                                    id="ABI"
-                                    label="ABI"
-                                    placeholder="ABI File"
-                                    accept=".json"
-                                    onChange={(e) => this.handleABIChange(e)}
-                                />
+                                <Button onClick={() => this.parseABI()}>Parse ABI</Button>
                             </Col>
                         </Row>
                         {parameters.map((val, index) => (
                             <Row>
                                 <Col md="8">
                                     <InputField
-                                        name={abi["inputs"][index]["name"]}
+                                        name={abiParsed["inputs"][index]["name"]}
                                         value={val}
-                                        placeholder={`${abi["inputs"][index]["name"]}(${abi["inputs"][index]["type"]})`}
+                                        placeholder={`${abiParsed["inputs"][index]["name"]}(${abiParsed["inputs"][index]["type"]})`}
                                         type="text"
                                         onChange={(e)=>this.handleParameterChange(e, index)}
-                                        id={abi["inputs"][index]["name"]}
-                                        label={abi["inputs"][index]["name"]}
+                                        id={abiParsed["inputs"][index]["name"]}
+                                        label={abiParsed["inputs"][index]["name"]}
                                     />
                                 </Col>
                             </Row>
                         ))}
+                        {parameters.length > 0 &&
                         <Row>
                             <Col md="8">
                                 <Button onClick={(e)=> this.encodeFunctionCall(e)}>Encode</Button>
                             </Col>
-                        </Row>
-                        {isEncodedDataShown &&
+                        </Row>}
+                        {data != "" ?
                         <Row>
                             <Col md="12">
+                                <Label>Input(ABI Encoded Function Call)</Label>
                                 <textarea
                                     className='form-control'
-                                    style={{backgroundColor: "#ced4da", color: "black", fontSize: "0.875rem"}}
+                                    style={{backgroundColor: "#ced4da", color: "black"}}
                                     value={data != "" ? data : encodeFunctionCallErrorMsg}
                                     readOnly
-                                    ref={(textarea) => this.textArea = textarea}
-                                />
-                            </Col>
-                        </Row>}
-                        <Row>
-                            <Col md="8">
-                                <Button style={{display: isEncodedDataShown? "inline" : "none"}} onClick={() => this.copyCodeToClipboard()}>
-                                    Copy To Clipboard
-                                </Button>
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-                <Card>
-                    <CardBody>
-                        <h3 className="title">Execute Function Call </h3>
-                        <p style={{color: "#6c757d"}}>
-                            Select which network to send message call and enter the contract address.
-                            Copy and Paste the ABI encoded function call generated in the previous section.
-                        </p>
-                        <Row>
-                            <Col md="4">
-                                <FormGroup>
-                                    <Label>Network</Label>
-                                    <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
-                                        <option value="mainnet"> Mainnet</option>
-                                        <option value="testnet"> Testnet</option>
-                                    </select>
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md="8">
-                                <Label>
-                                    Input(ABI Encoded Function Call)
-                                </Label>
-                                <textarea
-                                    className="form-control"
-                                    name="input"
-                                    value={input}
-                                    onChange={this.handleInputChange}
                                 />
                             </Col>
                         </Row>
-                        <Row>
-                            <Col md="8">
-                                <InputField
-                                    type="text"
-                                    value={contractAddress}
-                                    placeholder="Contract Address"
-                                    label="Contract Address(Token Address)"
-                                    name="contractAddress"
-                                    onChange={this.handleInputChange}
-                                />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md="8">
-                                <Button disabled={buttonDisabled} onClick={(e)=> this.functionCall(e)}>Message Call</Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md="8">
-                                {result != "" ?
-                                <CardText style={{backgroundColor:"black"}}>
-                                    The return value of the smart contract function: <strong>{result}</strong>
-                                </CardText>
-                                : functionCallErrorMsg != ""?
-                                <CardText style={{backgroundColor:"black"}}>
-                                    {functionCallErrorMsg}
-                                </CardText>
-                                : null}
-                            </Col>
-                        </Row>
+                        : <p style={{color:"#e14eca"}}>{encodeFunctionCallErrorMsg}</p>}
+                        {data != "" &&
+                        <div>
+                            <Row>
+                                <Col md="4">
+                                    <FormGroup>
+                                        <Label>Network</Label>
+                                        <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
+                                            <option value="mainnet"> Mainnet</option>
+                                            <option value="testnet"> Testnet</option>
+                                        </select>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md="8">
+                                    <InputField
+                                        type="text"
+                                        value={contractAddress}
+                                        placeholder="Contract Address"
+                                        label="Contract Address(Token Address)"
+                                        name="contractAddress"
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md="8">
+                                    <Button disabled={buttonDisabled} onClick={(e)=> this.functionCall(e)}>Message Call</Button>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md="8">
+                                    {result != "" ?
+                                    <CardText style={{backgroundColor:"black"}}>
+                                        The return value of the smart contract function: <strong>{result}</strong>
+                                    </CardText>
+                                    : functionCallErrorMsg != ""?
+                                    <CardText style={{backgroundColor:"black"}}>
+                                        {functionCallErrorMsg}
+                                    </CardText>
+                                    : null}
+                                </Col>
+                            </Row>
+                        </div>}
                     </CardBody>
                 </Card>
             </Column>
