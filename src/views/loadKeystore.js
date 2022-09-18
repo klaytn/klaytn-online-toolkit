@@ -2,6 +2,8 @@ import InputField from '../components/inputField';
 import React, { Component }from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 import Column from '../components/Column';
+import Caver from "caver-js"
+let caver;
 
 class LoadKeystore extends Component {
     constructor(props){
@@ -11,6 +13,10 @@ class LoadKeystore extends Component {
             keystorePassword: "",
             decryptMessage: ""
         }
+    }
+
+    componentDidMount(){
+        caver = new Caver();
     }
 
     handleKeystoreChange = (e) => {
@@ -42,8 +48,6 @@ class LoadKeystore extends Component {
             if (keystoreJSON != null)
             {
                 const keyring = caver.wallet.keyring.decrypt(keystoreJSON, keystorePassword)
-                console.log(typeof(keyring))
-                console.log(keyring)
                 const message =  keyring.type + " " + JSON.stringify(keyring)
                 this.setState({
                     keystorePassword: "",
@@ -64,7 +68,7 @@ class LoadKeystore extends Component {
                 <Card>
                     <CardHeader>
                         <h3 className="title">Load Keystore File</h3>
-                        <p>Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring instance. </p>
+                        <p style={{color: "#6c757d"}}>Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring instance. </p>
                     </CardHeader>
                     <CardBody>
                         <Row>
@@ -97,14 +101,16 @@ class LoadKeystore extends Component {
                                 <Button style={{marginBottom: "1rem"}} onClick={(e)=> this.decrypt(e)}>Decrypt</Button>
                             </Col>
                         </Row>
-                        <Row>
+                        {decryptMessage != "" && <Row>
                             <Col md="12">
-                                <textarea style={{height:"120px"}}
+                                <textarea
+                                    className='form-control'
+                                    style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                     value={decryptMessage}
                                     readOnly
                                 />
                             </Col>
-                        </Row>
+                        </Row>}
                     </CardBody>
                 </Card>
             </Column>

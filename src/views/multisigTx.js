@@ -122,7 +122,6 @@ class SendAndSignTx extends Component {
                 }, 3000)
             }
         }catch (e){
-            console.log(e)
             this.setState({
                 decryptMessage: e.toString(),
                 decryptMessageVisible: true,
@@ -166,8 +165,6 @@ class SendAndSignTx extends Component {
                 txHash: null,
             })
             const vtReceipt = await caver.rpc.klay.sendRawTransaction(this.state.rawTransaction)
-            console.log(`Receipt of value transfer transaction after account update => `)
-            console.log(vtReceipt)
             this.setState({
                 sendAndSignMsg: "Transaction is confirmed!",
                 buttonDisabled: false,
@@ -391,20 +388,22 @@ class SendAndSignTx extends Component {
                     }
                     </CardBody>
                     <CardFooter>
-                        <Col md="8">
-                            <Row>
+                        <Row>
+                            <Col md="8">
                                 <Button disabled={buttonDisabled} onClick={this.onSignTxButtonClick}>Sign Transaction</Button>
                                 <Button disabled={buttonDisabled || this.state.rawTransaction == null} onClick={this.onSendTxButtonClick}>Send Transaction</Button>
-                            </Row>
-                            <Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="8">
                                 <CardText style={{display: sendAndSignMsg!=null && txHash==null? "inline" : "none", backgroundColor:"black"}}>
                                     {sendAndSignMsg}
                                 </CardText>
                                 <CardText style={{display: sendAndSignMsg!=null && txHash!=null? "inline" : "none"}}>
                                     {sendAndSignMsg} Transaction Hash: <a href={networkLinks[network]["finder"]+txHash}>{txHash}</a>
                                 </CardText>
-                            </Row>
-                        </Col>
+                            </Col>
+                        </Row>
                     </CardFooter>
                 </Card>
                 <Card>

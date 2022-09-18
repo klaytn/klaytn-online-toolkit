@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Card, CardHeader, CardBody, Row, ButtonGroup, Col, Button, Label } from 'reactstrap';
 import Column from '../components/Column'
 import classNames from "classnames";
+let caver;
 
 class FunctionSignature extends Component {
     constructor(props){
@@ -14,6 +15,10 @@ class FunctionSignature extends Component {
             inputTypes: ['String', 'ABI'],
             examples:['myMethod(uint256,string)', '{"name":"myMethod","type":"function","inputs":[{"type":"uint256","name":"myNumber"},{"type":"string","name":"mystring"}]}']
         }
+    }
+
+    componentDidMount () {
+        caver = new Caver();
     }
 
     handleInputChange = async(e) =>{
@@ -29,13 +34,13 @@ class FunctionSignature extends Component {
         }
         if (isInputTypeSelected[1]){
             try {
-                result = Caver.abi.encodeFunctionSignature(JSON.parse(input))
+                result = caver.abi.encodeFunctionSignature(JSON.parse(input))
             } catch (e) {
                 result = e
             }
         }
         else{
-            result = Caver.abi.encodeFunctionSignature(input)
+            result = caver.abi.encodeFunctionSignature(input)
         }
         this.setState({
             input,
@@ -114,11 +119,12 @@ class FunctionSignature extends Component {
                                 <Col md="12">
                                     <Label>Input</Label>
                                     <textarea
+                                        className='form-control'
                                         ref={(textarea) => this.inputArea = textarea}
                                         value={input}
                                         onChange={this.handleInputChange}
                                         placeholder={isInputTypeSelected[0]? examples[0] : examples[1]}
-                                        style={{height:"120px"}}
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                     />
                                 </Col>
                             </Row>
@@ -126,8 +132,9 @@ class FunctionSignature extends Component {
                                 <Col md = "12">
                                     <Label>Function Signature</Label>
                                     <textarea
+                                        className='form-control'
                                         ref={(textarea) => this.textArea = textarea}
-                                        style={{height:"50px"}}
+                                        style={{height:"40px", backgroundColor: "#adb5bd", color: "black"}}
                                         value={result}
                                         readOnly
                                     />

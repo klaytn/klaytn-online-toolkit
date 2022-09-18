@@ -49,7 +49,7 @@ var routes =
                 path:"/sendMultisigTx",
                 name: "Send Multisig Transaction",
                 component: SendAndSignTx
-            }
+            },
         ]
     },
     {

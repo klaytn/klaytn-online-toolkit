@@ -66,7 +66,7 @@ export function greaterThanOrEqual(
 
 export function smallerThan(
   numberOne ,
-  numberTwo 
+  numberTwo
 ){
   return (
     new BigNumber(`${numberOne}`).comparedTo(new BigNumber(`${numberTwo}`)) ===
@@ -85,7 +85,7 @@ export function smallerThanOrEqual(
 
 export function multiply(
   numberOne ,
-  numberTwo 
+  numberTwo
 ){
   return new BigNumber(`${numberOne}`)
     .times(new BigNumber(`${numberTwo}`))
@@ -94,7 +94,7 @@ export function multiply(
 
 export function divide(
   numberOne ,
-  numberTwo 
+  numberTwo
 ) {
   return new BigNumber(`${numberOne}`)
     .dividedBy(new BigNumber(`${numberTwo}`))
@@ -103,7 +103,7 @@ export function divide(
 
 export function floorDivide(
   numberOne ,
-  numberTwo 
+  numberTwo
 ) {
   return new BigNumber(`${numberOne}`)
     .dividedToIntegerBy(new BigNumber(`${numberTwo}`))
@@ -112,7 +112,7 @@ export function floorDivide(
 
 export function mod(
   numberOne ,
-  numberTwo 
+  numberTwo
 ) {
   return new BigNumber(`${numberOne}`)
     .mod(new BigNumber(`${numberTwo}`))
@@ -121,7 +121,7 @@ export function mod(
 
 export function add(
   numberOne ,
-  numberTwo 
+  numberTwo
 ) {
   return new BigNumber(`${numberOne}`)
     .plus(new BigNumber(`${numberTwo}`))
@@ -130,7 +130,7 @@ export function add(
 
 export function subtract(
   numberOne ,
-  numberTwo 
+  numberTwo
 ) {
   return new BigNumber(`${numberOne}`)
     .minus(new BigNumber(`${numberTwo}`))
