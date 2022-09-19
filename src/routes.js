@@ -8,8 +8,6 @@ import FunctionSignature from "./views/functionSignature";
 import FunctionCall from "./views/functionCall";
 import ABIEncoder from "./views/ABIEncoder";
 import ABIDecoder from "./views/ABIDecoder";
-import RLPDecoder from "./views/RLPDecoder";
-import txHashDecoder from "./views/txHashDecoder";
 
 var routes =
     [{
@@ -40,12 +38,12 @@ var routes =
             {
                 path: "/rlpDecode",
                 name: "Decoder from RLP",
-                component: RLPDecoder,
+                component: null,
             },
             {
                 path: "/txHashDecode",
                 name: "Decoder from txHash",
-                component: txHashDecoder
+                component: null
             },
             {
                 path:"/sendMultisigTx",
