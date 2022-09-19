@@ -1,14 +1,6 @@
 import React, { Component } from "react";
-import {
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Card, CardHeader, CardBody, Row, Col, Label } from "reactstrap";
 import '../../assets/css/black-dashboard-react.css';
-import InputField from "../components/inputField";
 import Caver from 'caver-js'
 import { networkLinks } from '../constants/klaytnNetwork'
 import Column from "../components/Column"
@@ -20,6 +12,8 @@ class ABIEncoder extends Component {
         this.state = {
             network: "mainnet",
             result: "",
+            argumentTypes: "",
+            argumentValues: ""
         }
     }
 
@@ -29,7 +23,6 @@ class ABIEncoder extends Component {
 
     handleInputChange = (e) => {
         const { name, value } = e.target;
-
         this.setState({
             [name]: value
         })
@@ -50,6 +43,19 @@ class ABIEncoder extends Component {
                     return elem
                 }
             })
+            for (let i = 0; i < typesArray.length; i++){
+                if (typesArray[i] == "bool"){
+                    if(parameters[i] == "true"){
+                        parameters[i] = true;
+                    }
+                    else if(parameters[i] == "false"){
+                        parameters[i] = false;
+                    }
+                    else{
+                        throw new Error();
+                    }
+                }
+            }
             const res = await caver.abi.encodeParameters(typesArray, parameters)
             if (res){
                 this.setState({ result: res })
@@ -65,76 +71,77 @@ class ABIEncoder extends Component {
     render() {
         const { argumentTypes, argumentValues, result } = this.state;
         return (
-            <Column>
-                <Card>
-                    <CardHeader>
-                        <h3 className="title">ABI Encoder</h3>
-                        <p style={{color:"#6c757d"}}>
+            <div>
+                <Column>
+                    <Card>
+                        <CardHeader>
+                            <h3 className="title">ABI Encoder</h3>
+                            <p style={{color:"#6c757d"}}>
                             The tool was designed to make easy encoding of Klaytn solidity ABI data.
-                        </p>
-                    </CardHeader>
-                    <CardBody>
-                        <h4 className='title'>Argument Types</h4>
-                        <p style={{color:"#6c757d"}}>
-                            Write the space-separated value types.
-                        </p>
-                        <Row>
-                            <Col md= "8">
-                                <textarea
-                                    type="text"
-                                    value={argumentTypes}
-                                    onChange={this.handleInputChange}
-                                    placeholder="Argument Types (input example : bool address)"
-                                    name="argumentTypes"
-                                    style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
-                                    className="form-control"
-                                />
-                            </Col>
-                        </Row>
-                        <h4 className='title'>Argument Values</h4>
-                        <p style={{color:"#6c757d"}}>
-                            Write the space-separated values to match the number of types indicated above, using square brackets [] to wrap arrays.<br></br>
-                        </p>
-                        <Row>
-                            <Col md= "8">
-                                <textarea
-                                    type="text"
-                                    value={argumentValues}
-                                    onChange={this.handleInputChange}
-                                    placeholder="Argument Values (input example : true 0x77656c636f6d6520746f20657468657265756d2e)"
-                                    name="argumentValues"
-                                    style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
-                                    className="form-control"
-                                />
-
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md="4">
-                                <Button style={{marginTop: "1.75rem"}} onClick={(e) => this.encodeABI(e)}>
-                                    ENCODE
-                                </Button>
-                            </Col>
-                        </Row>
-                        { result != "" ?
-                            result != "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" ?
+                            </p>
+                        </CardHeader>
+                        <CardBody>
                             <Row>
-                                <Col md= "9">
-                                    <h4 className='title'>Result</h4><br></br>
+                                <Col md = "12">
+                                    <Label>Argument Types</Label>
+                                    <p style={{color:"#6c757d"}}>
+                                    Enter the space-separated value types.
+                                    </p>
                                     <textarea
-                                        className='form-control'
-                                        ref={(textarea) => this.textArea = textarea}
-                                        style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
-                                        value={result}
-                                        readOnly
+                                        className="form-control"
+                                        ref={(textarea) => this.inputArea = textarea}
+                                        value={argumentTypes}
+                                        onChange={this.handleInputChange}
+                                        placeholder="Argument Types (input example : bool address)"
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
+                                        name="argumentTypes"
                                     />
                                 </Col>
                             </Row>
-                            : <p> {result} </p>
-                        : null}
-                    </CardBody>
-                </Card>
-            </Column>
+                            <Row>
+                                <Col md = "12">
+                                    <Label>Argument Values</Label>
+                                    <p style={{color:"#6c757d"}}>
+                                    Enter the space-separated values to match the number of types indicated above, using square brackets [] to wrap arrays.<br></br>
+                                    </p>
+                                    <textarea
+                                        className="form-control"
+                                        ref={(textarea) => this.inputArea = textarea}
+                                        value={argumentValues}
+                                        onChange={this.handleInputChange}
+                                        placeholder="Argument Values (input example : true 0x77656c636f6d6520746f20657468657265756d2e)"
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
+                                        name="argumentValues"
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md="4">
+                                    <Button onClick={(e) => this.encodeABI(e)}>
+                                        ENCODE
+                                    </Button>
+                                </Col>
+                            </Row>
+                            { result != "" ?
+                                result != "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" ?
+                                <Row>
+                                    <Col md= "12">
+                                        <Label>Result</Label>
+                                        <textarea
+                                            className='form-control'
+                                            ref={(textarea) => this.textArea = textarea}
+                                            style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
+                                            value={result}
+                                            readOnly
+                                        />
+                                    </Col>
+                                </Row>
+                                : <p> {result} </p>
+                            : null}
+                        </CardBody>
+                    </Card>
+                </Column>
+            </div>
         )
     }
 }
