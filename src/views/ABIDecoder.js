@@ -60,7 +60,7 @@ class ABIDecoder extends Component {
                         <CardHeader>
                             <h3 className="title">ABI Decoder</h3>
                             <p style={{color:"#6c757d"}}>
-                            The tool was designed to make easy decoding of Klaytn ABI encoded parameters.
+                            The tool is designed to decode ABI encoded parameters.
                             </p>
                         </CardHeader>
                         <CardBody>
@@ -119,7 +119,7 @@ class ABIDecoder extends Component {
                                         />
                                     </Col>
                                 </Row>
-                                : <p> {result} </p>
+                                : <p style={{color:"#c221a9"}}> {result} </p>
                             : null}
                         </CardBody>
                     </Card>

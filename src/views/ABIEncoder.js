@@ -77,7 +77,7 @@ class ABIEncoder extends Component {
                         <CardHeader>
                             <h3 className="title">ABI Encoder</h3>
                             <p style={{color:"#6c757d"}}>
-                            The tool was designed to make easy encoding of Klaytn solidity ABI data.
+                            The tool is designed to encode Solidity ABI data.
                             </p>
                         </CardHeader>
                         <CardBody>
@@ -136,7 +136,7 @@ class ABIEncoder extends Component {
                                         />
                                     </Col>
                                 </Row>
-                                : <p> {result} </p>
+                                : <p style={{color:"#c221a9"}}> {result} </p>
                             : null}
                         </CardBody>
                     </Card>
