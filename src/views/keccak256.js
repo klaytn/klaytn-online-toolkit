@@ -2,6 +2,7 @@ import Caver from 'caver-js'
 import React, { Component } from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button, Label } from 'reactstrap';
 import Column from '../components/Column'
+let caver;
 
 class KeccakFromString extends Component {
     constructor(props){
@@ -12,9 +13,13 @@ class KeccakFromString extends Component {
         }
     }
 
+    componentDidMount() {
+        caver = new Caver();
+    }
+
     handleInputChange = async(e) =>{
         const input = e.target.value
-        const result = Caver.utils.sha3(input) // Same with ethUtil.bufferToHex(ethUtil.keccak256(Buffer.from(input)))
+        const result = caver.utils.sha3(input) // Same with ethUtil.bufferToHex(ethUtil.keccak256(Buffer.from(input)))
         this.setState({
             input,
             result,
@@ -35,7 +40,7 @@ class KeccakFromString extends Component {
                     <Card>
                         <CardHeader>
                             <h3 className="title">Keccak256 from String</h3>
-                            Keccak-256 online hash function
+                            <p style={{color: "#6c757d"}}>Keccak-256 online hash function</p>
                         </CardHeader>
                         <CardBody>
                             <Row>
@@ -45,7 +50,8 @@ class KeccakFromString extends Component {
                                         ref={(textarea) => this.inputArea = textarea}
                                         value={input}
                                         onChange={this.handleInputChange}
-                                        style={{height:"120px"}}
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
+                                        className="form-control"
                                     />
                                 </Col>
                             </Row>
@@ -53,8 +59,9 @@ class KeccakFromString extends Component {
                                 <Col md = "12">
                                     <Label>Hash</Label>
                                     <textarea
+                                        className='form-control'
                                         ref={(textarea) => this.textArea = textarea}
-                                        style={{height:"50px"}}
+                                        style={{height:"40px", backgroundColor: "#adb5bd", color: "black"}}
                                         value={result}
                                         readOnly
                                     />

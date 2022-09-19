@@ -24,7 +24,6 @@ module.exports = merge(baseConfig, {
             loader: 'css-loader',
             options: { importLoaders: 1 },
           },
-          
         ]
       },
       {

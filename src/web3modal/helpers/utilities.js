@@ -19,7 +19,7 @@ export function isObject(obj) {
 export async function apiGetGasPriceKlaytn(
   chainId,
 ) {
-  const url = chainId === 8217 ? "https://public-node-api.klaytnapi.com/v1/cypress" : "https://public-node-api.klaytnapi.com/v1/baobab" ; 
+  const url = chainId === 8217 ? "https://public-node-api.klaytnapi.com/v1/cypress" : "https://public-node-api.klaytnapi.com/v1/baobab" ;
   const response = await axios.post(url, {
     'jsonrpc': '2.0',
     'id': 0,
@@ -64,18 +64,18 @@ export async function apiGetAccountAssetsKlaytn(
   address,
   chainId
 ) {
-  
-  const url = chainId === 8217 ? "https://public-node-api.klaytnapi.com/v1/cypress" : "https://public-node-api.klaytnapi.com/v1/baobab" ; 
+
+  const url = chainId === 8217 ? "https://public-node-api.klaytnapi.com/v1/cypress" : "https://public-node-api.klaytnapi.com/v1/baobab" ;
   const response = await axios.post(url, {
     'jsonrpc': '2.0',
     'id': 0,
     'method': 'klay_getBalance',
     'params': [
-      address, 
+      address,
       'latest'
     ]
   })
-  
+
   const result  = {
     symbol: "KLAY",
     name: "Klaytn",
