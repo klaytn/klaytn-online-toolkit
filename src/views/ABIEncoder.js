@@ -50,10 +50,7 @@ class ABIEncoder extends Component {
                     return elem
                 }
             })
-            console.log('typesArray', typesArray);
-            console.log('parameters', parameters);
             const res = await caver.abi.encodeParameters(typesArray, parameters)
-            console.log('res', res);
             if (res){
                 this.setState({ result: res })
             }else{
@@ -61,7 +58,6 @@ class ABIEncoder extends Component {
             }
         }
         catch(err){
-            console.log(err);
             this.setState({ result: "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" })
         }
     }
@@ -84,12 +80,14 @@ class ABIEncoder extends Component {
                         </p>
                         <Row>
                             <Col md= "8">
-                                <InputField
+                                <textarea
                                     type="text"
                                     value={argumentTypes}
+                                    onChange={this.handleInputChange}
                                     placeholder="Argument Types (input example : bool address)"
                                     name="argumentTypes"
-                                    onChange={this.handleInputChange}
+                                    style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
+                                    className="form-control"
                                 />
                             </Col>
                         </Row>
@@ -99,13 +97,16 @@ class ABIEncoder extends Component {
                         </p>
                         <Row>
                             <Col md= "8">
-                                <InputField
+                                <textarea
                                     type="text"
                                     value={argumentValues}
+                                    onChange={this.handleInputChange}
                                     placeholder="Argument Values (input example : true 0x77656c636f6d6520746f20657468657265756d2e)"
                                     name="argumentValues"
-                                    onChange={this.handleInputChange}
+                                    style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
+                                    className="form-control"
                                 />
+
                             </Col>
                         </Row>
                         <Row>
@@ -115,11 +116,22 @@ class ABIEncoder extends Component {
                                 </Button>
                             </Col>
                         </Row>
-                        { result != "" ? 
-                            <p style={{fontSize: "15px"}}>
-                            <h4 className='title'>Result</h4><br></br>
-                            {result} </p>
-                            : null}
+                        { result != "" ?
+                            result != "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" ?
+                            <Row>
+                                <Col md= "9">
+                                    <h4 className='title'>Result</h4><br></br>
+                                    <textarea
+                                        className='form-control'
+                                        ref={(textarea) => this.textArea = textarea}
+                                        style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
+                                        value={result}
+                                        readOnly
+                                    />
+                                </Col>
+                            </Row>
+                            : <p> {result} </p>
+                        : null}
                     </CardBody>
                 </Card>
             </Column>

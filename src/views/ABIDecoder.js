@@ -41,22 +41,18 @@ class ABIDecoder extends Component {
         try{
             typesArray = argumentTypes.split(' ');
             hexstring = encodedData
-            console.log('typesArray', typesArray);
-            console.log('hexstring', hexstring);
             const res = await caver.abi.decodeParameters(typesArray, hexstring)
-            console.log('res', res);
             if (res){
                 let tempArr = []
                 for (let i = 0; i < res.__length__; i++){
                     tempArr.push(res[i])
                 }
-                this.setState({ result: tempArr.toString() })
+                this.setState({ result: tempArr.join(", ") })
             }else{
                 this.setState({ result: "" })
             }
         }
         catch(err){
-            console.log(err);
             this.setState({ result: "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" })
         }
     }
@@ -79,12 +75,14 @@ class ABIDecoder extends Component {
                         </p>
                         <Row>
                             <Col md= "9">
-                                <InputField
+                                <textarea
                                     type="text"
                                     value={argumentTypes}
+                                    onChange={this.handleInputChange}
                                     placeholder="Argument Types (input example : uint128)"
                                     name="argumentTypes"
-                                    onChange={this.handleInputChange}
+                                    style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
+                                    className="form-control"
                                 />
                             </Col>
                         </Row>
@@ -94,12 +92,14 @@ class ABIDecoder extends Component {
                         </p>
                         <Row>
                             <Col md= "9">
-                                <InputField
+                                <textarea
                                     type="text"
                                     value={encodedData}
+                                    onChange={this.handleInputChange}
                                     placeholder="Encoded Data (input example : 0x00000000000000000000000000000000000000000000000000000000004fdea7)"
                                     name="encodedData"
-                                    onChange={this.handleInputChange}
+                                    style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
+                                    className="form-control"
                                 />
                             </Col>
                         </Row>
@@ -110,11 +110,22 @@ class ABIDecoder extends Component {
                                 </Button>
                             </Col>
                         </Row>
-                        { result != "" ? 
-                            <p style={{fontSize: "15px"}}>
-                            <h4 className='title'>Result</h4><br></br>
-                            {result} </p>
-                            : null}
+                        { result != "" ?
+                            result != "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" ?
+                            <Row>
+                                <Col md= "9">
+                                    <h4 className='title'>Result</h4><br></br>
+                                    <textarea
+                                        className='form-control'
+                                        ref={(textarea) => this.textArea = textarea}
+                                        style={{height:"160px", backgroundColor: "#adb5bd", color: "black"}}
+                                        value={result}
+                                        readOnly
+                                    />
+                                </Col>
+                            </Row>
+                            : <p> {result} </p>
+                        : null}
                     </CardBody>
                 </Card>
             </Column>
