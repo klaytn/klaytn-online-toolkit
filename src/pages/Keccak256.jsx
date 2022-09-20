@@ -1,6 +1,6 @@
 import Caver from 'caver-js'
 import { Component } from 'react'
-import { Card, CardHeader, CardBody, Row, Col, Button, Label } from 'reactstrap'
+import { Card, CardHeader, CardBody, Row, Col, Button, Label } from 'components'
 import Column from '../components/Column'
 let caver
 

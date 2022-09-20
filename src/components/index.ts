@@ -1,5 +1,6 @@
 export { default as View } from './View'
 export { default as InputField } from './InputField'
+export { default as Column } from './Column'
 
 export {
   Card,
@@ -21,5 +22,9 @@ export {
   Col,
   Button,
   Label,
-  // @ts-ignore
+  ButtonGroup,
+  CardFooter,
+  Input,
+  InputGroup,
+  InputGroupText,
 } from 'reactstrap'

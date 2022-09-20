@@ -10,8 +10,8 @@ import {
   Col,
   Button,
   Label,
-} from 'reactstrap'
-import Column from '../components/Column'
+  Column
+} from 'components'
 import { InputField } from 'components'
 import { networkLinks } from '../constants/klaytnNetwork'
 let caver

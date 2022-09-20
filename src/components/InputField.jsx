@@ -1,4 +1,4 @@
-import { FormGroup, InputGroup, Input, InputGroupText } from 'reactstrap'
+import { FormGroup, InputGroup, Input, InputGroupText } from 'components'
 
 const InputField = ({
   value,

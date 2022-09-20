@@ -11,7 +11,7 @@ import {
   ButtonGroup,
   Input,
   FormGroup,
-} from 'reactstrap'
+} from 'components'
 import classNames from 'classnames'
 import Column from '../components/Column'
 let caver

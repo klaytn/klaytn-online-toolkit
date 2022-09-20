@@ -13,7 +13,7 @@ import {
   Input,
   CardHeader,
   CardBody,
-} from 'reactstrap'
+} from 'components'
 import {
   formatTestTransaction,
   getChainData,

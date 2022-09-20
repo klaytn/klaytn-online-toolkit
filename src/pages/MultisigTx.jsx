@@ -11,8 +11,8 @@ import {
   Label,
   FormGroup,
   ButtonGroup,
-} from 'reactstrap'
-import { InputField } from 'components'
+  InputField
+} from 'components'
 import Caver from 'caver-js'
 import Column from '../components/Column'
 import { networkLinks } from '../constants/klaytnNetwork'

@@ -1,6 +1,6 @@
 import { InputField } from 'components'
 import { Component } from 'react'
-import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap'
+import { Card, CardHeader, CardBody, Row, Col, Button } from 'components'
 import Column from '../components/Column'
 import Caver from 'caver-js'
 let caver

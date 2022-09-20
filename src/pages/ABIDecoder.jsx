@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Button, Card, CardHeader, CardBody, Row, Col, Label } from 'reactstrap'
+import { Button, Card, CardHeader, CardBody, Row, Col, Label } from 'components'
 import Caver from 'caver-js'
 import { networkLinks } from '../constants/klaytnNetwork'
 import Column from '../components/Column'
