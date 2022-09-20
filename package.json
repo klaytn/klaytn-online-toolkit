@@ -3,30 +3,61 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@klaytn/kaikas-web3-provider": "^1.0.2",
+    "@klaytn/web3modal": "^1.0.1",
+    "@walletconnect/utils": "^1.8.0",
+    "axios": "^0.27.2",
+    "bignumber.js": "^9.1.0",
+    "caver-js": "^1.6.8",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.1",
+    "react-scripts": "^4.0.3",
+    "reactstrap": "^9.1.4",
+    "styled-components": "^5.3.5",
+    "typescript": "^4.8.3",
+    "web-vitals": "^2.1.4",
+    "web3": "^1.8.0"
+  },
+  "devDependencies": {
     "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.14.185",
     "@types/node": "^16.11.59",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.8.3",
-    "web-vitals": "^2.1.4"
+    "@types/styled-components": "^5.1.26"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "lint": "eslint --fix src/**/*.{jsx,ts,tsx}",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "import/no-anonymous-default-export": "off",
+      "react-hooks/exhaustive-deps": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
   },
   "browserslist": {
     "production": [
