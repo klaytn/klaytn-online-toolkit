@@ -152,7 +152,6 @@ class AccountUpdateWithMultiSigKey extends Component {
                 }, 3000)
             }
         }catch (e){
-            console.log(e)
             this.setState({
                 senderDecryptMessage: e.toString(),
                 senderDecryptMessageVisible: true,
@@ -205,11 +204,9 @@ class AccountUpdateWithMultiSigKey extends Component {
             await caver.wallet.sign(sender.address, updateTx)
 
             const receipt = await caver.rpc.klay.sendRawTransaction(updateTx)
-            console.log(`Account Update Transaction receipt => `)
-            console.log(receipt)
 
-            const accountKey = await caver.rpc.klay.getAccountKey(sender.address)
-            console.log(JSON.stringify(accountKey))
+            // const accountKey = await caver.rpc.klay.getAccountKey(sender.address)
+
             this.setState({
                 accountUpdateMsgVisible: true,
                 accountUpdateMsg: `Account is successfully updated! `,
@@ -271,7 +268,6 @@ class AccountUpdateWithMultiSigKey extends Component {
                 }, 3000)
             }
         }catch (e){
-            console.log(e)
             this.setState({
                 decryptMessage: e.toString(),
                 decryptMessageVisible: true,
