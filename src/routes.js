@@ -8,6 +8,7 @@ import FunctionSignature from "./views/functionSignature";
 import FunctionCall from "./views/functionCall";
 import ABIEncoder from "./views/ABIEncoder";
 import ABIDecoder from "./views/ABIDecoder";
+import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
 
 var routes =
     [{
@@ -110,7 +111,7 @@ var routes =
             {
                 path: "/accountUpdateWithRoleBasedKey",
                 name: "Update Account with RoleBasedKey",
-                component: null,
+                component: AccountUpdateWithRoleBasedKey,
             }
         ]
     }]
