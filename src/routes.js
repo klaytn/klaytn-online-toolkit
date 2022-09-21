@@ -2,7 +2,7 @@ import GenerateKeystore from "./views/generateKeystore";
 import KeccakFromString from "./views/keccak256";
 import LoadKeystore from "./views/loadKeystore";
 import SendAndSignTx from "./views/multisigTx";
-import AccountUpdate from "./views/AccountUpdate";
+import AccountUpdateWithMultiSigKey from "./views/AccountUpdateMultiSig";
 import DetectKCT from "./views/detectKCT";
 import FunctionSignature from "./views/functionSignature";
 import FunctionCall from "./views/functionCall";
@@ -103,9 +103,14 @@ var routes =
                 component: KeccakFromString
             },
             {
-                path: "/accountUpdate",
+                path: "/accountUpdateWithMultiSigKey",
                 name: "Update Account with MultiSigKey",
-                component: AccountUpdate,
+                component: AccountUpdateWithMultiSigKey,
+            },
+            {
+                path: "/accountUpdateWithRoleBasedKey",
+                name: "Update Account with RoleBasedKey",
+                component: null,
             }
         ]
     }]
