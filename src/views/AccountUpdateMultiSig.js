@@ -17,7 +17,7 @@ import { networkLinks } from '../constants/klaytnNetwork';
 import Caver from 'caver-js'
 let caver;
 
-class AccountUpdate extends Component {
+class AccountUpdateWithMultiSigKey extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -486,4 +486,4 @@ class AccountUpdate extends Component {
     }
 }
 
-export default AccountUpdate;
+export default AccountUpdateWithMultiSigKey;
