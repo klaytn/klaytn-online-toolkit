@@ -1,5 +1,5 @@
 import React  from "react";
-import {Row, Col, FormGroup, InputGroup, Input, InputGroupText} from "reactstrap"
+import { FormGroup, InputGroup, Input, InputGroupText } from "reactstrap"
 import '../../assets/css/black-dashboard-react.css'
 
 const InputField = ({ value, label, name, placeholder, type, unit, onChange, readOnly}) => (
