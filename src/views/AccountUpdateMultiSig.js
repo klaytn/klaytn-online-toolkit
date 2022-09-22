@@ -31,12 +31,12 @@ class AccountUpdateWithMultiSigKey extends Component {
             senderKeystorePassword: "",
             senderDecryptMessage: "",
             senderDecryptMessageVisible: false,
-            senderPrivateKey: "",
             weightList: [],
             threshold: "",
             accountUpdateMsg: null,
             accountUpdateMsgVisible: false,
             accountUpdateButtonDisabled: false,
+            txHash: "",
         }
     }
 
@@ -129,18 +129,18 @@ class AccountUpdateWithMultiSigKey extends Component {
         try {
             if (senderKeystoreJSON != null) {
                 const keyring = caver.wallet.keyring.decrypt(senderKeystoreJSON, senderKeystorePassword)
-                let privateKey;
-                if (keyring.type == "SingleKeyring")
-                {
-                    privateKey = keyring.key.privateKey
+
+                //update wallet
+                if(caver.wallet.isExisted(keyring.address)){
+                    caver.wallet.updateKeyring(keyring)
                 }
                 else {
-                    throw Error('Not Single Keyring Keystore!')
+                    caver.wallet.add(keyring)
                 }
 
                 this.setState ({
-                    senderPrivateKey: privateKey,
                     senderDecryptMessage: "Decryption succeeds!",
+                    senderAddress: keyring.address,
                     senderDecryptMessageVisible: true,
                 })
 
@@ -155,6 +155,7 @@ class AccountUpdateWithMultiSigKey extends Component {
             this.setState({
                 senderDecryptMessage: e.toString(),
                 senderDecryptMessageVisible: true,
+                senderAddress: ""
             })
             setTimeout(()=>{
                 this.setState({
@@ -166,9 +167,9 @@ class AccountUpdateWithMultiSigKey extends Component {
     }
 
     accountUpdate = async(e) => {
-        const { senderPrivateKey, privateKeyList, weightList, threshold} = this.state;
+        const { senderAddress, privateKeyList, weightList, threshold} = this.state;
         try {
-            if (senderPrivateKey === "") {
+            if (senderAddress === "") {
                 throw Error("Sender Keystore is not uploaded!")
             }
 
@@ -178,13 +179,6 @@ class AccountUpdateWithMultiSigKey extends Component {
             this.setState({
                 accountUpdateButtonDisabled: true
             })
-            let sender = caver.wallet.keyring.createFromPrivateKey(senderPrivateKey)
-            if(caver.wallet.isExisted(sender.address)){
-                caver.wallet.updateKeyring(sender)
-            }
-            else {
-                caver.wallet.add(sender)
-            }
 
             let newKeys = []
             for (const element of privateKeyList)
@@ -192,16 +186,16 @@ class AccountUpdateWithMultiSigKey extends Component {
                 newKeys.push(...element.key)
             }
 
-            const newKeyring = caver.wallet.keyring.create(sender.address, newKeys)
+            const newKeyring = caver.wallet.keyring.create(senderAddress, newKeys)
             const account = newKeyring.toAccount({threshold: threshold, weights: weightList})
 
             const updateTx = caver.transaction.accountUpdate.create({
-                from: sender.address,
+                from: senderAddress,
                 account: account,
                 gas: 100000,
             })
 
-            await caver.wallet.sign(sender.address, updateTx)
+            await caver.wallet.sign(senderAddress, updateTx)
 
             const receipt = await caver.rpc.klay.sendRawTransaction(updateTx)
 
@@ -210,20 +204,15 @@ class AccountUpdateWithMultiSigKey extends Component {
             this.setState({
                 accountUpdateMsgVisible: true,
                 accountUpdateMsg: `Account is successfully updated! `,
-                accountUpdateButtonDisabled: false
+                accountUpdateButtonDisabled: false,
+                txHash: receipt.transactionHash
             })
-
-            setTimeout(()=>{
-                this.setState({
-                    accountUpdateMsgVisible: false,
-                    accountUpdateMsg: ""
-                })
-            }, 5000)
         } catch (e) {
             this.setState({
                 accountUpdateMsg: e.toString(),
                 accountUpdateMsgVisible: true,
                 accountUpdateButtonDisabled: false,
+                txHash: ""
             })
 
             setTimeout(()=>{
@@ -294,7 +283,9 @@ class AccountUpdateWithMultiSigKey extends Component {
             threshold,
             accountUpdateMsgVisible,
             accountUpdateMsg,
-            accountUpdateButtonDisabled
+            accountUpdateButtonDisabled,
+            txHash,
+            network
         } = this.state
         return (
             <Column>
@@ -470,7 +461,7 @@ class AccountUpdateWithMultiSigKey extends Component {
                         <Row>
                             <Col md="8">
                                 <CardText style={{color:"#c221a9"}}>
-                                    {accountUpdateMsg}
+                                    {accountUpdateMsg} {txHash != "" && <a href={networkLinks[network]["finder"]+txHash}>{txHash}</a>}
                                 </CardText>
                             </Col>
                         </Row>
