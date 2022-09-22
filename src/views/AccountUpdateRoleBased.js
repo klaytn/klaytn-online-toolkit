@@ -36,7 +36,6 @@ class AccountUpdateWithRoleBasedKey extends Component {
             senderKeystorePassword: "",
             senderDecryptMessage: "",
             senderDecryptMessageVisible: false,
-            senderPrivateKey: "",
             senderAddress: "",
             weightList: [[], [], []],
             threshold: ["", "", ""],
@@ -142,20 +141,16 @@ class AccountUpdateWithRoleBasedKey extends Component {
         try {
             if (senderKeystoreJSON != null) {
                 const keyring = caver.wallet.keyring.decrypt(senderKeystoreJSON, senderKeystorePassword)
-                let privateKey;
-                let address;
-                if (keyring.type == "SingleKeyring")
-                {
-                    privateKey = keyring.key.privateKey
-                    address = keyring.address
+
+                if(caver.wallet.isExisted(keyring.address)){
+                    caver.wallet.updateKeyring(keyring)
                 }
                 else {
-                    throw Error('Not Single Keyring Keystore!')
+                    caver.wallet.add(keyring)
                 }
 
                 this.setState ({
-                    senderPrivateKey: privateKey,
-                    senderAddress: address,
+                    senderAddress: keyring.address,
                     senderDecryptMessage: "Decryption succeeds!",
                     senderDecryptMessageVisible: true,
                 })
@@ -172,7 +167,6 @@ class AccountUpdateWithRoleBasedKey extends Component {
                 senderDecryptMessage: e.toString(),
                 senderDecryptMessageVisible: true,
                 senderAddress: "",
-                senderPrivateKey: "",
             })
             setTimeout(()=>{
                 this.setState({
@@ -184,9 +178,9 @@ class AccountUpdateWithRoleBasedKey extends Component {
     }
 
     accountUpdate = async(e) => {
-        const { senderAddress, senderPrivateKey, privateKeyList, weightList, threshold} = this.state;
+        const { senderAddress, privateKeyList, weightList, threshold} = this.state;
         try {
-            if (senderPrivateKey === "") {
+            if (senderAddress === "") {
                 throw Error("Sender Keystore is not uploaded!")
             }
 
@@ -196,13 +190,6 @@ class AccountUpdateWithRoleBasedKey extends Component {
             this.setState({
                 accountUpdateButtonDisabled: true
             })
-            let sender = caver.wallet.keyring.create(senderAddress, senderPrivateKey)
-            if(caver.wallet.isExisted(sender.address)){
-                caver.wallet.updateKeyring(sender)
-            }
-            else {
-                caver.wallet.add(sender)
-            }
 
             // Create new Account with RoleBasedKey
             let newKeys = [[], [], []]
@@ -221,16 +208,16 @@ class AccountUpdateWithRoleBasedKey extends Component {
                 }
             }
 
-            const newKeyring = caver.wallet.keyring.create(sender.address, newKeys)
+            const newKeyring = caver.wallet.keyring.create(senderAddress, newKeys)
             const account = newKeyring.toAccount(newKeyWeight)
 
             const updateTx = caver.transaction.accountUpdate.create({
-                from: sender.address,
+                from: senderAddress,
                 account: account,
                 gas: 500000,
             })
 
-            await caver.wallet.sign(sender.address, updateTx)
+            await caver.wallet.sign(senderAddress, updateTx)
 
             const receipt = await caver.rpc.klay.sendRawTransaction(updateTx)
 
