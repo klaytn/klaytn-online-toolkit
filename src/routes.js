@@ -2,13 +2,14 @@ import GenerateKeystore from "./views/generateKeystore";
 import KeccakFromString from "./views/keccak256";
 import LoadKeystore from "./views/loadKeystore";
 import SendAndSignTx from "./views/multisigTx";
-import AccountUpdate from "./views/AccountUpdate";
+import AccountUpdateWithMultiSigKey from "./views/AccountUpdateMultiSig";
 import DetectKCT from "./views/detectKCT";
 import FunctionSignature from "./views/functionSignature";
 import FunctionCall from "./views/functionCall";
 import ABIEncoder from "./views/ABIEncoder";
 import ABIDecoder from "./views/ABIDecoder";
-import txHashDecoder from "./views/txHashDecoder";
+import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
+import KIP7Deploy from "./views/KIP7Deploy";
 
 var routes =
     [{
@@ -44,7 +45,7 @@ var routes =
             {
                 path: "/txHashDecode",
                 name: "Decoder from txHash",
-                component: txHashDecoder
+                component: null
             },
             {
                 path:"/sendMultisigTx",
@@ -82,6 +83,11 @@ var routes =
                 name: "KCT Detection",
                 component: DetectKCT,
             },
+            {
+                path: "/KIP7Deploy",
+                name: "Deploy KIP-7 Token",
+                component: KIP7Deploy,
+            }
         ]
     },
     {
@@ -104,9 +110,14 @@ var routes =
                 component: KeccakFromString
             },
             {
-                path: "/accountUpdate",
+                path: "/accountUpdateWithMultiSigKey",
                 name: "Update Account with MultiSigKey",
-                component: AccountUpdate,
+                component: AccountUpdateWithMultiSigKey,
+            },
+            {
+                path: "/accountUpdateWithRoleBasedKey",
+                name: "Update Account with RoleBasedKey",
+                component: AccountUpdateWithRoleBasedKey,
             }
         ]
     }]

@@ -276,11 +276,15 @@ class SendAndSignTx extends Component {
                         <p style={{color:"#6c757d"}}>
                             This page is for sending a value transfer transaction with a <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">multisig account</a>
                             (the account that owns Multiple Signing Keys).
+                            You can use this page to transfer value with the account with Role-based keys or a single key.
                         </p>
                     </CardHeader>
                     <CardBody>
                         <h3 className="title">Transaction Information</h3>
-                        <p style={{color:"#6c757d"}}>Select Mainnet or Testnet. Enter the sender address, recipient address, and KLAY amount.</p>
+                        <p style={{color:"#6c757d"}}>
+                            Select Mainnet or Testnet. Enter the sender address, recipient address, and KLAY amount.
+                            If you'd like to transfer KIP-7 or ERC-20 token, enter the contract address and token amount instead of KLAY amount.
+                        </p>
                         <Row>
                             <Col md="4">
                                 <FormGroup>
