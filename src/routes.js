@@ -8,6 +8,8 @@ import FunctionSignature from "./views/functionSignature";
 import FunctionCall from "./views/functionCall";
 import ABIEncoder from "./views/ABIEncoder";
 import ABIDecoder from "./views/ABIDecoder";
+import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
+import KIP7Deploy from "./views/KIP7Deploy";
 
 var routes =
     [{
@@ -81,6 +83,11 @@ var routes =
                 name: "KCT Detection",
                 component: DetectKCT,
             },
+            {
+                path: "/KIP7Deploy",
+                name: "Deploy KIP-7 Token",
+                component: KIP7Deploy,
+            }
         ]
     },
     {
@@ -110,7 +117,7 @@ var routes =
             {
                 path: "/accountUpdateWithRoleBasedKey",
                 name: "Update Account with RoleBasedKey",
-                component: null,
+                component: AccountUpdateWithRoleBasedKey,
             }
         ]
     }]
