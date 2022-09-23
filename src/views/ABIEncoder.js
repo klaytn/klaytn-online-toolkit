@@ -15,7 +15,8 @@ class ABIEncoder extends Component {
         this.state = {
             result: "",
             argumentTypes: "",
-            argumentValues: ""
+            argumentValues: "",
+            copy: ""
         }
     }
 
@@ -24,6 +25,12 @@ class ABIEncoder extends Component {
         this.setState({
             [name]: value
         })
+    }
+
+    copyToClipboard = () => {
+        const el = this.copy
+        el.select()
+        document.execCommand("copy")
     }
 
     encodeABI = async() => {
@@ -66,7 +73,7 @@ class ABIEncoder extends Component {
                                         className="form-control"
                                         value={argumentTypes}
                                         onChange={this.handleInputChange}
-                                        placeholder='Argument Types (Example1 : "bool", "address" || Example2 : "uint8[]", "string")'
+                                        placeholder='Argument Types ( Example1 : "bool", "address" || Example2 : "uint8[]", "string" )'
                                         style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="argumentTypes"
                                     />
@@ -98,14 +105,18 @@ class ABIEncoder extends Component {
                             { result &&
                                 result !== INPUT_ERROR_MSG ?
                                 <Row>
-                                    <Col md= "12">
+                                    <Col>
                                         <Label>Result</Label>
                                         <textarea
                                             className='form-control'
+                                            ref={(textarea) => this.copy = textarea}
                                             style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                             value={result}
                                             readOnly
                                         />
+                                        <Button onClick={() => this.copyToClipboard()}>
+                                            Copy To Clipboard
+                                        </Button>
                                     </Col>
                                 </Row>
                                 : <p style={{color:"#c221a9"}}> {result} </p>
