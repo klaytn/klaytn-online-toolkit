@@ -45,7 +45,7 @@ var routes =
             {
                 path: "/txHashDecode",
                 name: "Decoder from txHash",
-                component: TxHashDecoder
+                component: null
             },
             {
                 path:"/sendMultisigTx",
