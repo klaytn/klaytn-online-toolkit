@@ -16,7 +16,9 @@ class TxHashDecoder extends Component {
             network: "mainnet",
             result: "",
             rawResult: "",
-            txHash: ""
+            txHash: "",
+            tx: "",
+            rawTx: ""
         }
     }
 
@@ -49,13 +51,13 @@ class TxHashDecoder extends Component {
         }
     }
 
-    copyTxToClipboard = (e)=>{
+    copyTxToClipboard = ()=>{
         const el = this.tx
         el.select()
         document.execCommand("copy")
     }
 
-    copyRawTxToClipboard = (e)=>{
+    copyRawTxToClipboard = ()=>{
         const el = this.rawTx
         el.select()
         document.execCommand("copy")
@@ -73,27 +75,26 @@ class TxHashDecoder extends Component {
                             On this page, you can query a transaction by transaction hash from the Klaytn network to get a caver transaction instance.
                             </p>
                             <Row>
-                            <Col md="4">
-                                <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
-                                    <option value="mainnet"> Mainnet</option>
-                                    <option value="testnet"> Testnet</option>
-                                </select>
-                            </Col>
-                        </Row>
+                                <Col md="4">
+                                    <select onChange={(e)=>this.handleNetworkChange(e)} className="form-control">
+                                        <option value="mainnet"> Mainnet</option>
+                                        <option value="testnet"> Testnet</option>
+                                    </select>
+                                </Col>
+                            </Row>
                         </CardHeader>
                         <CardBody>
                             <Row>
-                                <Col md = "12">
+                                <Col>
                                     <Label>Transaction Hash</Label>
                                     <p style={{color:"#6c757d"}}>
                                     Enter the Transaction Hash.
                                     </p>
                                     <textarea
                                         className="form-control"
-                                        ref={(textarea) => this.inputArea = textarea}
                                         value={txHash}
                                         onChange={this.handleInputChange}
-                                        placeholder="TxHash (input example : 0x272272d25387cd8b0d3bf842d0d9fa2dee7c014ae66c3fd7a53865453d9bc7cc)"
+                                        placeholder="TxHash ( Example : 0x272272d25387cd8b0d3bf842d0d9fa2dee7c014ae66c3fd7a53865453d9bc7cc )"
                                         style={{height:"80px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="txHash"
                                     />
@@ -101,13 +102,14 @@ class TxHashDecoder extends Component {
                             </Row>
                             <Row>
                                 <Col md = "4">
-                                    <Button onClick={(e) => this.decodeTxHash(e)}>
+                                    <Button onClick={(e) => this.decodeTxHash()}>
                                         DECODE
                                     </Button>
                                 </Col>
                             </Row>
-                            { result && result != INPUT_ERROR_MSG ?
-                                <Col md = "12">
+                            { result &&
+                                result != INPUT_ERROR_MSG ?
+                                <Col>
                                     <Row>
                                         <Label>Transaction</Label>
                                         <textarea
