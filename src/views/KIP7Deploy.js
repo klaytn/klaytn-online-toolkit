@@ -34,7 +34,7 @@ class KIP7Deploy extends Component {
             tokenSymbol: "",
             decimal: "",
             initialSupply: "",
-            contracAddress: "",
+            contractAddress: "",
         }
     }
 
@@ -150,14 +150,14 @@ class KIP7Deploy extends Component {
                 deployMsgVisible: true,
                 deployMsg: `Token is successfully deployed! `,
                 deployButtonDisabled: false,
-                contracAddress: kip7.options.address
+                contractAddress: kip7.options.address
             })
         } catch (e) {
             this.setState({
                 deployMsg: e.toString(),
                 deployMsgVisible: true,
                 deployButtonDisabled: false,
-                contracAddress: ""
+                contractAddress: ""
             })
 
             setTimeout(()=>{
@@ -177,7 +177,7 @@ class KIP7Deploy extends Component {
             deployMsgVisible,
             deployMsg,
             deployButtonDisabled,
-            contracAddress,
+            contractAddress,
             network,
             tokenName,
             tokenSymbol,
@@ -316,9 +316,11 @@ class KIP7Deploy extends Component {
                         {deployMsgVisible &&
                         <Row>
                             <Col md="8">
-                                <CardText style={{color:"#c221a9"}}>
-                                    {deployMsg} {contracAddress != "" && <a href={networkLinks[network]["finderAddress"]+contracAddress}>{contracAddress}</a>}
-                                </CardText>
+                                {deployMsg != "" && contractAddress === "" && <CardText style={{color:"#c221a9"}}> {deployMsg} </CardText>}
+                                {deployMsg != "" && contractAddress != "" &&
+                                <CardText>
+                                    {deployMsg} Deployed token info can be found here: <a href={networkLinks[network]["finderToken"]+contractAddress}>{contractAddress}</a>
+                                </CardText>}
                             </Col>
                         </Row>
                         }
