@@ -11,6 +11,9 @@ import ABIDecoder from "./views/ABIDecoder";
 import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
 import KIP7Deploy from "./views/KIP7Deploy";
 
+
+import RLPEncoder from "./views/RLPEncoder";
+
 var routes =
     [{
         name: "Block Info",
@@ -35,7 +38,7 @@ var routes =
             {
                 path: "/rlpEncode",
                 name: "RLP Encoder",
-                component: null,
+                component: RLPEncoder,
             },
             {
                 path: "/rlpDecode",
