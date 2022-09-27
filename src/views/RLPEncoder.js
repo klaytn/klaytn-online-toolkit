@@ -10,63 +10,72 @@ const INPUT_ERROR_MSG = "[ERROR] PLEASE ENTER THE CORRECT FORMAT OF INPUTS!"
 const UNREGISTERED_ERROR_MSG = "[ERROR] UNREGISTERED ACCOUNT!";
 
 const types = {
-    "legacyTransaction" : "Legacy Transaction ( REQUIRED : gas )",
-    "valueTransfer" : "Value Transfer ( REQUIRED : value, from, to, gas )",
-    "valueTransferMemo" : "Value Transfer Memo ( REQUIRED : value, from, to, input, gas)",
+    "legacyTransaction" : "Legacy Transaction ( REQUIRED : to, gas )",
+    "valueTransfer" : "Value Transfer ( REQUIRED : from, to, value, gas )",
+    "valueTransferMemo" : "Value Transfer Memo ( REQUIRED : from, to, value, gas, input)",
     "accountUpdate" : "Account Update ( REQUIRED : from, gas )",
     "smartContractDeploy" : "Smart Contract Deploy ( REQUIRED : from, input, gas )",
     "smartContractExecution" : "Smart Contract Execution ( REQUIRED : from, to, input, gas )",
     "cancel" : "Cancel ( REQUIRED : from, gas )",
     "chainDataAnchoring" : "Chain Data Anchoring ( REQUIRED : from, input, gas)",
     "ethereumAccessList" : "Ethereum Access List ( REQUIRED : to, gas )",
-    "ethereumDynamicFee" : "Ethereum Dynamic Fee ( REQUIRED : gas )"
+    "ethereumDynamicFee" : "Ethereum Dynamic Fee ( REQUIRED : from, gas )"
 }
 
 const examples = {
-    "legacyTransaction" : `{
+    "legacyTransaction" : `[JSON FORMAT EXAMPLE]
+{
     "to": "0x9957dfd92e4b70f91131c573293343bc5f21f215",
     "value": "3",
     "gas": "25000"
 }`,
-    "valueTransfer" : `{
+    "valueTransfer" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0x7d0104ac150f749d36bb34999bcade9f2c0bd2e6",
     "to": "0x9957dfd92e4b70f91131c573293343bc5f21f215",
     "value": "5",
     "gas": "25000"
 }`,
-    "valueTransferMemo" : `{
+    "valueTransferMemo" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0x7d0104ac150f749d36bb34999bcade9f2c0bd2e6",
     "to": "0x9957dfd92e4b70f91131c573293343bc5f21f215",
     "value": "7",
     "gas": "25000",
     "input": "0x68656c6c6f"
 }`,
-    "accountUpdate" : `{
+    "accountUpdate" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0xeeec7a5d061e90f62153a728d07f8d39139a83b2",
     "gas": "25000"
 }`,
-    "smartContractDeploy" : `{
+    "smartContractDeploy" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0xe59327896f78f526c1b78c2ffd22f8a8c67055c6",
     "input": "0x60806",
     "gas": "100000"
 }`,
-    "smartContractExecution" : `{
+    "smartContractExecution" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0xbe02aba56bae1624e2c4f029e3a79308e2a19e98",
     "to": "0x42d877932366dcaff751405c3185393f2803962d",
     "input": "0xa905942",
     "gas": "90000"
 }`,
-    "cancel" : `{
+    "cancel" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0x7d0104ac150f749d36bb34999bcade9f2c0bd2e6",
     "nonce": "12",
     "gas": "25000"
 }`,
-    "chainDataAnchoring" : `{
+    "chainDataAnchoring" : `[JSON FORMAT EXAMPLE]
+{
     "from": "0x7d0104ac150f749d36bb34999bcade9f2c0bd2e6",
     "gas": "50000",
     "input": "0xf8a6a3d"
 }`,
-    "ethereumAccessList" : `{
+    "ethereumAccessList" : `[JSON FORMAT EXAMPLE]
+{
     "to": "0x9957dfd92e4b70f91131c573293343bc5f21f215",
     "value": "6",
     "gas": "40000",
@@ -80,7 +89,8 @@ const examples = {
         }
     ]
 }`,
-    "ethereumDynamicFee" : `{
+    "ethereumDynamicFee" : `[JSON FORMAT EXAMPLE]
+{
     "to":"0x1fc92c23f71a7de4cdb4394a37fc636986a0f484",
     "gas":"25"
 }`
@@ -176,11 +186,7 @@ class RLPEncoder extends Component {
                 encodedTx = await caver.transaction.ethereumAccessList.create(jsonTx);
             }
             else if( txType === "ethereumDynamicFee"){
-                encodedTx = await caver.transaction.ethereumDynamicFee.create({
-    "to":"0x1fc92c23f71a7de4cdb4394a37fc636986a0f484",
-    "gas":"25"
-})
-                //encodedTx = await caver.transaction.ethereumDynamicFee.create(jsonTx);
+                encodedTx = await caver.transaction.ethereumDynamicFee.create(jsonTx);
             }
             await encodedTx.fillTransaction();
             this.setState({ result : encodedTx.getRLPEncoding() });
@@ -229,7 +235,7 @@ class RLPEncoder extends Component {
                                             <option value="cancel"> Cancel</option>
                                             <option value="chainDataAnchoring"> Chain Data Anchoring</option>
                                             <option value="ethereumAccessList"> Ethereum Access List</option>
-                                            <option value="ethereumDynamicFee"> Ethereum Dynamic Fee</option>
+                                            {/* <option value="ethereumDynamicFee"> Ethereum Dynamic Fee</option> */}
                                         </select>
                                     </FormGroup>
                                 </Col>
