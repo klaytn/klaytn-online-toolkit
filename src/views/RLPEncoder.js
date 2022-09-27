@@ -51,16 +51,16 @@ const examples = {
 }`,
     "smartContractDeploy" : `[JSON FORMAT EXAMPLE]
 {
-    "from": "0xe59327896f78f526c1b78c2ffd22f8a8c67055c6",
-    "input": "0x60806",
-    "gas": "100000"
+    "from": "0x8b56758b52cc56a7a0ab4c9d7698c73737edccba",
+    "input": "0xb6b55f25000000000000000000000000000000000000000000000025424176fc73dd7156",
+    "gas": "139944"
 }`,
     "smartContractExecution" : `[JSON FORMAT EXAMPLE]
 {
-    "from": "0xbe02aba56bae1624e2c4f029e3a79308e2a19e98",
-    "to": "0x42d877932366dcaff751405c3185393f2803962d",
-    "input": "0xa905942",
-    "gas": "90000"
+    "from": "0xbb42218d2b2e6f0ea253c3b3917ed377c5aa86be",
+    "to": "0x2bc652f0a7cedcaa334afe73520eeeaea6017739",
+    "input": "0xa9059cbb0000000000000000000000000e9648a7d5fa246a04b342c74a4e5e75b45feb7e0000000000000000000000000000000000000000000000000000000000000005",
+    "gas": "59138"
 }`,
     "cancel" : `[JSON FORMAT EXAMPLE]
 {
@@ -70,9 +70,9 @@ const examples = {
 }`,
     "chainDataAnchoring" : `[JSON FORMAT EXAMPLE]
 {
-    "from": "0x7d0104ac150f749d36bb34999bcade9f2c0bd2e6",
-    "gas": "50000",
-    "input": "0xf8a6a3d"
+    "from": "0xb5d6e83dc403a2074ce54b621519e5e7376770ff",
+    "gas": "100000",
+    "input": "0xf8b480b8b1f8afa06c3cab56d8b7b7c94e7d3f311f2900ef93e0aede964a1db5939e61d4a707fe39a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470a0f045bd6e3e47113e707a49effc1b9c7035534ce8662dfda3a0b651fa64b13575a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470a0c6dec550c15f517d4a57503aeb9222b7d20a582b9f5d631b9e5e6fe13711ef8b83743088820258820145"
 }`,
     "ethereumAccessList" : `[JSON FORMAT EXAMPLE]
 {
@@ -171,6 +171,7 @@ class RLPEncoder extends Component {
                 encodedTx = await caver.transaction.accountUpdate.create(jsonTx);
             }
             else if( txType === "smartContractDeploy"){
+                console.log(jsonTx);
                 encodedTx = await caver.transaction.smartContractDeploy.create(jsonTx);
             }
             else if( txType === "smartContractExecution"){
