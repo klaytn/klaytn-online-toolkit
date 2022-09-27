@@ -45,7 +45,6 @@ class BlockHashDecoder extends Component {
     decodeBlockHash = async () => {
         const { blockHash } = this.state;
         try{
-            console.log(blockHash);
             const res = await caver.rpc.klay.getBlockByHash(blockHash);
             if (res){
                 this.setState({ result: JSON.stringify(res, null, 2) })
@@ -54,7 +53,6 @@ class BlockHashDecoder extends Component {
             }
         }
         catch(err){
-            console.log(err);
             this.setState({ result: INPUT_ERROR_MSG })
         }
     }
