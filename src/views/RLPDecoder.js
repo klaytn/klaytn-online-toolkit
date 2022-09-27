@@ -70,7 +70,7 @@ class RLPDecoder extends Component {
                                         value={rlpEncoded}
                                         onChange={this.handleInputChange}
                                         placeholder="RLP-Encoded ( Example : 0x38e40c850ba43b74008261a8947d0104ac150f749d36bb34999bcade9f2c0bd2e6c4c3018080 )"
-                                        style={{height:"80px", backgroundColor: "#adb5bd", color: "black"}}
+                                        style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="rlpEncoded"
                                     />
                                 </Col>
@@ -89,7 +89,7 @@ class RLPDecoder extends Component {
                                         <Label>Transaction</Label>
                                         <textarea
                                             className="form-control"
-                                            ref={(textarea) => this.tx = textarea}
+                                            ref={(textarea) => this.rlpEncoded = textarea}
                                             style={{height:"600px", backgroundColor: "#adb5bd", color: "black"}}
                                             value={result}
                                             readOnly
