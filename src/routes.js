@@ -11,6 +11,11 @@ import ABIDecoder from "./views/ABIDecoder";
 import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
 import KIP7Deploy from "./views/KIP7Deploy";
 
+
+
+
+import BlockHashDecoder from "./views/blockHashDecoder"
+
 var routes =
     [{
         name: "Block Info",
@@ -24,7 +29,7 @@ var routes =
             {
                 path: "/blockhashDecode",
                 name: "Decoder from BlockHash",
-                component: null,
+                component: BlockHashDecoder,
             }
         ]
     },
