@@ -2,12 +2,12 @@ export const networkLinks = {
     "testnet" : {
         "rpc": "https://public-node-api.klaytnapi.com/v1/baobab",
         "finder": "https://baobab.klaytnfinder.io/tx/",
-        "finderAddress": "https://baobab.klaytnfinder.io/account/"
+        "finderToken": "https://baobab.klaytnfinder.io/token/"
     },
     "mainnet": {
         "rpc": "https://public-node-api.klaytnapi.com/v1/cypress",
         "finder": "https://www.klaytnfinder.io/tx/",
-        "finderAddress": "https://www.klaytnfinder.io/account/",
+        "finderToken": "https://www.klaytnfinder.io/token/",
     },
 }
 
