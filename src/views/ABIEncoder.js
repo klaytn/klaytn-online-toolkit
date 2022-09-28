@@ -4,21 +4,20 @@ import '../../assets/css/black-dashboard-react.css';
 import Caver from 'caver-js'
 import { networkLinks } from '../constants/klaytnNetwork'
 import Column from "../components/Column"
-let caver;
+
+const caver = new Caver(new Caver.providers.HttpProvider(networkLinks["mainnet"]["rpc"]));
+
+const INPUT_ERROR_MSG = "[ERROR] PLEASE ENTER THE CORRECT FORMAT OF INPUTS!"
 
 class ABIEncoder extends Component {
     constructor(props){
-        super(props);
+        super(props)
         this.state = {
-            network: "mainnet",
             result: "",
             argumentTypes: "",
-            argumentValues: ""
+            argumentValues: "",
+            copy: ""
         }
-    }
-
-    componentDidMount(){
-        caver = new Caver(new Caver.providers.HttpProvider(networkLinks[this.state.network]["rpc"]))
     }
 
     handleInputChange = (e) => {
@@ -28,35 +27,18 @@ class ABIEncoder extends Component {
         })
     }
 
+    copyToClipboard = () => {
+        const el = this.copy
+        el.select()
+        document.execCommand("copy")
+    }
+
     encodeABI = async() => {
-        const { argumentTypes, argumentValues } = this.state;
-        let typesArray;
-        let parameters;
         try{
-            typesArray = argumentTypes.split(' ');
-            let temp = argumentValues.split(' ');
-            parameters = temp.map((elem) => {
-                if (elem[0] === '['){
-                    return elem.slice(1, -1).split(',')
-                }
-                else{
-                    return elem
-                }
-            })
-            for (let i = 0; i < typesArray.length; i++){
-                if (typesArray[i] == "bool"){
-                    if(parameters[i] == "true"){
-                        parameters[i] = true;
-                    }
-                    else if(parameters[i] == "false"){
-                        parameters[i] = false;
-                    }
-                    else{
-                        throw new Error();
-                    }
-                }
-            }
-            const res = await caver.abi.encodeParameters(typesArray, parameters)
+            const { argumentTypes, argumentValues } = this.state;
+            const types = JSON.parse('[' + argumentTypes + ']');
+            const values = JSON.parse('[' + argumentValues + ']');
+            const res = await caver.abi.encodeParameters(types, values)
             if (res){
                 this.setState({ result: res })
             }else{
@@ -64,7 +46,7 @@ class ABIEncoder extends Component {
             }
         }
         catch(err){
-            this.setState({ result: "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" })
+            this.setState({ result: INPUT_ERROR_MSG })
         }
     }
 
@@ -82,34 +64,32 @@ class ABIEncoder extends Component {
                         </CardHeader>
                         <CardBody>
                             <Row>
-                                <Col md = "12">
+                                <Col>
                                     <Label>Argument Types</Label>
                                     <p style={{color:"#6c757d"}}>
-                                    Enter the space-separated value types.
+                                    Enter the comma-separated value types.
                                     </p>
                                     <textarea
                                         className="form-control"
-                                        ref={(textarea) => this.inputArea = textarea}
                                         value={argumentTypes}
                                         onChange={this.handleInputChange}
-                                        placeholder="Argument Types (input example : bool address)"
+                                        placeholder='Argument Types ( Example1 : "bool", "address" || Example2 : "uint8[]", "string" )'
                                         style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="argumentTypes"
                                     />
                                 </Col>
                             </Row>
                             <Row>
-                                <Col md = "12">
+                                <Col>
                                     <Label>Argument Values</Label>
                                     <p style={{color:"#6c757d"}}>
-                                    Enter the space-separated values to match the number of types indicated above, using square brackets [] to wrap arrays.<br></br>
+                                    Enter the comma-separated values to match the number of types shown above.<br></br>
                                     </p>
                                     <textarea
                                         className="form-control"
-                                        ref={(textarea) => this.inputArea = textarea}
                                         value={argumentValues}
                                         onChange={this.handleInputChange}
-                                        placeholder="Argument Values (input example : true 0x77656c636f6d6520746f20657468657265756d2e)"
+                                        placeholder='Argument Values (Example1 : true, "0x77656c636f6d6520746f20657468657265756d2e" || Example2 : [34, 255], "Hello!%")'
                                         style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="argumentValues"
                                     />
@@ -117,27 +97,30 @@ class ABIEncoder extends Component {
                             </Row>
                             <Row>
                                 <Col md="4">
-                                    <Button onClick={(e) => this.encodeABI(e)}>
+                                    <Button onClick={(e) => this.encodeABI()}>
                                         ENCODE
                                     </Button>
                                 </Col>
                             </Row>
-                            { result != "" ?
-                                result != "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" ?
+                            { result &&
+                                result !== INPUT_ERROR_MSG ?
                                 <Row>
-                                    <Col md= "12">
+                                    <Col>
                                         <Label>Result</Label>
                                         <textarea
                                             className='form-control'
-                                            ref={(textarea) => this.textArea = textarea}
+                                            ref={(textarea) => this.copy = textarea}
                                             style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                             value={result}
                                             readOnly
                                         />
+                                        <Button onClick={() => this.copyToClipboard()}>
+                                            Copy To Clipboard
+                                        </Button>
                                     </Col>
                                 </Row>
                                 : <p style={{color:"#c221a9"}}> {result} </p>
-                            : null}
+                            }
                         </CardBody>
                     </Card>
                 </Column>
