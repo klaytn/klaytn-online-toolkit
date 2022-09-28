@@ -4,21 +4,20 @@ import '../../assets/css/black-dashboard-react.css';
 import Caver from 'caver-js'
 import { networkLinks } from '../constants/klaytnNetwork'
 import Column from "../components/Column"
-let caver;
+
+const caver = new Caver(new Caver.providers.HttpProvider(networkLinks["mainnet"]["rpc"]));
+
+const INPUT_ERROR_MSG = "[ERROR] PLEASE ENTER THE CORRECT FORMAT OF INPUTS!";
 
 class ABIDecoder extends Component {
     constructor(props){
         super(props);
         this.state = {
-            network: "mainnet",
             result: "",
             argumentTypes: "",
-            encodedData: ""
+            encodedData: "",
+            copy: ""
         }
-    }
-
-    componentDidMount(){
-        caver = new Caver(new Caver.providers.HttpProvider(networkLinks[this.state.network]["rpc"]))
     }
 
     handleInputChange = (e) => {
@@ -28,26 +27,25 @@ class ABIDecoder extends Component {
         })
     }
 
+    copyToClipboard = () => {
+        const el = this.copy
+        el.select()
+        document.execCommand("copy")
+    }
+
     decodeABI = async() => {
-        const { argumentTypes, encodedData } = this.state;
-        let typesArray;
-        let hexstring;
         try{
-            typesArray = argumentTypes.split(' ');
-            hexstring = encodedData
-            const res = await caver.abi.decodeParameters(typesArray, hexstring)
+            const { argumentTypes, encodedData } = this.state;
+            const types = JSON.parse('[' + argumentTypes + ']');
+            const res = await caver.abi.decodeParameters(types, encodedData)
             if (res){
-                let tempArr = []
-                for (let i = 0; i < res.__length__; i++){
-                    tempArr.push(res[i])
-                }
-                this.setState({ result: tempArr.join(", ") })
+                this.setState({ result: JSON.stringify(res, null, 2) })
             }else{
                 this.setState({ result: "" })
             }
         }
         catch(err){
-            this.setState({ result: "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" })
+            this.setState({ result: INPUT_ERROR_MSG })
         }
     }
 
@@ -65,34 +63,32 @@ class ABIDecoder extends Component {
                         </CardHeader>
                         <CardBody>
                             <Row>
-                                <Col md = "12">
+                                <Col>
                                     <Label>Argument Types</Label>
                                     <p style={{color:"#6c757d"}}>
-                                    Enter the space-separated value types.
+                                    Enter the comma-separated value types.
                                     </p>
                                     <textarea
                                         className="form-control"
-                                        ref={(textarea) => this.inputArea = textarea}
                                         value={argumentTypes}
                                         onChange={this.handleInputChange}
-                                        placeholder="Argument Types (input example : uint128)"
+                                        placeholder='Argument Types ( Example : "uint256" )'
                                         style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="argumentTypes"
                                     />
                                 </Col>
                             </Row>
                             <Row>
-                                <Col md = "12">
+                                <Col>
                                     <Label>Encoded Data</Label>
                                     <p style={{color:"#6c757d"}}>
                                     Enter the encoded data to be decoded.
                                     </p>
                                     <textarea
                                         className="form-control"
-                                        ref={(textarea) => this.inputArea = textarea}
                                         value={encodedData}
                                         onChange={this.handleInputChange}
-                                        placeholder="Encoded Data (input example : 0x00000000000000000000000000000000000000000000000000000000004fdea7)"
+                                        placeholder="Encoded Data ( Example : 0x000000000000000000000009b02b6aef2f4c6d5f1a5aae08bf77321e33e476e6 )"
                                         style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                         name="encodedData"
                                     />
@@ -100,27 +96,30 @@ class ABIDecoder extends Component {
                             </Row>
                             <Row>
                                 <Col md="4">
-                                    <Button onClick={(e) => this.decodeABI(e)}>
+                                    <Button onClick={(e) => this.decodeABI()}>
                                         DECODE
                                     </Button>
                                 </Col>
                             </Row>
-                            { result != "" ?
-                                result != "[ERROR] PLEASE USE THE CORRECT FORMAT OF INPUTS!" ?
+                            { result && 
+                                result != INPUT_ERROR_MSG ?
                                 <Row>
-                                    <Col md= "12">
+                                    <Col>
                                         <Label>Result</Label>
                                         <textarea
                                             className='form-control'
-                                            ref={(textarea) => this.textArea = textarea}
+                                            ref={(textarea) => this.copy = textarea}
                                             style={{height:"120px", backgroundColor: "#adb5bd", color: "black"}}
                                             value={result}
                                             readOnly
                                         />
+                                        <Button onClick={() => this.copyToClipboard()}>
+                                            Copy To Clipboard
+                                        </Button>
                                     </Col>
                                 </Row>
                                 : <p style={{color:"#c221a9"}}> {result} </p>
-                            : null}
+                            }
                         </CardBody>
                     </Card>
                 </Column>
