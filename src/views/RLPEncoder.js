@@ -19,7 +19,7 @@ const types = {
     "cancel" : "Cancel ( REQUIRED : from, gas )",
     "chainDataAnchoring" : "Chain Data Anchoring ( REQUIRED : from, input, gas)",
     "ethereumAccessList" : "Ethereum Access List ( REQUIRED : to, gas )",
-    "ethereumDynamicFee" : "Ethereum Dynamic Fee ( REQUIRED : from, gas )"
+    "ethereumDynamicFee" : "Ethereum Dynamic Fee ( REQUIRED : to, gas )"
 }
 
 const examples = {
@@ -91,8 +91,9 @@ const examples = {
 }`,
     "ethereumDynamicFee" : `[JSON FORMAT EXAMPLE]
 {
-    "to":"0x1fc92c23f71a7de4cdb4394a37fc636986a0f484",
-    "gas":"25"
+    "to": "0x9957dfd92e4b70f91131c573293343bc5f21f215",
+    "value": "12",
+    "gas": "50000"
 }`
 }
 
@@ -236,7 +237,7 @@ class RLPEncoder extends Component {
                                             <option value="cancel"> Cancel</option>
                                             <option value="chainDataAnchoring"> Chain Data Anchoring</option>
                                             <option value="ethereumAccessList"> Ethereum Access List</option>
-                                            {/* <option value="ethereumDynamicFee"> Ethereum Dynamic Fee</option> */}
+                                            <option value="ethereumDynamicFee"> Ethereum Dynamic Fee</option>
                                         </select>
                                     </FormGroup>
                                 </Col>

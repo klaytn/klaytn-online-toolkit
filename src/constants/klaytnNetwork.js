@@ -1,6 +1,6 @@
 export const networkLinks = {
     "testnet" : {
-        "rpc": "https://public-node-api.klaytnapi.com/v1/baobab",
+        "rpc": "https://api.baobab.klaytn.net:8651",
         "finder": "https://baobab.klaytnfinder.io/tx/",
         "finderToken": "https://baobab.klaytnfinder.io/token/"
     },
