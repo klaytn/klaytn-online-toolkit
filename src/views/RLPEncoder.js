@@ -172,7 +172,6 @@ class RLPEncoder extends Component {
                 encodedTx = await caver.transaction.accountUpdate.create(jsonTx);
             }
             else if( txType === "smartContractDeploy"){
-                console.log(jsonTx);
                 encodedTx = await caver.transaction.smartContractDeploy.create(jsonTx);
             }
             else if( txType === "smartContractExecution"){
@@ -194,7 +193,6 @@ class RLPEncoder extends Component {
             this.setState({ result : encodedTx.getRLPEncoding() });
         }
         catch(err){
-            console.log(err);
             this.setState({ result: INPUT_ERROR_MSG });
         }
     }
