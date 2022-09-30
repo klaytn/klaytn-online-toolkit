@@ -12,6 +12,11 @@ import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
 import KIP7Deploy from "./views/KIP7Deploy";
 import TxHashDecoder from "./views/txHashDecoder";
 
+
+
+
+import BlockHashDecoder from "./views/blockHashDecoder"
+
 var routes =
     [{
         name: "Block Info",
@@ -25,7 +30,7 @@ var routes =
             {
                 path: "/blockhashDecode",
                 name: "Decoder from BlockHash",
-                component: null,
+                component: BlockHashDecoder,
             }
         ]
     },
