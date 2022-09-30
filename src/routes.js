@@ -11,11 +11,7 @@ import ABIDecoder from "./views/ABIDecoder";
 import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
 import KIP7Deploy from "./views/KIP7Deploy";
 import TxHashDecoder from "./views/txHashDecoder";
-
-
-
-
-import BlockHashDecoder from "./views/blockHashDecoder"
+import BlockHashDecoder from "./views/blockHashDecoder";
 
 var routes =
     [{
