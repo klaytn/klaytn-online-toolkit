@@ -16,6 +16,10 @@ import BlockHashDecoder from "./views/blockHashDecoder";
 
 import RLPEncoder from "./views/RLPEncoder";
 
+
+
+import RLPDecoder from "./views/RLPDecoder";
+
 var routes =
     [{
         name: "Block Info",
@@ -45,7 +49,7 @@ var routes =
             {
                 path: "/rlpDecode",
                 name: "Decoder from RLP",
-                component: null,
+                component: RLPDecoder,
             },
             {
                 path: "/txHashDecode",
