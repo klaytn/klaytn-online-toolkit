@@ -13,6 +13,9 @@ import KIP7Deploy from "./views/KIP7Deploy";
 import TxHashDecoder from "./views/txHashDecoder";
 import BlockHashDecoder from "./views/blockHashDecoder";
 
+
+import RLPEncoder from "./views/RLPEncoder";
+
 var routes =
     [{
         name: "Block Info",
@@ -37,7 +40,7 @@ var routes =
             {
                 path: "/rlpEncode",
                 name: "RLP Encoder",
-                component: null,
+                component: RLPEncoder,
             },
             {
                 path: "/rlpDecode",
