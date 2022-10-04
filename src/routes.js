@@ -12,12 +12,7 @@ import AccountUpdateWithRoleBasedKey from "./views/AccountUpdateRoleBased";
 import KIP7Deploy from "./views/KIP7Deploy";
 import TxHashDecoder from "./views/txHashDecoder";
 import BlockHashDecoder from "./views/blockHashDecoder";
-
-
 import RLPEncoder from "./views/RLPEncoder";
-
-
-
 import RLPDecoder from "./views/RLPDecoder";
 
 var routes =
