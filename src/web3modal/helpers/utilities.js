@@ -2,6 +2,7 @@ import * as ethUtil from "ethereumjs-util";
 import supportedChains from "./chains.js";
 // import { apiGetGasPrices, apiGetAccountNonce, apiGetGasPriceKlaytn } from "./api";
 import axios, { AxiosInstance } from 'axios'
+import BigNumber from "bignumber.js";
 
 const api = axios.create({
   baseURL: 'https://ethereum-api.xyz',
@@ -99,6 +100,12 @@ export function convertStringToHex(value) {
   return new BigNumber(`${value}`).toString(16)
 }
 
+export function convertAmountToRawNumber(value, decimals = 18) {
+  return new BigNumber(`${value}`)
+    .times(new BigNumber('10').pow(decimals))
+    .toString()
+}
+
 export function getChainData(chainId) {
   const chainData = supportedChains.filter(
     (chain ) => chain.chain_id === chainId
@@ -157,7 +164,7 @@ export async function formatTestTransaction(address, chainId) {
       from: address,
       to: address,
       gas: '21000',
-      value: '0',
+      value: new BigNumber(10**18*(0.000001)).toString(),
       gasPrice,
     }
   }

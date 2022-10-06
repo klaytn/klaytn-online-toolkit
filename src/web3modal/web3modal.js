@@ -3,6 +3,7 @@ import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils";
 import Web3Modal from "@klaytn/web3modal";
 import { KaikasWeb3Provider } from "@klaytn/kaikas-web3-provider"
+import { KlipWeb3Provider } from "@klaytn/klip-web3-provider"
 import React, { Component } from "react";
 import { Button, Card, FormGroup, Label, Input, CardHeader, CardBody } from "reactstrap";
 import {
@@ -147,7 +148,7 @@ class web3modalExample extends Component{
         }
         this.web3Modal = new Web3Modal({
             network: this.getNetwork(),
-            cacheProvider: true,
+            cacheProvider: false,
             providerOptions: this.getProviderOptions()
         });
 
@@ -217,6 +218,13 @@ class web3modalExample extends Component{
         const providerOptions = {
             kaikas: {
                 package: KaikasWeb3Provider,
+            },
+            klip: {
+                package: KlipWeb3Provider,
+                options: {
+                    bappName: "web3Modal Example App",
+                    rpcUrl: "https://public-node-api.klaytnapi.com/v1/cypress"
+                }
             }
         };
         return providerOptions;
@@ -500,14 +508,16 @@ class web3modalExample extends Component{
                                 {PERSONAL_SIGN}
                                 </STestButton>
                             </STestButtonContainer>
+                            <p style={{color: "#6c757d"}}>
+                                Sendtransaction(): send 0.000001 KLAY to the sender account on Klaytn Network(Mainnet, Testnet). On other networks, the amount is zero.
+                            </p>
                             </Column>
                         </CardBody>
                     </Card>
-
                     <Card>
                         <CardHeader>
                             <h3>KIP-7 Token</h3>
-                            <p>
+                            <p style={{color: "#6c757d"}}>
                                 Check <a href="/klaytn-online-toolkit/smartcontract/KCTDetection">here</a> which KCT the smart contract implements by using Contract Address.
                             </p>
                         </CardHeader>
