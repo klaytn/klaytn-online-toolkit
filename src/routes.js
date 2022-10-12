@@ -20,11 +20,11 @@ var routes =
         name: "Block Info",
         path: "/blockinfo",
         items: [
-            {
-                path: "/rlpDecode",
-                name: "Decoder from RLP",
-                component: null,
-            },
+            // {
+            //     path: "/rlpDecode",
+            //     name: "Decoder from RLP",
+            //     component: null,
+            // },
             {
                 path: "/blockhashDecode",
                 name: "Decoder from BlockHash",
