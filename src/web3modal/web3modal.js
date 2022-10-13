@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import Web3 from "web3";
-import { convertUtf8ToHex } from "@walletconnect/utils";
 import Web3Modal from "@klaytn/web3modal";
 import { KaikasWeb3Provider } from "@klaytn/kaikas-web3-provider"
 import { KlipWeb3Provider } from "@klaytn/klip-web3-provider"
@@ -363,9 +362,6 @@ class web3modalExample extends Component{
         // test message
         const message = "My email is john@doe.com - 1537836206101";
 
-        // encode message (hex)
-        const hexMsg = convertUtf8ToHex(message);
-
         try {
             // open modal
             this.toggleModal();
@@ -374,7 +370,7 @@ class web3modalExample extends Component{
             this.setState({ pendingRequest: true });
 
             // send message
-            const result = await web3.eth.personal.sign(hexMsg, address);
+            const result = await web3.eth.personal.sign(message, address);
 
             // verify signature
             const signer = await web3.eth.personal.ecRecover(message, result);
