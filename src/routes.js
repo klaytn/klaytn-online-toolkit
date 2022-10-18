@@ -14,6 +14,7 @@ import TxHashDecoder from "./views/txHashDecoder";
 import BlockHashDecoder from "./views/blockHashDecoder";
 import RLPEncoder from "./views/RLPEncoder";
 import RLPDecoder from "./views/RLPDecoder";
+import KIP17Deploy from "./views/KIP17Deploy";
 
 var routes =
     [{
@@ -91,6 +92,11 @@ var routes =
                 path: "/KIP7Deploy",
                 name: "Deploy KIP-7 Token",
                 component: KIP7Deploy,
+            },
+            {
+                path: "/KIP17Deploy",
+                name: "Deploy KIP-17 Non-fungible Token",
+                component: KIP17Deploy,
             }
         ]
     },
