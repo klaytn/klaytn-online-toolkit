@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/klaytn-online-toolkit/static/css/main.be82a45a.chunk.css",
+    "main.js": "/klaytn-online-toolkit/static/js/main.5148b16b.chunk.js",
+    "main.js.map": "/klaytn-online-toolkit/static/js/main.5148b16b.chunk.js.map",
+    "runtime-main.js": "/klaytn-online-toolkit/static/js/runtime-main.d359b267.js",
+    "runtime-main.js.map": "/klaytn-online-toolkit/static/js/runtime-main.d359b267.js.map",
+    "static/js/2.dd0c90f1.chunk.js": "/klaytn-online-toolkit/static/js/2.dd0c90f1.chunk.js",
+    "static/js/2.dd0c90f1.chunk.js.map": "/klaytn-online-toolkit/static/js/2.dd0c90f1.chunk.js.map",
+    "static/js/3.3da25ee1.chunk.js": "/klaytn-online-toolkit/static/js/3.3da25ee1.chunk.js",
+    "static/js/3.3da25ee1.chunk.js.map": "/klaytn-online-toolkit/static/js/3.3da25ee1.chunk.js.map",
+    "index.html": "/klaytn-online-toolkit/index.html",
+    "static/css/main.be82a45a.chunk.css.map": "/klaytn-online-toolkit/static/css/main.be82a45a.chunk.css.map",
+    "static/js/2.dd0c90f1.chunk.js.LICENSE.txt": "/klaytn-online-toolkit/static/js/2.dd0c90f1.chunk.js.LICENSE.txt",
+    "static/media/erc20.6540b4f4.svg": "/klaytn-online-toolkit/static/media/erc20.6540b4f4.svg",
+    "static/media/eth.40c2d264.svg": "/klaytn-online-toolkit/static/media/eth.40c2d264.svg",
+    "static/media/klaytn-logo.d26d5c62.png": "/klaytn-online-toolkit/static/media/klaytn-logo.d26d5c62.png",
+    "static/media/web3modal-logo.d8a1141a.png": "/klaytn-online-toolkit/static/media/web3modal-logo.d8a1141a.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d359b267.js",
+    "static/js/2.dd0c90f1.chunk.js",
+    "static/css/main.be82a45a.chunk.css",
+    "static/js/main.5148b16b.chunk.js"
+  ]
+}
