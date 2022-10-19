@@ -1,7 +1,7 @@
 import * as ethUtil from "ethereumjs-util";
 import supportedChains from "./chains.js";
 // import { apiGetGasPrices, apiGetAccountNonce, apiGetGasPriceKlaytn } from "./api";
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 import BigNumber from "bignumber.js";
 
 const api = axios.create({

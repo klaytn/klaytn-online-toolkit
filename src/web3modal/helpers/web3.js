@@ -1,5 +1,5 @@
 import { KIP7_CONTRACT } from '../constants'
-import { apiGetGasPriceKlaytn, apiGetGasPrices, getChainData } from './utilities'
+import { apiGetGasPriceKlaytn,  getChainData } from './utilities'
 
 export function getKIP7Contract(web3, contractAddress) {
     const tokenContract = new web3.eth.Contract(
