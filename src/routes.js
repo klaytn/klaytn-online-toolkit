@@ -14,6 +14,7 @@ import TxHashDecoder from "./views/txHashDecoder";
 import BlockHashDecoder from "./views/blockHashDecoder";
 import RLPEncoder from "./views/RLPEncoder";
 import RLPDecoder from "./views/RLPDecoder";
+import CheckAccountKey from "views/CheckAccountKey";
 
 var routes =
     [{
@@ -122,6 +123,11 @@ var routes =
                 path: "/accountUpdateWithRoleBasedKey",
                 name: "Update Account with RoleBasedKey",
                 component: AccountUpdateWithRoleBasedKey,
+            },
+            {
+                path: "/checkAccountKey",
+                name: "Check Account Key Type by Address",
+                component: CheckAccountKey
             }
         ]
     }]
