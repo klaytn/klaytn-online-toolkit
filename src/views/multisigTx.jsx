@@ -15,7 +15,7 @@ import {
 import { InputField } from 'components'
 import Caver from 'caver-js'
 import Column from '../components/Column'
-import { networkLinks } from '../constants/klaytnNetwork'
+import { networkLinks } from '../consts/klaytnNetwork'
 import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
 

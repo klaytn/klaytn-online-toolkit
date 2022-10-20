@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { Button, Card, CardHeader, CardBody, Row, Col } from 'reactstrap'
 import { InputField } from 'components'
 import Caver from 'caver-js'
-import { networkLinks } from '../constants/klaytnNetwork'
+import { networkLinks } from '../consts/klaytnNetwork'
 import Column from '../components/Column'
 let caver
 
@@ -11,7 +11,7 @@ const idToType = {
   2: 'AccountKeyPublic',
   3: 'AccountKeyFail (used for Smart Contract Accounts)',
   4: 'AccountKeyWeightedMultiSig',
-  5: 'AccountKeyRoleBased'
+  5: 'AccountKeyRoleBased',
 }
 
 class CheckAccountKey extends Component {
@@ -56,19 +56,18 @@ class CheckAccountKey extends Component {
       const res = await caver.rpc.klay.getAccountKey(address)
       if (res === null) {
         result = 'The address does not exist on the actual blockchain network.'
-      }
-      else {
+      } else {
         result = res.keyType
       }
 
       this.setState({
         result,
-        accountKey: res
+        accountKey: res,
       })
     } catch (error) {
       this.setState({
         result: error.toString(),
-        accountKey: ''
+        accountKey: '',
       })
     }
   }
@@ -81,10 +80,11 @@ class CheckAccountKey extends Component {
           <CardHeader>
             <h3 className="title">Check Account Key Type</h3>
             <p style={{ color: '#6c757d' }}>
-              You can check the account key of the Externally Owned Account (EOA) of the given address.
-              The account key consist of public key(s) and a key type.
-              If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account,
-              it will return an empty key value.
+              You can check the account key of the Externally Owned Account
+              (EOA) of the given address. The account key consist of public
+              key(s) and a key type. If the account has AccountKeyLegacy or the
+              account of the given address is a Smart Contract Account, it will
+              return an empty key value.
             </p>
             <Row>
               <Col md="4">
@@ -126,7 +126,7 @@ class CheckAccountKey extends Component {
                   The account key type of given address is {idToType[result]}.
                 </p>
                 <Row>
-                  <Col md='8'>
+                  <Col md="8">
                     <textarea
                       className="form-control"
                       style={{
