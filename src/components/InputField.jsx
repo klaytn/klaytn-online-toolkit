@@ -1,4 +1,5 @@
-import { FormGroup, InputGroup, Input, InputGroupText } from 'components'
+import { FormGroup, Input, InputGroupText } from 'reactstrap'
+import Row from './Row'
 
 const InputField = ({
   value,
@@ -12,20 +13,7 @@ const InputField = ({
 }) => (
   <FormGroup>
     {<label>{label}</label>}
-    {!!unit ? (
-      <InputGroup>
-        <Input
-          type={type}
-          value={value}
-          name={name}
-          className="form-control"
-          placeholder={placeholder}
-          onChange={onChange}
-          readOnly={readOnly}
-        />
-        <InputGroupText>{unit}</InputGroupText>
-      </InputGroup>
-    ) : (
+    <Row>
       <Input
         type={type}
         value={value}
@@ -35,7 +23,8 @@ const InputField = ({
         onChange={onChange}
         readOnly={readOnly}
       />
-    )}
+      {unit && <InputGroupText>{unit}</InputGroupText>}
+    </Row>
   </FormGroup>
 )
 

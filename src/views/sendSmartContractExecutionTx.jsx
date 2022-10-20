@@ -13,7 +13,7 @@ import {
 } from 'reactstrap'
 import Column from '../components/Column'
 import { InputField } from 'components'
-import { networkLinks } from '../constants/klaytnNetwork'
+import { networkLinks } from '../consts/klaytnNetwork'
 let caver
 
 class SendSmartContractExecutionTx extends Component {

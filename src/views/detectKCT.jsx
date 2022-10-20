@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Card, CardHeader, CardBody, Row, Col } from 'reactstrap'
 import { InputField } from 'components'
 import Caver from 'caver-js'
-import { networkLinks, KIPLinks } from '../constants/klaytnNetwork'
+import { networkLinks, KIPLinks } from '../consts/klaytnNetwork'
 import Column from '../components/Column'
 let caver
 
