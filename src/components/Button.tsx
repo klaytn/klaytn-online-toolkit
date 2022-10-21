@@ -5,6 +5,7 @@ import { ReactElement } from 'react'
 const StyledButton = styled(BaseButton)`
   margin-bottom: 0;
   width: fit-content;
+  min-width: 100px;
 `
 
 const Button = (props: ButtonProps): ReactElement => {

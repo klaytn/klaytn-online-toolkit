@@ -1,9 +1,9 @@
-import { ReactElement, useMemo, useState } from 'react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
+import { COLOR, URLMAP, UTIL } from 'consts'
 import {
   Button,
   Card,
@@ -16,8 +16,9 @@ import {
   View,
   FormInput,
   FormSelect,
+  FormTextarea,
+  CopyButton,
 } from 'components'
-import { COLOR, URLMAP, UTIL } from 'consts'
 import useLayout from 'hooks/useLayout'
 
 const StyledSection = styled(View)`
@@ -45,14 +46,11 @@ const BlockHashDecoder = (): ReactElement => {
   const { isUnderTabletWidth } = useLayout()
 
   const [network, setNetwork] = useState<NetworkType>('mainnet')
-
   const [blockHash, setBlockHash] = useState('')
   const [result, setResult] = useState<ResultType>()
+
   const caver = useMemo(
-    () =>
-      new Caver(
-        new Caver.providers.HttpProvider(URLMAP.network[network]['rpc'])
-      ),
+    () => new Caver(URLMAP.network[network]['rpc']),
     [network]
   )
 
@@ -74,6 +72,10 @@ const BlockHashDecoder = (): ReactElement => {
     }
   }
 
+  useEffect(() => {
+    setResult(undefined)
+  }, [blockHash])
+
   return (
     <Column>
       <Card>
@@ -85,6 +87,7 @@ const BlockHashDecoder = (): ReactElement => {
           <StyledSection>
             <Label>Network</Label>
             <FormSelect
+              defaultValue={network}
               itemList={[
                 { value: 'mainnet', label: 'Mainnet' },
                 { value: 'testnet', label: 'Testnet' },
@@ -95,12 +98,22 @@ const BlockHashDecoder = (): ReactElement => {
           <StyledSection>
             <Label>Block Hash</Label>
             <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex : ${
+              <Text>{`Ex :\n${
                 isUnderTabletWidth ? UTIL.truncate(exValue) : exValue
               }`}</Text>
-              <CopyToClipboard text={exValue}>
-                <Button size="sm">Copy</Button>
-              </CopyToClipboard>
+              <View style={{ gap: 4 }}>
+                <Button
+                  size="sm"
+                  onClick={(): void => {
+                    setBlockHash(exValue)
+                  }}
+                >
+                  Try
+                </Button>
+                <CopyButton text={exValue} buttonProps={{ size: 'sm' }}>
+                  Copy
+                </CopyButton>
+              </View>
             </Row>
             <FormInput
               value={blockHash}
@@ -109,26 +122,19 @@ const BlockHashDecoder = (): ReactElement => {
             />
           </StyledSection>
           <StyledSection>
-            <Button onClick={() => decodeBlockHash()}>DECODE</Button>
+            <Button onClick={decodeBlockHash}>Decode</Button>
           </StyledSection>
           {result && (
             <>
               {result.success ? (
                 <StyledSection>
                   <Label>Block</Label>
-                  <textarea
-                    className="form-control"
-                    style={{
-                      height: '1000px',
-                      backgroundColor: '#adb5bd',
-                      color: 'black',
-                    }}
+                  <FormTextarea
+                    style={{ height: 1000 }}
                     value={result.value}
                     readOnly
                   />
-                  <CopyToClipboard text={result.value}>
-                    <Button>Copy To Clipboard</Button>
-                  </CopyToClipboard>
+                  <CopyButton text={result.value}>Copy the result</CopyButton>
                 </StyledSection>
               ) : (
                 <Text style={{ color: COLOR.error }}> {result.message} </Text>

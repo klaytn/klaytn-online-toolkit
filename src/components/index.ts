@@ -6,5 +6,7 @@ export { default as Row } from './Row'
 export { default as Button } from './Button'
 export { default as FormInput } from './FormInput'
 export { default as FormSelect } from './FormSelect'
+export { default as FormTextarea } from './FormTextarea'
+export { default as CopyButton } from './CopyButton'
 
 export { Card, CardHeader, CardBody, Label, FormGroup } from 'reactstrap'
