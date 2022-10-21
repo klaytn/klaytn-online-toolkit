@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
 import { Card, CardBody } from 'reactstrap'
+import { ToastContainer, Slide } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import './black-dashboard-react.css'
 // reactstrap components
@@ -67,6 +69,13 @@ function App() {
           <Route exact path="/web3modal" component={web3modalExample} />
         </Switch>
       </div>
+      <ToastContainer
+        position="top-right"
+        hideProgressBar
+        autoClose={1000}
+        transition={Slide}
+        limit={3}
+      />
     </BrowserRouter>
   )
 }

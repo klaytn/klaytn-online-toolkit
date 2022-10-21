@@ -9403,9 +9403,6 @@ fieldset[disabled]
   transform: translateY(0);
   -webkit-transform: translateY(0); }
 
-.btn + .btn {
-  margin-left: 5px; }
-
 .dropdown-menu {
   border: 0;
   box-shadow: 0px 10px 50px 0px rgba(0, 0, 0, 0.2);
