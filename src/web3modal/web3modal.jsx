@@ -3,7 +3,7 @@ import Web3 from 'web3'
 import Web3Modal from '@klaytn/web3modal'
 import { KaikasWeb3Provider } from '@klaytn/kaikas-web3-provider'
 import { KlipWeb3Provider } from '@klaytn/klip-web3-provider'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import _ from 'lodash'
 import {
   Button,
@@ -34,8 +34,9 @@ import {
   ETH_SEND_TRANSACTION,
   ETH_SIGN,
   PERSONAL_SIGN,
+  KIP17_TRANSFER_FROM
 } from './constants'
-import { callBalanceOf, callTransfer } from './helpers/web3'
+import { callBalanceOf, callTransfer, callTransferFrom } from './helpers/web3'
 
 const SLayout = styled.div`
   position: relative;
@@ -118,7 +119,9 @@ const INITIAL_STATE = {
   showModal: false,
   pendingRequest: false,
   result: null,
-  contractAddress: '',
+  kip7contractAddress: '',
+  kip17contractAddress: '',
+  tokenId: '',
 }
 
 function initWeb3(provider) {
@@ -145,20 +148,7 @@ const isHexString = function (hex) {
 class web3modalExample extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      fetching: false,
-      address: '',
-      web3: null,
-      provider: null,
-      connected: false,
-      chainId: 1,
-      networkId: 1,
-      assets: [],
-      showModal: false,
-      pendingRequest: false,
-      result: null,
-      contractAddress: '',
-    }
+    this.state = { ...INITIAL_STATE }
     this.web3Modal = new Web3Modal({
       network: this.getNetwork(),
       cacheProvider: false,
@@ -260,7 +250,7 @@ class web3modalExample extends Component {
 
   onChangeInput = (e) => {
     this.setState({
-      contractAddress: e.target.value,
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -420,27 +410,37 @@ class web3modalExample extends Component {
       case KIP7_TRANSFER:
         contractCall = callTransfer
         break
+      case KIP17_TRANSFER_FROM:
+        contractCall = callTransferFrom
+        break
       default:
         break
     }
 
-    const { web3, address, contractAddress, chainId } = this.state
-
-    if (!contractCall || contractAddress === '') {
-      throw new Error(
-        `No matching contract calls for functionSig=${functionSig}`
-      )
-    }
+    const { web3, address, kip7contractAddress, chainId, kip17contractAddress, tokenId} = this.state
 
     try {
       // open modal
       this.toggleModal()
 
+      // check if address is entered
+      if (!contractCall || (kip7contractAddress === '' && kip17contractAddress === '')) {
+        throw new Error(
+          `No matching contract calls for functionSig=${functionSig}`
+        )
+      }
+
       // toggle pending request indicator
       this.setState({ pendingRequest: true })
 
       // send transaction
-      const result = await contractCall(address, chainId, contractAddress, web3)
+      let result
+      if (KIP17_TRANSFER_FROM === functionSig) {
+        result = await contractCall(address, chainId, kip17contractAddress, web3, tokenId)
+      }
+      else {
+        result = await contractCall(address, chainId, kip7contractAddress, web3)
+      }
 
       // format displayed result
       const formattedResult = {
@@ -479,7 +479,9 @@ class web3modalExample extends Component {
       showModal,
       pendingRequest,
       result,
-      contractAddress,
+      kip7contractAddress,
+      kip17contractAddress,
+      tokenId
     } = this.state
     return (
       <SLayout>
@@ -543,10 +545,10 @@ class web3modalExample extends Component {
                       <FormGroup style={{ width: '440px' }}>
                         <Label>Contract Address</Label>
                         <Input
-                          label={'Token ontract Address'}
                           placeholder={'Token Contract Address'}
                           onChange={(e) => this.onChangeInput(e)}
-                          value={contractAddress}
+                          value={kip7contractAddress}
+                          name='kip7contractAddress'
                         />
                       </FormGroup>
                       <STestButtonContainer>
@@ -559,6 +561,48 @@ class web3modalExample extends Component {
                           onClick={() => this.testContractCall(KIP7_TRANSFER)}
                         >
                           {KIP7_TRANSFER}
+                        </STestButton>
+                      </STestButtonContainer>
+                    </Column>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <h3>KIP-17 Token</h3>
+                    <p style={{ color: '#6c757d' }}>
+                      Check{' '}
+                      <a href="/klaytn-online-toolkit/smartcontract/KCTDetection">
+                        here
+                      </a>{' '}
+                      which KCT the smart contract implements by using Contract
+                      Address.
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <Column center>
+                      <FormGroup style={{ width: '440px' }}>
+                        <Label>Contract Address</Label>
+                        <Input
+                          placeholder={'Token Contract Address'}
+                          onChange={(e) => this.onChangeInput(e)}
+                          value={kip17contractAddress}
+                          name='kip17contractAddress'
+                        />
+                      </FormGroup>
+                      <FormGroup style={{ width: '440px' }}>
+                        <Label>Token ID</Label>
+                        <Input
+                          placeholder={'Token ID'}
+                          onChange={(e) => this.onChangeInput(e)}
+                          value={tokenId}
+                          name='tokenId'
+                        />
+                      </FormGroup>
+                      <STestButtonContainer>
+                        <STestButton
+                          onClick={() => this.testContractCall(KIP17_TRANSFER_FROM)}
+                        >
+                          {KIP17_TRANSFER_FROM}
                         </STestButton>
                       </STestButtonContainer>
                     </Column>

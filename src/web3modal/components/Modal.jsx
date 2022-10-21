@@ -5,7 +5,7 @@ import { colors, transitions } from '../styles'
 const SLightbox = styled.div`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
-  position: absolute;
+  position: fixed;
   width: 100vw;
   height: 100vh;
   margin-left: -50vw;
@@ -143,7 +143,7 @@ class Modal extends React.Component {
           <SHitbox onClick={this.toggleModal} />
 
           <SCard>
-            <SCloseButton size={25} color={'dark'} onClick={this.toggleModal} />
+            <SCloseButton size={25} color='black' onClick={this.toggleModal} />
             <SModalContent>{children}</SModalContent>
           </SCard>
         </SModalContainer>
