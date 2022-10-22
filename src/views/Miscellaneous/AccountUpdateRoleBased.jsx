@@ -12,27 +12,37 @@ import {
   FormGroup,
   Input,
 } from 'reactstrap'
-import Column from '../components/Column'
-import { networkLinks } from '../consts/klaytnNetwork'
+import { Column } from 'components'
+import { networkLinks } from 'consts/klaytnNetwork'
 import Caver from 'caver-js'
 let caver
 
-class AccountUpdateWithMultiSigKey extends Component {
+const roleToIndex = {
+  RoleTransaction: 0,
+  RoleAccountUpdate: 1,
+  RoleFeePayer: 2,
+}
+const indexToRole = ['RoleTransaction', 'RoleAccountUpdate', 'RoleFeePayer']
+
+class AccountUpdateWithRoleBasedKey extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      keystoreRole: 'RoleTransaction',
+      keystoreFileName: '',
       keystoreJSON: '',
       keystorePassword: '',
       decryptMessage: '',
-      privateKeyList: [],
-      decryptMessageVisible: false,
+      privateKeyList: [[], [], []],
+      decryptMessageVisible: [false, false, false],
       network: 'mainnet',
       senderKeystoreJSON: '',
       senderKeystorePassword: '',
       senderDecryptMessage: '',
       senderDecryptMessageVisible: false,
-      weightList: [],
-      threshold: '',
+      senderAddress: '',
+      weightList: [[], [], []],
+      threshold: ['', '', ''],
       accountUpdateMsg: null,
       accountUpdateMsgVisible: false,
       accountUpdateButtonDisabled: false,
@@ -55,29 +65,36 @@ class AccountUpdateWithMultiSigKey extends Component {
     })
   }
 
-  handleWeightChange = (e, index) => {
+  handleWeightChange = (e, roleIdx, index) => {
     const { weightList } = this.state
-    weightList[index] = Number(e.target.value)
+    weightList[roleIdx][index] = Number(e.target.value)
     this.setState({
       weightList,
     })
   }
 
-  handleInputChange = (e) => {
-    const { name, value } = e.target
-
+  handleThresholdChange = (e, roleIdx) => {
+    const { threshold } = this.state
+    threshold[roleIdx] = Number(e.target.value)
     this.setState({
-      [name]: Number(value),
+      threshold,
     })
   }
 
-  handleKeystoreRemove = (index) => {
+  handleInputChange = (e) => {
+    const { name, value } = e.target
+    this.setState({
+      [name]: value,
+    })
+  }
+
+  handleKeystoreRemove = (roleIdx, keyIdx) => {
     const { privateKeyList, weightList } = this.state
 
     const privKeyList = [...privateKeyList]
-    privKeyList.splice(index, 1)
+    privKeyList[roleIdx].splice(keyIdx, 1)
     const weightListUpdated = [...weightList]
-    weightListUpdated.splice(index, 1)
+    weightListUpdated[roleIdx].splice(keyIdx, 1)
 
     this.setState({
       privateKeyList: privKeyList,
@@ -119,10 +136,9 @@ class AccountUpdateWithMultiSigKey extends Component {
     })
   }
 
-  handlePasswordChange = (e) => {
-    const { value } = e.target
+  handleKeyRoleChange = (e) => {
     this.setState({
-      keystorePassword: value,
+      keystoreRole: e.target.value,
     })
   }
 
@@ -134,7 +150,6 @@ class AccountUpdateWithMultiSigKey extends Component {
         senderKeystorePassword
       )
 
-      //update wallet
       if (caver.wallet.isExisted(keyring.address)) {
         caver.wallet.updateKeyring(keyring)
       } else {
@@ -142,8 +157,8 @@ class AccountUpdateWithMultiSigKey extends Component {
       }
 
       this.setState({
-        senderDecryptMessage: 'Decryption succeeds!',
         senderAddress: keyring.address,
+        senderDecryptMessage: 'Decryption succeeds!',
         senderDecryptMessageVisible: true,
       })
 
@@ -182,21 +197,27 @@ class AccountUpdateWithMultiSigKey extends Component {
         accountUpdateButtonDisabled: true,
       })
 
-      let newKeys = []
-      for (const element of privateKeyList) {
-        newKeys.push(...element.key)
+      // Create new Account with RoleBasedKey
+      let newKeys = [[], [], []]
+      let newKeyWeight = []
+      for (let i = 0; i < privateKeyList.length; i++) {
+        if (privateKeyList[i].length > 1) {
+          newKeyWeight.push({ threshold: threshold[i], weights: weightList[i] })
+        } else {
+          newKeyWeight.push({})
+        }
+        for (const element of privateKeyList[i]) {
+          newKeys[i].push(...element.key)
+        }
       }
 
       const newKeyring = caver.wallet.keyring.create(senderAddress, newKeys)
-      const account = newKeyring.toAccount({
-        threshold: threshold,
-        weights: weightList,
-      })
+      const account = newKeyring.toAccount(newKeyWeight)
 
       const updateTx = caver.transaction.accountUpdate.create({
         from: senderAddress,
         account: account,
-        gas: 100000,
+        gas: 500000,
       })
 
       await caver.wallet.sign(senderAddress, updateTx)
@@ -204,10 +225,11 @@ class AccountUpdateWithMultiSigKey extends Component {
       const receipt = await caver.rpc.klay.sendRawTransaction(updateTx)
 
       // const accountKey = await caver.rpc.klay.getAccountKey(sender.address)
+      // console.log(JSON.stringify(accountKey))
 
       this.setState({
         accountUpdateMsgVisible: true,
-        accountUpdateMsg: `Account is successfully updated! `,
+        accountUpdateMsg: `Account is successfully updated!`,
         accountUpdateButtonDisabled: false,
         txHash: receipt.transactionHash,
       })
@@ -236,8 +258,10 @@ class AccountUpdateWithMultiSigKey extends Component {
       keystoreFileName,
       keystoreJSON,
       keystorePassword,
+      keystoreRole,
     } = this.state
     try {
+      const roleIdx = roleToIndex[keystoreRole]
       const keyring = caver.wallet.keyring.decrypt(
         keystoreJSON,
         keystorePassword
@@ -248,14 +272,15 @@ class AccountUpdateWithMultiSigKey extends Component {
       } else {
         throw Error('Not Single Keyring Keystore!')
       }
-      const list = [
-        ...privateKeyList,
-        { key: keyList, fileName: keystoreFileName },
-      ]
-      const weight = [...weightList, '']
+
+      privateKeyList[roleIdx].push({
+        key: keyList,
+        fileName: keystoreFileName,
+      })
+      weightList[roleIdx].push('')
       this.setState({
-        weightList: weight,
-        privateKeyList: list,
+        weightList,
+        privateKeyList,
         keystorePassword: '',
         decryptMessage: 'Decryption succeeds!',
         decryptMessageVisible: true,
@@ -302,13 +327,13 @@ class AccountUpdateWithMultiSigKey extends Component {
       <Column>
         <Card>
           <CardHeader>
-            <h3 className="title">Update AccountKey to MultiSigKey</h3>
+            <h3 className="title">Update AccountKey to Role-Based Key</h3>
             <p style={{ color: '#6c757d' }}>
               Klaytn provides decoupled keys from addresses, so that you can
               update your keys in the account. This page can be used to update
               account keys to{' '}
-              <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyweightedmultisig">
-                AccountKeyWeightedMultiSig
+              <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyrolebased">
+                AccountKeyRoleBased
               </a>
               .
             </p>
@@ -382,14 +407,29 @@ class AccountUpdateWithMultiSigKey extends Component {
           <CardHeader>
             <h3 className="title">Upload Keystore File for Private Keys</h3>
             <p style={{ color: '#6c757d' }}>
-              {' '}
-              You need private keys for your Klaytn account. Upload here
-              keystore files to be used for private keys. Once decryption
-              succeeds, you can see filename added in decrypted keystore list
-              below.{' '}
+              Private keys are required to update your Klaytn account. Select
+              role of key among RoleTransaction, RoleAccountUpdate, and
+              RoleFeePayer. Upload here keystore files to be used for private
+              keys. Once decryption succeeds, you can see the filename added in
+              decrypted keystore list below.
             </p>
           </CardHeader>
           <CardBody>
+            <Row>
+              <Col md="4">
+                <FormGroup>
+                  <Label> Role </Label>
+                  <select
+                    onChange={(e) => this.handleKeyRoleChange(e)}
+                    className="form-control"
+                  >
+                    {indexToRole.map((value, _) => (
+                      <option value={value}>{value}</option>
+                    ))}
+                  </select>
+                </FormGroup>
+              </Col>
+            </Row>
             <Row>
               <Col md="8">
                 <InputField
@@ -407,10 +447,10 @@ class AccountUpdateWithMultiSigKey extends Component {
               <Col md="8">
                 <InputField
                   type="password"
-                  name="password"
+                  name="keystorePassword"
                   placeholder="Password"
                   label="Password"
-                  onChange={(e) => this.handlePasswordChange(e)}
+                  onChange={(e) => this.handleInputChange(e)}
                   value={keystorePassword}
                 />
               </Col>
@@ -442,53 +482,85 @@ class AccountUpdateWithMultiSigKey extends Component {
             </p>
           </CardHeader>
           <CardBody>
-            {privateKeyList.length > 0 && (
-              <Row>
-                <Col md="2">
-                  <InputField
-                    name="threshold"
-                    type="number"
-                    value={threshold}
-                    onChange={(e) => this.handleInputChange(e)}
-                    label="Threshold"
-                  />
-                </Col>
-              </Row>
-            )}
-            {privateKeyList.length > 0 ? (
-              <Label>Decrypted Keystore List</Label>
-            ) : (
-              <p style={{ marginBottom: '1rem', color: '#c221a9' }}>
-                There's no keystore uploaded.
-              </p>
-            )}
-            {privateKeyList.map(
-              (_, index) =>
-                privateKeyList[index]['key'].length > 0 && (
+            {privateKeyList.map((keyList, roleIdx) => (
+              <div>
+                <h4>{indexToRole[roleIdx]}: Decrypted Keystore List</h4>
+                {keyList.length > 1 && (
                   <Row>
-                    <Col md="6">
-                      <CardText style={{ verticalAlign: 'center' }}>
-                        {privateKeyList[index]['fileName']}
-                      </CardText>
-                    </Col>
                     <Col md="2">
-                      <Input
-                        placeholder="Weight"
-                        style={{ marginBottom: '1rem' }}
+                      <InputField
+                        name="threshold"
                         type="number"
-                        value={weightList[index]}
-                        onChange={(e) => this.handleWeightChange(e, index)}
+                        placeholder="Threshold"
+                        alue={threshold[roleIdx]}
+                        onChange={(e) => this.handleThresholdChange(e, roleIdx)}
+                        label="Threshold"
                       />
                     </Col>
-                    <Col md="2">
-                      <Button onClick={() => this.handleKeystoreRemove(index)}>
-                        Remove
-                      </Button>
-                    </Col>
                   </Row>
-                )
-            )}
+                )}
 
+                {keyList.length === 0 && (
+                  <p style={{ marginBottom: '1rem', color: '#c221a9' }}>
+                    There's no keystore uploaded.
+                  </p>
+                )}
+                {keyList.length === 1
+                  ? keyList.map(
+                      (_, index) =>
+                        keyList[index]['key'].length > 0 && (
+                          <Row>
+                            <Col md="6">
+                              <CardText style={{ verticalAlign: 'center' }}>
+                                {keyList[index]['fileName']}
+                              </CardText>
+                            </Col>
+                            <Col md="2">
+                              <Button
+                                onClick={() =>
+                                  this.handleKeystoreRemove(roleIdx, index)
+                                }
+                              >
+                                Remove
+                              </Button>
+                            </Col>
+                          </Row>
+                        )
+                    )
+                  : keyList.map(
+                      (_, index) =>
+                        keyList[index]['key'].length > 0 && (
+                          <Row>
+                            <Col md="6">
+                              <CardText style={{ verticalAlign: 'center' }}>
+                                {keyList[index]['fileName']}
+                              </CardText>
+                            </Col>
+                            <Col md="2">
+                              <Input
+                                placeholder="Weight"
+                                style={{ marginBottom: '1rem' }}
+                                type="number"
+                                value={weightList[roleIdx][index]}
+                                onChange={(e) =>
+                                  this.handleWeightChange(e, roleIdx, index)
+                                }
+                              />
+                            </Col>
+                            <Col md="2">
+                              <Button
+                                onClick={() =>
+                                  this.handleKeystoreRemove(roleIdx, index)
+                                }
+                              >
+                                Remove
+                              </Button>
+                            </Col>
+                          </Row>
+                        )
+                    )}
+              </div>
+            ))}
             <Row>
               <Col md="8">
                 <Button
@@ -520,4 +592,4 @@ class AccountUpdateWithMultiSigKey extends Component {
   }
 }
 
-export default AccountUpdateWithMultiSigKey
+export default AccountUpdateWithRoleBasedKey

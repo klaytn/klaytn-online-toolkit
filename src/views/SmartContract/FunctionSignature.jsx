@@ -10,7 +10,7 @@ import {
   Button,
   Label,
 } from 'reactstrap'
-import Column from '../components/Column'
+import Column from '../../components/Column'
 import classNames from 'classnames'
 let caver
 

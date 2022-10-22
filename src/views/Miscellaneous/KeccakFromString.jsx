@@ -1,7 +1,7 @@
 import Caver from 'caver-js'
 import React, { Component } from 'react'
 import { Card, CardHeader, CardBody, Row, Col, Button, Label } from 'reactstrap'
-import Column from '../components/Column'
+import Column from '../../components/Column'
 let caver
 
 class KeccakFromString extends Component {

@@ -11,8 +11,8 @@ import {
   Label,
   FormGroup,
 } from 'reactstrap'
-import Column from '../components/Column'
-import { networkLinks } from '../consts/klaytnNetwork'
+import Column from '../../components/Column'
+import { networkLinks } from '../../consts/klaytnNetwork'
 import Caver from 'caver-js'
 import BigNumber from 'bignumber.js'
 

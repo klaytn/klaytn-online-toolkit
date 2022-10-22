@@ -13,7 +13,7 @@ import {
   FormGroup,
 } from 'reactstrap'
 import classNames from 'classnames'
-import Column from '../components/Column'
+import Column from '../../components/Column'
 let caver
 
 class RoleBasedKey extends Component {
