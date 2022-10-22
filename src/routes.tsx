@@ -1,31 +1,31 @@
-import GenerateKeystore from './views/generateKeystore'
-import KeccakFromString from './views/keccak256'
-import LoadKeystore from './views/loadKeystore'
-import SendAndSignTx from './views/multisigTx'
-import AccountUpdateWithMultiSigKey from './views/AccountUpdateMultiSig'
-import DetectKCT from './views/detectKCT'
-import FunctionSignature from './views/functionSignature'
-import FunctionCall from './views/functionCall'
-import ABIEncoder from './views/ABIEncoder'
-import ABIDecoder from './views/ABIDecoder'
-import AccountUpdateWithRoleBasedKey from './views/AccountUpdateRoleBased'
-import KIP7Deploy from './views/KIP7Deploy'
-import TxHashDecoder from './views/txHashDecoder'
-import BlockHashDecoder from './views/BlockHashDecoder'
-import RLPEncoder from './views/RLPEncoder'
-import RLPDecoder from './views/RLPDecoder'
-import CheckAccountKey from 'views/CheckAccountKey'
+import BlockHashDecoder from './views/BlockInfo/BlockHashDecoder'
 
-var routes = [
+import SendMultisigTx from './views/Transaction/SendMultisigTx'
+import TxHashDecoder from './views/Transaction/TxHashDecoder'
+import RLPEncoder from './views/Transaction/RLPEncoder'
+import RLPDecoder from './views/Transaction/RLPDecoder'
+
+import FunctionSignature from './views/SmartContract/FunctionSignature'
+import FunctionCall from './views/SmartContract/FunctionCall'
+import ABIEncoder from './views/SmartContract/ABIEncoder'
+import ABIDecoder from './views/SmartContract/ABIDecoder'
+import DetectKCT from './views/SmartContract/DetectKCT'
+import KIP7Deploy from './views/SmartContract/KIP7Deploy'
+
+import CheckAccountKey from 'views/Miscellaneous/CheckAccountKey'
+import GenerateKeystore from './views/Miscellaneous/GenerateKeystore'
+import KeccakFromString from './views/Miscellaneous/KeccakFromString'
+import LoadKeystore from './views/Miscellaneous/LoadKeystore'
+import AccountUpdateWithMultiSigKey from './views/Miscellaneous/AccountUpdateMultiSig'
+import AccountUpdateWithRoleBasedKey from './views/Miscellaneous/AccountUpdateRoleBased'
+
+import { RouteType } from 'types'
+
+const routes: RouteType[] = [
   {
     name: 'Block Info',
     path: '/blockinfo',
     items: [
-      // {
-      //     path: "/rlpDecode",
-      //     name: "Decoder from RLP",
-      //     component: null,
-      // },
       {
         path: '/blockhashDecode',
         name: 'Decoder from BlockHash',
@@ -55,7 +55,7 @@ var routes = [
       {
         path: '/sendMultisigTx',
         name: 'Send Multisig Transaction',
-        component: SendAndSignTx,
+        component: SendMultisigTx,
       },
     ],
   },

@@ -14,8 +14,8 @@ import {
 } from 'reactstrap'
 import { InputField } from 'components'
 import Caver from 'caver-js'
-import Column from '../components/Column'
-import { networkLinks } from '../consts/klaytnNetwork'
+import Column from '../../components/Column'
+import { networkLinks } from '../../consts/klaytnNetwork'
 import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
 

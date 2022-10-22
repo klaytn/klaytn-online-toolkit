@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Card, CardHeader, CardBody, Row, Col, Label } from 'reactstrap'
 import Caver from 'caver-js'
-import { networkLinks } from '../consts/klaytnNetwork'
-import Column from '../components/Column'
+import { networkLinks } from '../../consts/klaytnNetwork'
+import Column from '../../components/Column'
 
 let caver = new Caver(
   new Caver.providers.HttpProvider(networkLinks['mainnet']['rpc'])

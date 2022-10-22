@@ -11,9 +11,9 @@ import {
   Button,
   Label,
 } from 'reactstrap'
-import Column from '../components/Column'
+import Column from '../../components/Column'
 import { InputField } from 'components'
-import { networkLinks } from '../consts/klaytnNetwork'
+import { networkLinks } from '../../consts/klaytnNetwork'
 let caver
 
 const balanceOfABI = JSON.stringify({
