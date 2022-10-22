@@ -243,7 +243,7 @@ const RLPEncoder = (): ReactElement => {
             <>
               {result.success ? (
                 <StyledSection>
-                  <Label>Block</Label>
+                  <Label>Result</Label>
                   <FormTextarea
                     style={{ height: 100 }}
                     value={result.value}
