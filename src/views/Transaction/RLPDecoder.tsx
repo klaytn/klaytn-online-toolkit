@@ -103,7 +103,7 @@ const RLPDecoder = (): ReactElement => {
             <>
               {result.success ? (
                 <StyledSection>
-                  <Label>Block</Label>
+                  <Label>Transaction</Label>
                   <FormTextarea
                     style={{ height: 300 }}
                     value={result.value}
