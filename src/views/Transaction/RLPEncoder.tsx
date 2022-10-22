@@ -206,14 +206,14 @@ const RLPEncoder = (): ReactElement => {
             <FormSelect
               defaultValue={txType}
               itemList={_.map(TX_TYPE, (val, key) => ({
-                label: val,
+                label: _.capitalize(key.replace(/([A-Z])/g, ' $1').trim()),
                 value: key as TxType,
               }))}
               onChange={setTxType}
             />
           </StyledSection>
           <StyledSection>
-            <Label>Block Hash</Label>
+            <Label>{TX_TYPE[txType]}</Label>
             <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
               <Text>{`Ex :\n${exValue}`}</Text>
               <View style={{ gap: 4 }}>
@@ -231,9 +231,7 @@ const RLPEncoder = (): ReactElement => {
               </View>
             </Row>
             <FormTextarea
-              style={{
-                height: '200px',
-              }}
+              style={{ height: 200 }}
               value={inputTx}
               onChange={setInputTx}
             />
