@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import Caver from 'caver-js'
+import Caver, { Block } from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -38,7 +38,7 @@ const BlockHashDecoder = (): ReactElement => {
 
   const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [blockHash, setBlockHash] = useState('')
-  const [result, setResult] = useState<ResultFormType>()
+  const [result, setResult] = useState<ResultFormType<Block>>()
 
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
@@ -53,7 +53,7 @@ const BlockHashDecoder = (): ReactElement => {
       const res = await caver.rpc.klay.getBlockByHash(blockHash)
       setResult({
         success: true,
-        value: res ? JSON.stringify(res, null, 2) : '',
+        value: res,
       })
     } catch (err) {
       setResult({

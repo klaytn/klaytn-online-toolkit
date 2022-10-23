@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import Caver from 'caver-js'
+import Caver, { AbstractTransaction } from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -35,7 +35,7 @@ const EX_VALUE = {
 const TxHashDecoder = (): ReactElement => {
   const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [txHash, setTxHash] = useState('')
-  const [result, setResult] = useState<ResultFormType>()
+  const [result, setResult] = useState<ResultFormType<AbstractTransaction>>()
   const [rawTx, setRawTx] = useState('')
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
@@ -51,7 +51,7 @@ const TxHashDecoder = (): ReactElement => {
       setRawTx(res.getRawTransaction())
       setResult({
         success: true,
-        value: res ? JSON.stringify(res, null, 2) : '',
+        value: res,
       })
     } catch (err) {
       setResult({

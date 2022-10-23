@@ -43,7 +43,7 @@ const ABIEncoder = (): ReactElement => {
       const res = caver.abi.encodeParameters(types, values)
       setResult({
         success: true,
-        value: res || '',
+        value: res,
       })
     } catch (err) {
       setResult({

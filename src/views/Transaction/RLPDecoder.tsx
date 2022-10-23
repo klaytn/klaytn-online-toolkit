@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import Caver from 'caver-js'
+import Caver, { Transaction } from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -26,7 +26,7 @@ const StyledSection = styled(View)`
 
 const RLPDecoder = (): ReactElement => {
   const [rlpEncoded, setRlpEncoded] = useState('')
-  const [result, setResult] = useState<ResultFormType>()
+  const [result, setResult] = useState<ResultFormType<Transaction>>()
 
   const caver = useMemo(() => new Caver(URLMAP.network['mainnet']['rpc']), [])
 
@@ -39,7 +39,7 @@ const RLPDecoder = (): ReactElement => {
       const res = caver.transaction.decode(rlpEncoded)
       setResult({
         success: true,
-        value: res ? JSON.stringify(res, null, 2) : '',
+        value: res,
       })
     } catch (err) {
       setResult({
