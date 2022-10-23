@@ -8,5 +8,6 @@ export { default as FormInput } from './FormInput'
 export { default as FormSelect } from './FormSelect'
 export { default as FormTextarea } from './FormTextarea'
 export { default as CopyButton } from './CopyButton'
+export { default as FormRadio } from './FormRadio'
 
 export { Card, CardHeader, CardBody, Label, FormGroup } from 'reactstrap'
