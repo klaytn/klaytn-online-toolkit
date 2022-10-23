@@ -1,5 +1,3 @@
-import { Component } from 'react'
-
 export type RouteType = {
   name: string
   path: string

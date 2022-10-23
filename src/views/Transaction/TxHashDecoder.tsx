@@ -17,23 +17,15 @@ import {
   FormTextarea,
   CopyButton,
   FormSelect,
+  ResultForm,
 } from 'components'
+import { ResultFormType } from 'types'
 
 const StyledSection = styled(View)`
   padding-bottom: 10px;
 `
 
 type NetworkType = 'mainnet' | 'testnet'
-
-type ResultType =
-  | {
-      success: true
-      value: string
-    }
-  | {
-      success: false
-      message: string
-    }
 
 const EX_VALUE = {
   mainnet: '0x272272d25387cd8b0d3bf842d0d9fa2dee7c014ae66c3fd7a53865453d9bc7cc',
@@ -43,7 +35,7 @@ const EX_VALUE = {
 const TxHashDecoder = (): ReactElement => {
   const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [txHash, setTxHash] = useState('')
-  const [result, setResult] = useState<ResultType>()
+  const [result, setResult] = useState<ResultFormType>()
   const [rawTx, setRawTx] = useState('')
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
@@ -122,33 +114,13 @@ const TxHashDecoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={decodeTxHash}>Decode</Button>
           </StyledSection>
-          {result && (
-            <>
-              {result.success ? (
-                <>
-                  <StyledSection>
-                    <Label>Transaction</Label>
-                    <FormTextarea
-                      style={{ height: 500 }}
-                      value={result.value}
-                      readOnly
-                    />
-                    <CopyButton text={rawTx}>Copy the result</CopyButton>
-                  </StyledSection>
-                  <StyledSection>
-                    <Label>Raw Transaction(RLP-encoded Transaction)</Label>
-                    <FormTextarea
-                      style={{ height: 300 }}
-                      value={rawTx}
-                      readOnly
-                    />
-                    <CopyButton text={rawTx}>Copy the result</CopyButton>
-                  </StyledSection>
-                </>
-              ) : (
-                <Text style={{ color: COLOR.error }}> {result.message} </Text>
-              )}
-            </>
+          <ResultForm result={result} height={500} />
+          {result?.success && (
+            <StyledSection>
+              <Label>Raw Transaction(RLP-encoded Transaction)</Label>
+              <FormTextarea style={{ height: 300 }} value={rawTx} readOnly />
+              <CopyButton text={rawTx}>Copy the result</CopyButton>
+            </StyledSection>
           )}
         </CardBody>
       </Card>

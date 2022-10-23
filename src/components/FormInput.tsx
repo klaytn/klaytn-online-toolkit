@@ -6,18 +6,21 @@ const StyledInput = styled.input`
 `
 
 type FormInputProps = {
+  type?: 'text' | 'password'
   value: string
   onChange: (value: string) => void
   placeholder?: string
 }
 
-const FormInput = ({ value, placeholder, onChange }: FormInputProps) => (
-  <StyledInput
-    className="form-control"
-    value={value}
-    onChange={(e): void => onChange(e.target.value)}
-    placeholder={placeholder}
-  />
-)
+const FormInput = (props: FormInputProps) => {
+  const { onChange, ...rest } = props
+  return (
+    <StyledInput
+      className="form-control"
+      onChange={(e): void => onChange(e.target.value)}
+      {...rest}
+    />
+  )
+}
 
 export default FormInput
