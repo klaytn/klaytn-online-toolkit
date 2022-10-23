@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import Caver from 'caver-js'
+import Caver, { Result } from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -27,7 +27,7 @@ const StyledSection = styled(View)`
 const ABIEncoder = (): ReactElement => {
   const [argTypes, setArgTypes] = useState('')
   const [encodedData, setEncodedData] = useState('')
-  const [result, setResult] = useState<ResultFormType>()
+  const [result, setResult] = useState<ResultFormType<Result>>()
 
   const caver = useMemo(() => new Caver(URLMAP.network['mainnet']['rpc']), [])
 
@@ -42,7 +42,7 @@ const ABIEncoder = (): ReactElement => {
       const res = caver.abi.decodeParameters(types, encodedData)
       setResult({
         success: true,
-        value: res ? JSON.stringify(res, null, 2) : '',
+        value: res,
       })
     } catch (err) {
       setResult({

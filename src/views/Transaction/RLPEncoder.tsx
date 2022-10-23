@@ -168,7 +168,7 @@ const RLPEncoder = (): ReactElement => {
       const res = encodedTx?.getRLPEncoding()
       setResult({
         success: true,
-        value: res || '',
+        value: res,
       })
     } catch (err) {
       setResult({

@@ -55,7 +55,7 @@ const FunctionSignature = (): ReactElement => {
       const res = caver.abi.encodeFunctionSignature(param)
       setResult({
         success: true,
-        value: res || '',
+        value: res,
       })
     } catch (err) {
       setResult({

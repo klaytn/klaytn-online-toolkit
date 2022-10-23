@@ -1,7 +1,7 @@
-export type ResultFormType =
+export type ResultFormType<T = string> =
   | {
       success: true
-      value: string
+      value?: T
     }
   | {
       success: false
