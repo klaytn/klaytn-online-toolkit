@@ -3,7 +3,7 @@ import Caver from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
-import { COLOR, URLMAP } from 'consts'
+import { URLMAP } from 'consts'
 import {
   Button,
   Card,
@@ -16,25 +16,17 @@ import {
   View,
   FormTextarea,
   CopyButton,
+  ResultForm,
 } from 'components'
+import { ResultFormType } from 'types'
 
 const StyledSection = styled(View)`
   padding-bottom: 10px;
 `
 
-type ResultType =
-  | {
-      success: true
-      value: string
-    }
-  | {
-      success: false
-      message: string
-    }
-
 const RLPDecoder = (): ReactElement => {
   const [rlpEncoded, setRlpEncoded] = useState('')
-  const [result, setResult] = useState<ResultType>()
+  const [result, setResult] = useState<ResultFormType>()
 
   const caver = useMemo(() => new Caver(URLMAP.network['mainnet']['rpc']), [])
 
@@ -99,23 +91,7 @@ const RLPDecoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={rlpDecode}>Decode</Button>
           </StyledSection>
-          {result && (
-            <>
-              {result.success ? (
-                <StyledSection>
-                  <Label>Transaction</Label>
-                  <FormTextarea
-                    style={{ height: 300 }}
-                    value={result.value}
-                    readOnly
-                  />
-                  <CopyButton text={result.value}>Copy the result</CopyButton>
-                </StyledSection>
-              ) : (
-                <Text style={{ color: COLOR.error }}> {result.message} </Text>
-              )}
-            </>
-          )}
+          <ResultForm result={result} height={300} />
         </CardBody>
       </Card>
     </Column>

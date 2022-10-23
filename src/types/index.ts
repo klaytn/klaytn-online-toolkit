@@ -8,3 +8,4 @@ declare global {
 export * from './common'
 export * from './currencies'
 export * from './route'
+export * from './compoents'

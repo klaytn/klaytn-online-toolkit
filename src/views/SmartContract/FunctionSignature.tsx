@@ -3,7 +3,7 @@ import Caver from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
-import { COLOR, URLMAP } from 'consts'
+import { URLMAP } from 'consts'
 import {
   Button,
   Card,
@@ -17,22 +17,14 @@ import {
   FormTextarea,
   CopyButton,
   FormRadio,
+  ResultForm,
 } from 'components'
 import { ButtonGroup } from 'reactstrap'
+import { ResultFormType } from 'types'
 
 const StyledSection = styled(View)`
   padding-bottom: 10px;
 `
-
-type ResultType =
-  | {
-      success: true
-      value: string
-    }
-  | {
-      success: false
-      message: string
-    }
 
 enum InputTypeEnum {
   STRING = 'STRING',
@@ -42,12 +34,12 @@ enum InputTypeEnum {
 const EX_VALUE = {
   [InputTypeEnum.STRING]: 'myMethod(uint256,string)',
   [InputTypeEnum.ABI]:
-    '{"name":"myMethod","type":"function","inputs":[{"type":"uint256","name":"myNumber"},{"type":"string","name":"mystring"}]}',
+    '{"name":"yourMethod","type":"function","inputs":[{"type":"uint256","name":"myNumber"},{"type":"string","name":"mystring"}]}',
 }
 
 const FunctionSignature = (): ReactElement => {
   const [inputValue, setInputValue] = useState('')
-  const [result, setResult] = useState<ResultType>()
+  const [result, setResult] = useState<ResultFormType>()
   const [inputType, setInputType] = useState<InputTypeEnum>(
     InputTypeEnum.STRING
   )
@@ -131,23 +123,7 @@ const FunctionSignature = (): ReactElement => {
             />
           </StyledSection>
 
-          {result && (
-            <>
-              {result.success ? (
-                <StyledSection>
-                  <Label>Function Signature</Label>
-                  <FormTextarea
-                    style={{ height: 300 }}
-                    value={result.value}
-                    readOnly
-                  />
-                  <CopyButton text={result.value}>Copy the result</CopyButton>
-                </StyledSection>
-              ) : (
-                <Text style={{ color: COLOR.error }}> {result.message} </Text>
-              )}
-            </>
-          )}
+          <ResultForm result={result} height={300} />
         </CardBody>
       </Card>
     </Column>

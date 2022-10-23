@@ -3,7 +3,7 @@ import Caver from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
-import { COLOR, URLMAP, UTIL } from 'consts'
+import { URLMAP, UTIL } from 'consts'
 import {
   Button,
   Card,
@@ -16,26 +16,17 @@ import {
   View,
   FormInput,
   FormSelect,
-  FormTextarea,
   CopyButton,
+  ResultForm,
 } from 'components'
 import useLayout from 'hooks/useLayout'
+import { ResultFormType } from 'types'
 
 const StyledSection = styled(View)`
   padding-bottom: 10px;
 `
 
 type NetworkType = 'mainnet' | 'testnet'
-
-type ResultType =
-  | {
-      success: true
-      value: string
-    }
-  | {
-      success: false
-      message: string
-    }
 
 const EX_VALUE = {
   mainnet: '0x608d45ed14572c854036492dc08c131885ba5de294dd57e6c9468e1116f49063',
@@ -47,7 +38,7 @@ const BlockHashDecoder = (): ReactElement => {
 
   const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [blockHash, setBlockHash] = useState('')
-  const [result, setResult] = useState<ResultType>()
+  const [result, setResult] = useState<ResultFormType>()
 
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
@@ -124,23 +115,7 @@ const BlockHashDecoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={decodeBlockHash}>Decode</Button>
           </StyledSection>
-          {result && (
-            <>
-              {result.success ? (
-                <StyledSection>
-                  <Label>Block</Label>
-                  <FormTextarea
-                    style={{ height: 1000 }}
-                    value={result.value}
-                    readOnly
-                  />
-                  <CopyButton text={result.value}>Copy the result</CopyButton>
-                </StyledSection>
-              ) : (
-                <Text style={{ color: COLOR.error }}> {result.message} </Text>
-              )}
-            </>
-          )}
+          <ResultForm result={result} height={1000} />
         </CardBody>
       </Card>
     </Column>

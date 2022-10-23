@@ -16,26 +16,18 @@ import {
   View,
   FormTextarea,
   CopyButton,
+  ResultForm,
 } from 'components'
+import { ResultFormType } from 'types'
 
 const StyledSection = styled(View)`
   padding-bottom: 10px;
 `
 
-type ResultType =
-  | {
-      success: true
-      value: string
-    }
-  | {
-      success: false
-      message: string
-    }
-
 const ABIEncoder = (): ReactElement => {
   const [argTypes, setArgTypes] = useState('')
   const [encodedData, setEncodedData] = useState('')
-  const [result, setResult] = useState<ResultType>()
+  const [result, setResult] = useState<ResultFormType>()
 
   const caver = useMemo(() => new Caver(URLMAP.network['mainnet']['rpc']), [])
 
@@ -125,23 +117,7 @@ const ABIEncoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={encodeABI}>Decode</Button>
           </StyledSection>
-          {result && (
-            <>
-              {result.success ? (
-                <StyledSection>
-                  <Label>Result</Label>
-                  <FormTextarea
-                    style={{ height: 300 }}
-                    value={result.value}
-                    readOnly
-                  />
-                  <CopyButton text={result.value}>Copy the result</CopyButton>
-                </StyledSection>
-              ) : (
-                <Text style={{ color: COLOR.error }}> {result.message} </Text>
-              )}
-            </>
-          )}
+          <ResultForm result={result} />
         </CardBody>
       </Card>
     </Column>
