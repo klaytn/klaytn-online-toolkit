@@ -8,7 +8,7 @@ import { Text, Row } from 'components'
 
 const StyledRadioMenu = styled(Row)`
   gap: 8px;
-  overflow: scroll;
+  overflow: hidden;
   padding-right: 20px;
 `
 
