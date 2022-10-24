@@ -1,0 +1,31 @@
+import styled from 'styled-components'
+
+import Button from './Button'
+
+type FormDownloadProps = {
+  fileName: string
+  fileData: string
+}
+
+const FormDownload = ({ fileName, fileData }: FormDownloadProps) => {
+  const onClick = (): void => {
+    const date = new Date()
+    const filename = `${fileName}-${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}.json`
+    let element = document.createElement('a')
+    element.setAttribute(
+      'href',
+      'data:text/json;charset=utf-8,' + encodeURIComponent(fileData)
+    )
+    element.setAttribute('download', filename)
+    element.style.display = 'none'
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
+
+  return <Button onClick={onClick}>Download</Button>
+}
+
+export default FormDownload
