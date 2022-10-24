@@ -294,8 +294,11 @@ class SendAndSignTx extends Component {
                 multisig account
               </a>
               (the account that owns Multiple Signing Keys). You can use this
-              page to transfer value with the account with Role-based keys or a
-              single key.
+              page to transfer value with the account with{' '}
+              <a href="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeyrolebased">
+                role-based keys
+              </a>{' '}
+              or a single key.
             </p>
           </CardHeader>
           <CardBody>
