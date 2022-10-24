@@ -66,7 +66,7 @@ const FunctionSignature = (): ReactElement => {
   }
 
   useEffect(() => {
-    encode()
+    inputValue && encode()
   }, [inputValue])
 
   return (
@@ -123,7 +123,7 @@ const FunctionSignature = (): ReactElement => {
             />
           </StyledSection>
 
-          <ResultForm result={result} height={300} />
+          <ResultForm result={result} height={40} />
         </CardBody>
       </Card>
     </Column>

@@ -12,6 +12,7 @@ import ABIDecoder from './views/SmartContract/ABIDecoder'
 import DetectKCT from './views/SmartContract/DetectKCT'
 import KIP7Deploy from './views/SmartContract/KIP7Deploy'
 import KIP17Deploy from './views/SmartContract/KIP17Deploy'
+import KIP37Deploy from './views/SmartContract/KIP37Deploy'
 
 import CheckAccountKey from 'views/Miscellaneous/CheckAccountKey'
 import GenerateKeystore from './views/Miscellaneous/GenerateKeystore'
@@ -98,6 +99,11 @@ const routes: RouteType[] = [
         path: '/KIP17Deploy',
         name: 'Deploy KIP-17 Token',
         component: KIP17Deploy,
+      },
+      {
+        path: '/KIP37Deploy',
+        name: 'Deploy KIP-37 Token',
+        component: KIP37Deploy,
       },
     ],
   },
