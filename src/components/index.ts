@@ -10,5 +10,7 @@ export { default as FormTextarea } from './FormTextarea'
 export { default as CopyButton } from './CopyButton'
 export { default as FormRadio } from './FormRadio'
 export { default as ResultForm } from './ResultForm'
+export { default as CodeBlock } from './CodeBlock'
+export { default as FormDownload } from './FormDownload'
 
 export { Card, CardHeader, CardBody, Label, FormGroup } from 'reactstrap'

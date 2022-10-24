@@ -1,5 +1,7 @@
 import BlockHashDecoder from './views/BlockInfo/BlockHashDecoder'
 
+import AccountKeyLegacy from './views/Account/AccountKeyLegacy'
+
 import SendMultisigTx from './views/Transaction/SendMultisigTx'
 import TxHashDecoder from './views/Transaction/TxHashDecoder'
 import RLPEncoder from './views/Transaction/RLPEncoder'
@@ -32,6 +34,17 @@ const routes: RouteType[] = [
         path: '/blockhashDecode',
         name: 'Decoder from BlockHash',
         component: BlockHashDecoder,
+      },
+    ],
+  },
+  {
+    name: 'Account',
+    path: '/account',
+    items: [
+      {
+        path: '/accountKeyLegacy',
+        name: 'Basic (AccountKeyLegacy)',
+        component: AccountKeyLegacy,
       },
     ],
   },
