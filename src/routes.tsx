@@ -127,13 +127,13 @@ const routes: RouteType[] = [
         component: KeccakFromString,
       },
       {
-        path: '/accountUpdateWithMultiSigKey',
-        name: 'Update Account with MultiSigKey',
+        path: '/accountUpdateToMultiSigKey',
+        name: 'Update to MultiSigKey Account',
         component: AccountUpdateWithMultiSigKey,
       },
       {
-        path: '/accountUpdateWithRoleBasedKey',
-        name: 'Update Account with RoleBasedKey',
+        path: '/accountUpdateToRoleBasedKey',
+        name: 'Update to RoleBasedKey Account',
         component: AccountUpdateWithRoleBasedKey,
       },
       {

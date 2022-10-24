@@ -24,7 +24,7 @@ const roleToIndex = {
 }
 const indexToRole = ['RoleTransaction', 'RoleAccountUpdate', 'RoleFeePayer']
 
-class AccountUpdateWithRoleBasedKey extends Component {
+class AccountUpdateToRoleBasedKey extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -592,4 +592,4 @@ class AccountUpdateWithRoleBasedKey extends Component {
   }
 }
 
-export default AccountUpdateWithRoleBasedKey
+export default AccountUpdateToRoleBasedKey
