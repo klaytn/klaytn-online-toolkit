@@ -7,7 +7,6 @@ import './black-dashboard-react.css'
 import routes from '../routes'
 
 import MainPage from '../views/Home'
-import web3modalExample from '../views/Web3modal'
 
 import Navigator from './Navbar'
 
@@ -30,7 +29,6 @@ function App() {
         <Navigator />
         <Switch>
           <Route exact path="/" component={MainPage} />
-          <Route exact path="/web3modal" component={web3modalExample} />
           {getRoutes(routes)}
         </Switch>
       </div>
