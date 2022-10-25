@@ -119,7 +119,7 @@ export function callMintNFT(address, chainId, contractAddress, web3, toAddress, 
             .mintWithTokenURI(toAddress, tokenId, tokenURI)
             .send({
                 from: address,
-                gas: 200000,
+                gas: 10000000,
                 gasPrice: gasPrice
             }, (err, data)=>{
                 if (err) {
