@@ -60,7 +60,6 @@ const Navigator = (): ReactElement => {
       <Collapse isOpen={isOpen} navbar>
         <Nav navbar>
           <NavLink href="/klaytn-online-toolkit"> Home </NavLink>
-          <NavLink href="/klaytn-online-toolkit/web3modal">Web3Modal</NavLink>
           {routes.map((route, key) => (
             <RouteItem key={key} route={route} />
           ))}

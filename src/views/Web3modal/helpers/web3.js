@@ -47,10 +47,10 @@ export function callTransfer(address, chainId, contractAddress, web3) {
             const chain = getChainData(chainId).chain
             const gasPrice = chain === 'klaytn' ? await apiGetGasPriceKlaytn(chainId) : undefined;
             const gas = chain === 'klaytn'
-                ? await contract.methods.transfer(address, '1000000000000000000').estimateGas({from: address})
+                ? await contract.methods.transfer(address, '1').estimateGas({from: address})
                 : undefined;
             await contract.methods
-            .transfer(address, '1000000000000000000')
+            .transfer(address, '1')
             .send({ from: address, gas: gas, gasPrice: gasPrice}, (err, data) => {
                 if (err) {
                     reject(err)
@@ -63,18 +63,65 @@ export function callTransfer(address, chainId, contractAddress, web3) {
     })
 }
 
-export function callTransferFrom(address, chainId, contractAddress, web3, tokenId) {
+export function callTransferFrom(address, chainId, contractAddress, web3, toAddress, tokenId) {
     return new Promise(async(resolve, reject) => {
         try {
             const contract = getKIP17Contract(web3, contractAddress)
             const chain = getChainData(chainId).chain
             const gasPrice = chain === 'klaytn' ? await apiGetGasPriceKlaytn(chainId) : undefined;
             const gas = chain === 'klaytn'
-                ? await contract.methods.transferFrom(address, address, tokenId).estimateGas({from: address})
+                ? await contract.methods.transferFrom(address, toAddress, tokenId).estimateGas({from: address})
                 : undefined;
             await contract.methods
-            .transferFrom(address, address, tokenId)
+            .transferFrom(address, toAddress, tokenId)
             .send({ from: address, gas: gas, gasPrice: gasPrice}, (err, data) => {
+                if (err) {
+                    reject(err)
+                }
+                resolve(data)
+            })
+        } catch(err) {
+            reject(err)
+        }
+    })
+}
+
+export function callDeployNFT(address, chainId, web3, name, symbol){
+    return new Promise(async(resolve, reject) => {
+        try {
+            const contract = new web3.eth.Contract(KIP17_CONTRACT.abi)
+            const chain = getChainData(chainId).chain
+            const gasPrice = chain === 'klaytn' ? await apiGetGasPriceKlaytn(chainId) : undefined;
+            await contract.deploy({data: KIP17_CONTRACT.bytecode, arguments: [name, symbol]})
+            .send({
+                from: address,
+                gas: 10000000,
+                gasPrice: gasPrice
+            }, (err, data)=>{
+                if (err) {
+                    reject(err)
+                }
+                resolve(data)
+            })
+        } catch(err) {
+            reject(err)
+        }
+    })
+}
+
+export function callMintNFT(address, chainId, contractAddress, web3, toAddress, tokenId, tokenURI){
+    return new Promise(async(resolve, reject) => {
+        try {
+            const contract = getKIP17Contract(web3, contractAddress)
+            const chain = getChainData(chainId).chain
+            const gasPrice = chain === 'klaytn' ? await apiGetGasPriceKlaytn(chainId) : undefined;
+            await contract.methods
+            .mintWithTokenURI(toAddress, tokenId, tokenURI)
+            .send({
+                from: address,
+                gas: 200000,
+                gasPrice: gasPrice
+            }, (err, data)=>{
                 if (err) {
                     reject(err)
                 }

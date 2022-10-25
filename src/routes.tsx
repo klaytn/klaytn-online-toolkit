@@ -16,16 +16,35 @@ import KIP7Deploy from './views/SmartContract/KIP7Deploy'
 import KIP17Deploy from './views/SmartContract/KIP17Deploy'
 import KIP37Deploy from './views/SmartContract/KIP37Deploy'
 
-import CheckAccountKey from 'views/Miscellaneous/CheckAccountKey'
+import CheckAccountKey from './views/Miscellaneous/CheckAccountKey'
 import GenerateKeystore from './views/Miscellaneous/GenerateKeystore'
 import KeccakFromString from './views/Miscellaneous/KeccakFromString'
 import LoadKeystore from './views/Miscellaneous/LoadKeystore'
 import AccountUpdateWithMultiSigKey from './views/Miscellaneous/AccountUpdateMultiSig'
 import AccountUpdateWithRoleBasedKey from './views/Miscellaneous/AccountUpdateRoleBased'
 
+import web3modalExample from './views/Web3modal'
+import web3modalNFT from './views/Web3modal/web3modalNFT'
+
 import { RouteType } from 'types'
 
 const routes: RouteType[] = [
+  {
+    name: 'Web3Modal',
+    path: '/web3modal',
+    items: [
+      {
+        path: '/example',
+        name: 'Function Examples',
+        component: web3modalExample
+      },
+      {
+        path: '/NFT',
+        name: 'Deploy & Mint & Transfer NFT (KIP-17)',
+        component: web3modalNFT
+      }
+    ]
+  },
   {
     name: 'Block Info',
     path: '/blockinfo',
