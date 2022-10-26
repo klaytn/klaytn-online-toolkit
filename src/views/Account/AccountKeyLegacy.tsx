@@ -78,14 +78,16 @@ const AccountKeyLegacy = (): ReactElement => {
         <CardBody>
           <StyledSection>
             <Label>Private Key</Label>
-            <FormInput
-              value={privateKey}
-              onChange={setPrivateKey}
-              placeholder="Input private key"
-            />
-            {keyringErrMsg && (
-              <Text style={{ color: COLOR.error }}>{keyringErrMsg}</Text>
-            )}
+            <View style={{ paddingBottom: 10 }}>
+              <FormInput
+                value={privateKey}
+                onChange={setPrivateKey}
+                placeholder="Input private key"
+              />
+              {keyringErrMsg && (
+                <Text style={{ color: COLOR.error }}>{keyringErrMsg}</Text>
+              )}
+            </View>
             <Button onClick={generateKey}>Generate a private key</Button>
             <CodeBlock
               title="caver-js code"
@@ -96,10 +98,12 @@ const AccountKeyLegacy = (): ReactElement => {
             <>
               <StyledSection>
                 <Label>SingleKeyring from the private key</Label>
-                <CodeBlock
-                  text={JSON.stringify(keyring, null, 2)}
-                  toggle={false}
-                />
+                <View style={{ paddingBottom: 10 }}>
+                  <CodeBlock
+                    text={JSON.stringify(keyring, null, 2)}
+                    toggle={false}
+                  />
+                </View>
                 <CodeBlock
                   title="caver-js code"
                   text={`const keyring = caver.wallet.keyring.createFromPrivateKey(privateKey)`}
@@ -107,11 +111,13 @@ const AccountKeyLegacy = (): ReactElement => {
               </StyledSection>
               <StyledSection>
                 <Label>Password to generate a keystore</Label>
-                <FormInput
-                  value={password}
-                  onChange={setPassword}
-                  placeholder="Input password"
-                />
+                <View style={{ paddingBottom: 10 }}>
+                  <FormInput
+                    value={password}
+                    onChange={setPassword}
+                    placeholder="Input password"
+                  />
+                </View>
                 <Button onClick={generateKeystores}>Generate keystores</Button>
               </StyledSection>
               {keystoreV4 && (

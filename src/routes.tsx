@@ -1,6 +1,7 @@
 import BlockHashDecoder from './views/BlockInfo/BlockHashDecoder'
 
 import AccountKeyLegacy from './views/Account/AccountKeyLegacy'
+import AccountKeyPublic from './views/Account/AccountKeyPublic'
 
 import SendMultisigTx from './views/Transaction/SendMultisigTx'
 import TxHashDecoder from './views/Transaction/TxHashDecoder'
@@ -64,6 +65,11 @@ const routes: RouteType[] = [
         path: '/accountKeyLegacy',
         name: 'Basic (AccountKeyLegacy)',
         component: AccountKeyLegacy,
+      },
+      {
+        path: '/accountKeyPublic',
+        name: 'On-Chain Account (AccountKeyPublic)',
+        component: AccountKeyPublic,
       },
     ],
   },
