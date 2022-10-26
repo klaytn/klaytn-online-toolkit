@@ -1,6 +1,8 @@
 import BlockHashDecoder from './views/BlockInfo/BlockHashDecoder'
 
+import Keystore from './views/Account/Keystore'
 import AccountKeyLegacy from './views/Account/AccountKeyLegacy'
+import AccountKeyPublic from './views/Account/AccountKeyPublic'
 
 import SendMultisigTx from './views/Transaction/SendMultisigTx'
 import TxHashDecoder from './views/Transaction/TxHashDecoder'
@@ -36,14 +38,14 @@ const routes: RouteType[] = [
       {
         path: '/example',
         name: 'Function Examples',
-        component: web3modalExample
+        component: web3modalExample,
       },
       {
         path: '/NFT',
         name: 'Deploy & Mint & Transfer NFT (KIP-17)',
-        component: web3modalNFT
-      }
-    ]
+        component: web3modalNFT,
+      },
+    ],
   },
   {
     name: 'Block Info',
@@ -61,9 +63,19 @@ const routes: RouteType[] = [
     path: '/account',
     items: [
       {
+        path: '/keystore',
+        name: 'Keystore',
+        component: Keystore,
+      },
+      {
         path: '/accountKeyLegacy',
-        name: 'Basic (AccountKeyLegacy)',
+        name: 'Basic Account',
         component: AccountKeyLegacy,
+      },
+      {
+        path: '/accountKeyPublic',
+        name: 'Advanced (AccountKeyPublic)',
+        component: AccountKeyPublic,
       },
     ],
   },

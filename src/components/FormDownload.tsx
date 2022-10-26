@@ -1,13 +1,12 @@
-import styled from 'styled-components'
-
 import Button from './Button'
 
 type FormDownloadProps = {
+  title?: string
   fileName: string
   fileData: string
 }
 
-const FormDownload = ({ fileName, fileData }: FormDownloadProps) => {
+const FormDownload = ({ title, fileName, fileData }: FormDownloadProps) => {
   const onClick = (): void => {
     const date = new Date()
     const filename = `${fileName}-${date.getFullYear()}-${
@@ -25,7 +24,7 @@ const FormDownload = ({ fileName, fileData }: FormDownloadProps) => {
     document.body.removeChild(element)
   }
 
-  return <Button onClick={onClick}>Download</Button>
+  return <Button onClick={onClick}>{title || 'Download'}</Button>
 }
 
 export default FormDownload

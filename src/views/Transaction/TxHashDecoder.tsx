@@ -114,7 +114,7 @@ const TxHashDecoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={decodeTxHash}>Decode</Button>
           </StyledSection>
-          <ResultForm result={result} height={500} />
+          <ResultForm result={result} />
           {result?.success && (
             <StyledSection>
               <Label>Raw Transaction(RLP-encoded Transaction)</Label>

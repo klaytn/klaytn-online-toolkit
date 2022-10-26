@@ -2,16 +2,16 @@ import { ReactElement, useMemo } from 'react'
 import _ from 'lodash'
 
 import { COLOR } from 'consts'
-import { View, Label, FormTextarea, CopyButton, Text } from 'components'
+import { View, Label, CodeBlock, CopyButton, Text } from 'components'
 import { ResultFormType } from 'types'
+
+import CardSection from './CardSection'
 
 const ResultForm = <T,>({
   result,
-  height = 200,
   title,
 }: {
   result?: ResultFormType<T>
-  height?: number
   title?: string
 }): ReactElement => {
   const resultStr = useMemo(() => {
@@ -26,17 +26,16 @@ const ResultForm = <T,>({
   return (
     <>
       {result && (
-        <>
+        <CardSection>
           {result.success ? (
             <View>
               <Label>{title || 'Result'}</Label>
-              <FormTextarea style={{ height }} value={resultStr} readOnly />
-              <CopyButton text={resultStr}>Copy the result</CopyButton>
+              <CodeBlock toggle={false} text={resultStr} />
             </View>
           ) : (
             <Text style={{ color: COLOR.error }}> {result.message} </Text>
           )}
-        </>
+        </CardSection>
       )}
     </>
   )

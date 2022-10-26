@@ -119,7 +119,7 @@ const ABIEncoder = (): ReactElement => {
             <Button onClick={encodeABI}>Encode</Button>
           </StyledSection>
 
-          <ResultForm result={result} height={300} />
+          <ResultForm result={result} />
         </CardBody>
       </Card>
     </Column>

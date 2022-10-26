@@ -12,5 +12,8 @@ export { default as FormRadio } from './FormRadio'
 export { default as ResultForm } from './ResultForm'
 export { default as CodeBlock } from './CodeBlock'
 export { default as FormDownload } from './FormDownload'
+export { default as LinkA } from './LinkA'
+export { default as CardSection } from './CardSection'
+export { default as Loading } from './Loading'
 
 export { Card, CardHeader, CardBody, Label, FormGroup } from 'reactstrap'

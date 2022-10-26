@@ -15,9 +15,9 @@ const StyledRadioMenu = styled(Row)`
 const StyledRadioItem = styled(Row)<{ selected: boolean }>`
   ${STYLE.clickable};
   border-radius: 300px;
-  border: 3px solid;
+  border: 2px solid;
   border-color: ${({ selected }): string => (selected ? '#1d8cf8' : 'gray')};
-  padding: 8px 16px;
+  padding: 4px 16px;
   white-space: nowrap;
 `
 
