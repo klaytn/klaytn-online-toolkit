@@ -115,7 +115,7 @@ const BlockHashDecoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={decodeBlockHash}>Decode</Button>
           </StyledSection>
-          <ResultForm result={result} height={1000} />
+          <ResultForm result={result} />
         </CardBody>
       </Card>
     </Column>

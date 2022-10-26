@@ -123,7 +123,7 @@ const FunctionSignature = (): ReactElement => {
             />
           </StyledSection>
 
-          <ResultForm result={result} height={40} />
+          <ResultForm result={result} />
         </CardBody>
       </Card>
     </Column>

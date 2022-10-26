@@ -1,12 +1,10 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import Caver, {
-  EncryptedKeystoreV3Json,
-  EncryptedKeystoreV4Json,
-} from 'caver-js'
+import Caver, { TransactionReceipt } from 'caver-js'
 import _ from 'lodash'
+import { useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 
-import { COLOR, URLMAP } from 'consts'
+import { COLOR, URLMAP, UTIL } from 'consts'
 
 import {
   Column,
@@ -19,22 +17,19 @@ import {
   Label,
   FormInput,
   CodeBlock,
-  FormDownload,
+  Row,
+  LinkA,
+  ResultForm,
+  CardSection,
 } from 'components'
+import { ResultFormType } from 'types'
 
-const StyledSection = styled(View)`
-  padding: 10px;
-  background-color: #262626;
-  margin-bottom: 20px;
-  border-radius: 10px;
-`
+const AccountKeyLegacyOnchain = (): ReactElement => {
+  const navigate = useNavigate()
+  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
 
-const AccountKeyLegacy = (): ReactElement => {
-  const caver = useMemo(() => new Caver(URLMAP.network['mainnet']['rpc']), [])
   const [privateKey, setPrivateKey] = useState('')
-  const [password, setPassword] = useState('')
-  const [keystoreV4, setKeystoreV4] = useState<EncryptedKeystoreV4Json>()
-  const [keystoreV3, setkeystoreV3] = useState<EncryptedKeystoreV3Json>()
+  const [result, setResult] = useState<ResultFormType<TransactionReceipt>>()
 
   const generateKey = (): void => {
     const key = caver.wallet.keyring.generateSingleKey()
@@ -56,46 +51,72 @@ const AccountKeyLegacy = (): ReactElement => {
     return {}
   }, [privateKey])
 
-  const generateKeystores = (): void => {
-    if (keyring) {
-      setKeystoreV4(keyring.encrypt(password))
-      setkeystoreV3(keyring.encryptV3(password))
+  const { data: accountInfo, refetch } = useQuery(
+    [keyring],
+    async () => {
+      if (keyring) {
+        const accountKey = await caver.rpc.klay.getAccountKey(keyring.address)
+
+        if (accountKey) {
+          const hexBalance = await caver.rpc.klay.getBalance(keyring.address)
+          return {
+            address: keyring.address,
+            accountKey,
+            klay_balance: caver.utils.fromPeb(hexBalance, 'KLAY'),
+          }
+        }
+      }
+    },
+    {
+      enabled: !!keyring,
     }
-  }
+  )
 
   useEffect(() => {
-    setKeystoreV4(undefined)
-    setkeystoreV3(undefined)
-  }, [password])
+    setResult(undefined)
+  }, [privateKey])
 
   return (
     <Column>
       <Card>
         <CardHeader>
-          <h3 className="title">AccountKeyLegacy</h3>
-          <Text>Here you can get your account from a private key</Text>
+          <h3 className="title">Basic Account (AccountKeyLegacy)</h3>
+          <Text>
+            {
+              'You can create a new account with AccountKeyLegacy. The account has an address derived from the corresponding key pair.\n'
+            }
+            <LinkA link="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeylegacy">
+              [Docs : AccountKeyLegacy]
+            </LinkA>
+          </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
+            <Text>Testnet</Text>
+          </CardSection>
+          <CardSection>
             <Label>Private Key</Label>
-            <FormInput
-              value={privateKey}
-              onChange={setPrivateKey}
-              placeholder="Input private key"
-            />
-            {keyringErrMsg && (
-              <Text style={{ color: COLOR.error }}>{keyringErrMsg}</Text>
-            )}
+            <View style={{ paddingBottom: 10 }}>
+              <FormInput
+                value={privateKey}
+                onChange={setPrivateKey}
+                placeholder="Input private key"
+              />
+              {keyringErrMsg && (
+                <Text style={{ color: COLOR.error }}>{keyringErrMsg}</Text>
+              )}
+            </View>
             <Button onClick={generateKey}>Generate a private key</Button>
             <CodeBlock
               title="caver-js code"
-              text={`const key = caver.wallet.keyring.generateSingleKey()`}
+              text={`const privateKey = caver.wallet.keyring.generateSingleKey()`}
             />
-          </StyledSection>
+          </CardSection>
+
           {keyring && (
-            <>
-              <StyledSection>
-                <Label>SingleKeyring from the private key</Label>
+            <CardSection>
+              <Label>Keyring from private key</Label>
+              <View style={{ paddingBottom: 10 }}>
                 <CodeBlock
                   text={JSON.stringify(keyring, null, 2)}
                   toggle={false}
@@ -104,58 +125,83 @@ const AccountKeyLegacy = (): ReactElement => {
                   title="caver-js code"
                   text={`const keyring = caver.wallet.keyring.createFromPrivateKey(privateKey)`}
                 />
-              </StyledSection>
-              <StyledSection>
-                <Label>Password to generate a keystore</Label>
-                <FormInput
-                  value={password}
-                  onChange={setPassword}
-                  placeholder="Input password"
-                />
-                <Button onClick={generateKeystores}>Generate keystores</Button>
-              </StyledSection>
-              {keystoreV4 && (
-                <StyledSection>
-                  <Label>Keystore V4 (New)</Label>
+              </View>
 
-                  <CodeBlock
-                    text={JSON.stringify(keystoreV4, null, 2)}
-                    toggle={false}
-                  />
-                  <FormDownload
-                    fileData={JSON.stringify(keystoreV4, null, 2)}
-                    fileName={`keystoreV4-${keyring.address}`}
-                  />
-                  <CodeBlock
-                    title="caver-js code"
-                    text={`const keystoreV4 = keyring.encrypt(password)`}
-                  />
-                </StyledSection>
-              )}
-              {keystoreV3 && (
-                <StyledSection>
-                  <Label>Keystore V3 (Old)</Label>
-
-                  <CodeBlock
-                    text={JSON.stringify(keystoreV3, null, 2)}
-                    toggle={false}
-                  />
-                  <FormDownload
-                    fileData={JSON.stringify(keystoreV3, null, 2)}
-                    fileName={`keystoreV3-${keyring.address}`}
-                  />
-                  <CodeBlock
-                    title="caver-js code"
-                    text={`const keystoreV3 = keyring.encryptV3(password)`}
-                  />
-                </StyledSection>
-              )}
-            </>
+              <LinkA link="https://baobab.wallet.klaytn.foundation/faucet">
+                <Row style={{ gap: 4, alignItems: 'center' }}>
+                  <Text style={{ color: COLOR.primary }}>
+                    1. Get some testnet KLAY
+                  </Text>
+                  <Button
+                    size="sm"
+                    onClick={(): void => {
+                      refetch()
+                    }}
+                  >
+                    Move to get KLAY
+                  </Button>
+                </Row>
+              </LinkA>
+              <Row style={{ gap: 4, alignItems: 'center' }}>
+                <Text>Address : </Text>
+                <View style={{ flex: 1 }}>
+                  <CodeBlock text={keyring.address} toggle={false} />
+                </View>
+              </Row>
+              <Row style={{ gap: 4, alignItems: 'center' }}>
+                <Text style={{ color: COLOR.primary }}>
+                  2. After getting testnet KLAY, you can retrieve your account
+                  info from Baobab network.
+                </Text>
+                <Button
+                  size="sm"
+                  onClick={(): void => {
+                    refetch()
+                  }}
+                >
+                  Refetch account info
+                </Button>
+              </Row>
+            </CardSection>
           )}
+          {accountInfo && (
+            <CardSection>
+              <Label>Account info of on-chain</Label>
+              <View style={{ paddingBottom: 10 }}>
+                <CodeBlock
+                  text={JSON.stringify(accountInfo, null, 2)}
+                  toggle={false}
+                />
+                <CodeBlock
+                  title="caver-js code"
+                  text={`const accountKey = await caver.rpc.klay.getAccountKey(keyring.address)
+const hexBalance = await caver.rpc.klay.getBalance(keyring.address)
+return {
+  address: keyring.address,
+  accountKey,
+  klay_balance: caver.utils.fromPeb(hexBalance, 'KLAY'),
+}`}
+                />
+              </View>
+
+              <Text>Advanced account</Text>
+              <Button
+                onClick={(): void => {
+                  navigate({
+                    pathname: '/account/accountKeyPublic',
+                    search: `?pkey=${privateKey}`,
+                  })
+                }}
+              >
+                AccountKeyPublic
+              </Button>
+            </CardSection>
+          )}
+          <ResultForm title={'Recipt of transaction'} result={result} />
         </CardBody>
       </Card>
     </Column>
   )
 }
 
-export default AccountKeyLegacy
+export default AccountKeyLegacyOnchain

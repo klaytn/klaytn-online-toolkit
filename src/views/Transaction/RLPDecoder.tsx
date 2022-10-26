@@ -91,7 +91,7 @@ const RLPDecoder = (): ReactElement => {
           <StyledSection>
             <Button onClick={rlpDecode}>Decode</Button>
           </StyledSection>
-          <ResultForm result={result} height={300} />
+          <ResultForm result={result} />
         </CardBody>
       </Card>
     </Column>
