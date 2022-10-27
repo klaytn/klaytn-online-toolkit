@@ -1,2 +1,0 @@
-(this["webpackJsonpklaytn-online-toolkit"]=this["webpackJsonpklaytn-online-toolkit"]||[]).push([[18],{1126:function(t,n,a){"use strict";function e(t){t.languages.brainfuck={pointer:{pattern:/<|>/,alias:"keyword"},increment:{pattern:/\+/,alias:"inserted"},decrement:{pattern:/-/,alias:"deleted"},branching:{pattern:/\[|\]/,alias:"important"},operator:/[.,]/,comment:/\S+/}}t.exports=e,e.displayName="brainfuck",e.aliases=[]}}]);
-//# sourceMappingURL=react-syntax-highlighter_languages_refractor_brainfuck.46eb7edf.chunk.js.map
