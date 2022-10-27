@@ -159,7 +159,7 @@ const AccountKeyPublic = (): ReactElement => {
           <h3 className="title">Change Private Key (AccountKeyPublic)</h3>
           <Text>
             {
-              'You can change the private key of your account with AccountKeyPublic.\n'
+              'You can update the private key of your account to AccountKeyPublic.\n'
             }
             <LinkA link="https://docs.klaytn.foundation/klaytn/design/accounts#accountkeypublic">
               [Docs : AccountKeyPublic]
