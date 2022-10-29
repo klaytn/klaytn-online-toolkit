@@ -15,5 +15,6 @@ export { default as FormDownload } from './FormDownload'
 export { default as LinkA } from './LinkA'
 export { default as CardSection } from './CardSection'
 export { default as Loading } from './Loading'
+export { default as Text1 } from './Text1'
 
 export { Card, CardHeader, CardBody, Label, FormGroup } from 'reactstrap'
