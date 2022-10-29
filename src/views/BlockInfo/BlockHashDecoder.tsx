@@ -1,30 +1,24 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { Block } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
-import { URLMAP, UTIL } from 'consts'
+import { URLMAP } from 'consts'
 import {
   Button,
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
-  View,
   FormInput,
   FormSelect,
-  CopyButton,
   ResultForm,
+  CardSection,
+  CodeBlock,
+  CardExample,
 } from 'components'
-import useLayout from 'hooks/useLayout'
 import { ResultFormType } from 'types'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 type NetworkType = 'mainnet' | 'testnet'
 
@@ -34,8 +28,6 @@ const EX_VALUE = {
 }
 
 const BlockHashDecoder = (): ReactElement => {
-  const { isUnderTabletWidth } = useLayout()
-
   const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [blockHash, setBlockHash] = useState('')
   const [result, setResult] = useState<ResultFormType<Block>>()
@@ -75,7 +67,7 @@ const BlockHashDecoder = (): ReactElement => {
           <Text>Here you can get block information by block hash.</Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>Network</Label>
             <FormSelect
               defaultValue={network}
@@ -85,36 +77,23 @@ const BlockHashDecoder = (): ReactElement => {
               ]}
               onChange={setNetwork}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Block Hash</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${
-                isUnderTabletWidth ? UTIL.truncate(exValue) : exValue
-              }`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setBlockHash(exValue)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exValue} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exValue} onClickTry={setBlockHash} />
             <FormInput
               value={blockHash}
               onChange={setBlockHash}
               placeholder="Enter the Block Hash."
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={decodeBlockHash}>Decode</Button>
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`const block = caver.rpc.klay.getBlockByHash(blockHash)`}
+            />
+          </CardSection>
           <ResultForm result={result} />
         </CardBody>
       </Card>

@@ -1,5 +1,4 @@
 import { ReactElement, useMemo, useState } from 'react'
-import styled from 'styled-components'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 import { Card, CardHeader, CardBody } from 'reactstrap'
@@ -8,18 +7,15 @@ import { URLMAP, UTIL } from 'consts'
 import {
   Button,
   Column,
-  View,
   Label,
   Text,
   FormInput,
   ResultForm,
+  CardSection,
+  CodeBlock,
+  FormFile,
 } from 'components'
-import FormFile from 'components/FormFile'
 import { ResultFormType } from 'types'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 const LoadKeystore = (): ReactElement => {
   const [keystoreJSON, setKeystoreJSON] = useState<Keystore>()
@@ -73,15 +69,15 @@ const LoadKeystore = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>Keystore</Label>
             <FormFile
               placeholder="Keystore File"
               accept=".json"
               onChange={handleKeystoreChange}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Password</Label>
             <FormInput
               type="password"
@@ -89,10 +85,14 @@ const LoadKeystore = (): ReactElement => {
               onChange={setPassword}
               value={password}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={decrypt}>Decrypt</Button>
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
+            />
+          </CardSection>
           <ResultForm result={result} />
         </CardBody>
       </Card>

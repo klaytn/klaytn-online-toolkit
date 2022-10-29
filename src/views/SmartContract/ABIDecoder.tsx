@@ -1,28 +1,23 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { Result } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
-import { COLOR, URLMAP } from 'consts'
+import { URLMAP } from 'consts'
 import {
   Button,
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
-  View,
   FormTextarea,
-  CopyButton,
   ResultForm,
+  CardSection,
+  CodeBlock,
+  CardExample,
 } from 'components'
 import { ResultFormType } from 'types'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 const ABIEncoder = (): ReactElement => {
   const [argTypes, setArgTypes] = useState('')
@@ -64,59 +59,36 @@ const ABIEncoder = (): ReactElement => {
           <Text>The tool is designed to decode ABI encoded parameters.</Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>Argument Types</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exType}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setArgTypes(exType)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exType} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exType} onClickTry={setArgTypes} />
             <FormTextarea
               style={{ height: 100 }}
               value={argTypes}
               onChange={setArgTypes}
               placeholder="Enter the comma-separated value types."
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Encoded Data</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exData}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setEncodedData(exData)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exData} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exData} onClickTry={setEncodedData} />
             <FormTextarea
               style={{ height: 100 }}
               value={encodedData}
               onChange={setEncodedData}
               placeholder=" Enter the encoded data to be decoded."
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={encodeABI}>Decode</Button>
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`types: (string | object)[]
+encodedData: string
+
+const decoded = caver.abi.decodeParameters(types, encodedData)`}
+            />
+          </CardSection>
           <ResultForm result={result} />
         </CardBody>
       </Card>

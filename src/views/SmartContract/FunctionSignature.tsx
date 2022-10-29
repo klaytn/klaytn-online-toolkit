@@ -1,30 +1,24 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import Caver from 'caver-js'
-import styled from 'styled-components'
+import Caver, { AbiItem } from 'caver-js'
 import _ from 'lodash'
 
 import { URLMAP } from 'consts'
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
-  View,
   FormTextarea,
-  CopyButton,
   FormRadio,
   ResultForm,
+  CardSection,
+  CodeBlock,
+  CardExample,
 } from 'components'
 import { ButtonGroup } from 'reactstrap'
 import { ResultFormType } from 'types'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 enum InputTypeEnum {
   STRING = 'STRING',
@@ -51,7 +45,9 @@ const FunctionSignature = (): ReactElement => {
     setResult(undefined)
     try {
       const param =
-        inputType === InputTypeEnum.STRING ? inputValue : JSON.parse(inputValue)
+        inputType === InputTypeEnum.STRING
+          ? inputValue
+          : (JSON.parse(inputValue) as AbiItem)
       const res = caver.abi.encodeFunctionSignature(param)
       setResult({
         success: true,
@@ -81,47 +77,34 @@ const FunctionSignature = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection style={{ width: 200 }}>
-            <ButtonGroup
-              className="btn-group-toggle float-left"
-              data-toggle="buttons"
-              style={{ marginBottom: '1rem' }}
-            >
-              <FormRadio
-                itemList={[
-                  { title: 'String', value: InputTypeEnum.STRING },
-                  { title: 'ABI', value: InputTypeEnum.ABI },
-                ]}
-                selectedValue={inputType}
-                onClick={setInputType}
-              />
-            </ButtonGroup>
-          </StyledSection>
-          <StyledSection>
+          <CardSection style={{ width: 200 }}>
+            <Label>Type</Label>
+            <FormRadio
+              itemList={[
+                { title: 'String', value: InputTypeEnum.STRING },
+                { title: 'ABI', value: InputTypeEnum.ABI },
+              ]}
+              selectedValue={inputType}
+              onClick={setInputType}
+            />
+          </CardSection>
+          <CardSection>
             <Label>Input</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exValue}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setInputValue(exValue)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exValue} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exValue} onClickTry={setInputValue} />
             <FormTextarea
               style={{ height: 100 }}
               value={inputValue}
               onChange={setInputValue}
               placeholder="Enter the comma-separated value types."
             />
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`import { AbiItem } from 'caver-js'
+param: string | AbiItem
+
+const encoded = caver.abi.encodeFunctionSignature(param)`}
+            />
+          </CardSection>
 
           <ResultForm result={result} />
         </CardBody>
