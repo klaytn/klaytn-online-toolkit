@@ -17,7 +17,6 @@ import {
   FormInput,
   FormSelect,
   CopyButton,
-  Text1,
 } from 'components'
 import FormFile from 'components/FormFile'
 
@@ -232,7 +231,7 @@ const KIP37Deploy = (): ReactElement => {
       <Card>
         <CardHeader>
           <h3 className="title">Deploy KIP-37 Token</h3>
-          <Text1>
+          <Text>
             Here you can deploy a KIP-37 smart contract to the Klaytn Cypress or
             Baobab network. Please refer to{' '}
             <a href="http://kips.klaytn.foundation/KIPs/kip-37">
@@ -243,7 +242,7 @@ const KIP37Deploy = (): ReactElement => {
               caver.kct.kip37
             </a>
             .
-          </Text1>
+          </Text>
         </CardHeader>
         <CardBody>
           <h3 className="title"> Upload Deployer Keystore File</h3>
@@ -334,7 +333,8 @@ const KIP37Deploy = (): ReactElement => {
               )}
               {deployMsg !== '' && deploySuccess === true && (
                 <Text>
-                  {deployMsg}You can check it below link:{' '}
+                  {deployMsg}You can check it below link:
+                  <br />
                   <a
                     href={
                       URLMAP.network[network]['finderNFT'] + contractAddress
@@ -405,7 +405,8 @@ const KIP37Deploy = (): ReactElement => {
                 )}
                 {createMsg !== '' && createSuccess === true && (
                   <Text>
-                    {createMsg} You can check it below link:{' '}
+                    {createMsg} You can check it below link:
+                    <br />
                     <a
                       href={
                         URLMAP.network[network]['finderNFT'] +
@@ -481,7 +482,8 @@ const KIP37Deploy = (): ReactElement => {
                 )}
                 {mintMsg !== '' && mintSuccess === true && (
                   <Text>
-                    {mintMsg} You can check it below link:{' '}
+                    {mintMsg} You can check it below link:
+                    <br />
                     <a
                       href={
                         URLMAP.network[network]['finderNFT'] +
