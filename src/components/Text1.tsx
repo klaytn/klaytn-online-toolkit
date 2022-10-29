@@ -12,8 +12,8 @@ const StyledText = styled.div`
   word-break: break-word;
 `
 
-const NoEnterTest = (props: HTMLAttributes<HTMLDivElement>): ReactElement => {
+const Text1 = (props: HTMLAttributes<HTMLDivElement>): ReactElement => {
   return <StyledText {...props} />
 }
 
-export default NoEnterTest
+export default Text1

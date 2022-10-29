@@ -17,7 +17,7 @@ import {
   FormInput,
   FormSelect,
   CopyButton,
-  NewText,
+  Text1,
 } from 'components'
 import FormFile from 'components/FormFile'
 
@@ -232,7 +232,7 @@ const KIP37Deploy = (): ReactElement => {
       <Card>
         <CardHeader>
           <h3 className="title">Deploy KIP-37 Token</h3>
-          <NewText>
+          <Text1>
             Here you can deploy a KIP-37 smart contract to the Klaytn Cypress or
             Baobab network. Please refer to{' '}
             <a href="http://kips.klaytn.foundation/KIPs/kip-37">
@@ -243,7 +243,7 @@ const KIP37Deploy = (): ReactElement => {
               caver.kct.kip37
             </a>
             .
-          </NewText>
+          </Text1>
         </CardHeader>
         <CardBody>
           <h3 className="title"> Upload Deployer Keystore File</h3>
