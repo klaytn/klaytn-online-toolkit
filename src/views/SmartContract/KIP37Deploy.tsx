@@ -47,6 +47,13 @@ const KIP37Deploy = (): ReactElement => {
   const [createMsgVisible, setCreateMsgVisible] = useState(false)
   const [createButtonDisabled, setCreateButtonDisabled] = useState(false)
   const [createSuccess, setCreateSuccess] = useState(false)
+  const [toAddress, setToAddress] = useState('')
+  const [transferId, setTransferId] = useState('')
+  const [transferAmount, setTransferAmount] = useState('')
+  const [transferMsg, setTransferMsg] = useState('')
+  const [transferMsgVisible, setTransferMsgVisible] = useState(false)
+  const [transferButtonDisabled, setTransferButtonDisabled] = useState(false)
+  const [transferSuccess, setTransferSuccess] = useState(false)
   const [recipientAddress, setRecipientAddress] = useState('')
   const [tokenAmount, setTokenAmount] = useState('')
   const [mintMsg, setMintMsg] = useState('')
@@ -184,6 +191,63 @@ const KIP37Deploy = (): ReactElement => {
       setTimeout(() => {
         setCreateMsgVisible(false)
         setCreateMsg('')
+      }, 5000)
+    }
+  }
+
+  const transfer = async () => {
+    try {
+      setTransferButtonDisabled(true)
+
+      const deployedContract = new caver.kct.kip37(contractAddress)
+      deployedContract.options.from = senderAddress
+      const balance = await deployedContract.balanceOf(
+        senderAddress,
+        transferId
+      )
+      console.log('balance:', balance)
+
+      const transferred = await deployedContract.safeTransferFrom(
+        senderAddress,
+        toAddress,
+        transferId,
+        transferAmount,
+        'data'
+      )
+
+      let newTransferMsg
+      if (transferAmount === '1') {
+        newTransferMsg =
+          'KIP-37 Token(Token ID: ' +
+          transferId +
+          ') is successfully transferred!'
+      } else {
+        newTransferMsg =
+          'KIP-37 Tokens(Token ID: ' +
+          transferId +
+          ') are successfully transferred!'
+      }
+
+      if (transferred) {
+        setTransferMsgVisible(true)
+        setTransferMsg(newTransferMsg)
+        setTransferButtonDisabled(false)
+        setTransferSuccess(true)
+      } else {
+        throw Error('Transferring is failed')
+      }
+    } catch (e: any) {
+      setTransferMsg(e.toString())
+      setTransferMsgVisible(true)
+      setTransferButtonDisabled(false)
+      setToAddress('')
+      setTransferId('')
+      setTransferAmount('')
+      setTransferSuccess(false)
+
+      setTimeout(() => {
+        setTransferMsgVisible(false)
+        setTransferMsg('')
       }, 5000)
     }
   }
@@ -413,6 +477,92 @@ const KIP37Deploy = (): ReactElement => {
                         contractAddress +
                         '?tabId=nftInventory&search=' +
                         senderAddress
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      KIP-37 Token Inventory
+                    </a>
+                  </Text>
+                )}
+              </StyledSection>
+            )}
+          </CardBody>
+        </Card>
+      )}
+      {createSuccess && (
+        <Card>
+          <CardHeader>
+            <h3 className="title">Transfer the KIP-37 Token</h3>
+            <Text>
+              Enter the recipient address, token ID, and amount of the KIP-37
+              Token to be transferred among the KIP-37 Tokens you have.
+            </Text>
+          </CardHeader>
+          <CardBody>
+            <StyledSection>
+              <Label>Recipient's Address</Label>
+              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <Text>{`Ex :\n${exAddress}`}</Text>
+                <View style={{ gap: 4 }}>
+                  <Button
+                    size="sm"
+                    onClick={(): void => {
+                      setToAddress(exAddress)
+                    }}
+                  >
+                    Try
+                  </Button>
+                  <CopyButton text={exAddress} buttonProps={{ size: 'sm' }}>
+                    Copy
+                  </CopyButton>
+                </View>
+              </Row>
+              <FormInput
+                type="text"
+                placeholder="Recipient Address"
+                onChange={setToAddress}
+                value={toAddress}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Label>Token ID</Label>
+              <FormInput
+                type="text"
+                placeholder="Token ID (e.g., 0)"
+                onChange={setTransferId}
+                value={transferId}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Label>Token Amount</Label>
+              <FormInput
+                type="text"
+                placeholder="Token Amount (e.g., 2)"
+                onChange={setTransferAmount}
+                value={transferAmount}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Button disabled={transferButtonDisabled} onClick={transfer}>
+                Transfer
+              </Button>
+            </StyledSection>
+            {transferMsgVisible && (
+              <StyledSection>
+                {transferMsg !== '' && transferSuccess === false && (
+                  <Text style={{ color: '#c221a9' }}> {transferMsg} </Text>
+                )}
+                {transferMsg !== '' && transferSuccess === true && (
+                  <Text>
+                    {transferMsg} You can check it below link:
+                    <br />
+                    <a
+                      href={
+                        URLMAP.network[network]['finderNFT'] +
+                        contractAddress +
+                        '?tabId=nftInventory&search=' +
+                        toAddress
                       }
                       target="_blank"
                       rel="noreferrer"
