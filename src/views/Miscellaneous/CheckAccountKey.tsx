@@ -1,6 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { AccountKeyForRPC } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
 import { URLMAP } from 'consts'
@@ -12,10 +11,11 @@ import {
   Label,
   Column,
   Text,
-  View,
   FormSelect,
   ResultForm,
   FormInput,
+  CardSection,
+  CodeBlock,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -26,10 +26,6 @@ const idToType: Record<number, string> = {
   4: 'AccountKeyWeightedMultiSig',
   5: 'AccountKeyRoleBased',
 }
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 type NetworkType = 'mainnet' | 'testnet'
 
@@ -92,7 +88,7 @@ const CheckAccountKey = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>Network</Label>
             <FormSelect
               defaultValue={network}
@@ -102,14 +98,18 @@ const CheckAccountKey = (): ReactElement => {
               ]}
               onChange={setNetwork}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Address</Label>
             <FormInput value={inputAddress} onChange={setInputAddress} />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={checkAddress}>Check</Button>
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`const accountKeyForRPC = await caver.rpc.klay.getAccountKey(inputAddress)`}
+            />
+          </CardSection>
           <ResultForm title={title} result={result} />
         </CardBody>
       </Card>

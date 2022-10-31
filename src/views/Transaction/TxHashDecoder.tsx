@@ -1,29 +1,24 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { AbstractTransaction } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
-import { COLOR, URLMAP } from 'consts'
+import { URLMAP } from 'consts'
 import {
   Button,
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
-  View,
   FormTextarea,
-  CopyButton,
   FormSelect,
   ResultForm,
+  CardSection,
+  CodeBlock,
+  CardExample,
 } from 'components'
 import { ResultFormType } from 'types'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 type NetworkType = 'mainnet' | 'testnet'
 
@@ -76,7 +71,7 @@ const TxHashDecoder = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>Network</Label>
             <FormSelect
               defaultValue={network}
@@ -86,41 +81,30 @@ const TxHashDecoder = (): ReactElement => {
               ]}
               onChange={setNetwork}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Transaction Hash</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exValue}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setTxHash(exValue)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exValue} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exValue} onClickTry={setTxHash} />
             <FormTextarea
               style={{ height: 100 }}
               value={txHash}
               onChange={setTxHash}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={decodeTxHash}>Decode</Button>
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`const decoded = caver.transaction.getTransactionByHash(txHash)
+const rawTransaction = decoded.getRawTransaction()`}
+            />
+          </CardSection>
           <ResultForm result={result} />
           {result?.success && (
-            <StyledSection>
+            <CardSection>
               <Label>Raw Transaction(RLP-encoded Transaction)</Label>
-              <FormTextarea style={{ height: 300 }} value={rawTx} readOnly />
-              <CopyButton text={rawTx}>Copy the result</CopyButton>
-            </StyledSection>
+              <CodeBlock toggle={false} text={rawTx} />
+            </CardSection>
           )}
         </CardBody>
       </Card>

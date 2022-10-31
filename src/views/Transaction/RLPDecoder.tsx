@@ -1,6 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { Transaction } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
 import { URLMAP } from 'consts'
@@ -9,20 +8,16 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
-  View,
   FormTextarea,
-  CopyButton,
   ResultForm,
+  CardSection,
+  CodeBlock,
+  CardExample,
 } from 'components'
 import { ResultFormType } from 'types'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 const RLPDecoder = (): ReactElement => {
   const [rlpEncoded, setRlpEncoded] = useState('')
@@ -64,33 +59,22 @@ const RLPDecoder = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>RLP-Encoded Transaction</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exValue}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setRlpEncoded(exValue)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exValue} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exValue} onClickTry={setRlpEncoded} />
             <FormTextarea
               style={{ height: 100 }}
               value={rlpEncoded}
               onChange={setRlpEncoded}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={rlpDecode}>Decode</Button>
-          </StyledSection>
+            <CodeBlock
+              title="caver-js code"
+              text={`const decoded = caver.transaction.decode(rlpEncoded)`}
+            />
+          </CardSection>
           <ResultForm result={result} />
         </CardBody>
       </Card>

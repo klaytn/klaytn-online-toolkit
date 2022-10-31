@@ -1,6 +1,5 @@
-import { ReactElement, useEffect, useMemo, useState } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
 import { URLMAP, UTIL } from 'consts'
@@ -17,12 +16,9 @@ import {
   FormInput,
   FormSelect,
   CopyButton,
+  CardSection,
+  FormFile,
 } from 'components'
-import FormFile from 'components/FormFile'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 type NetworkType = 'mainnet' | 'testnet'
 
@@ -314,7 +310,7 @@ const KIP37Deploy = (): ReactElement => {
             Upload the Keystore file. This account must have enough KLAY to
             deploy a KIP-37 smart contract.
           </Text>
-          <StyledSection>
+          <CardSection>
             <Label>Network</Label>
             <FormSelect
               defaultValue={network}
@@ -324,16 +320,16 @@ const KIP37Deploy = (): ReactElement => {
               ]}
               onChange={setNetwork}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Keystore</Label>
             <FormFile
               placeholder="Keystore File"
               accept=".json"
               onChange={handleSenderKeystoreChange}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Password</Label>
             <FormInput
               type="password"
@@ -341,14 +337,14 @@ const KIP37Deploy = (): ReactElement => {
               onChange={setSenderKeystorePassword}
               value={senderKeystorePassword}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
-          </StyledSection>
+          </CardSection>
           {senderDecryptMessageVisible && (
-            <StyledSection>
+            <CardSection>
               <Text style={{ color: '#c221a9' }}>{senderDecryptMessage}</Text>
-            </StyledSection>
+            </CardSection>
           )}
         </CardBody>
       </Card>
@@ -360,7 +356,7 @@ const KIP37Deploy = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>URI</Label>
             <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
               <Text>{`Ex :\n${exURI}`}</Text>
@@ -384,14 +380,14 @@ const KIP37Deploy = (): ReactElement => {
               onChange={setUri}
               value={uri}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button disabled={deployButtonDisabled} onClick={deploy}>
               Deploy
             </Button>
-          </StyledSection>
+          </CardSection>
           {deployMsgVisible && (
-            <StyledSection>
+            <CardSection>
               {deployMsg !== '' && deploySuccess === false && (
                 <Text style={{ color: '#c221a9' }}> {deployMsg} </Text>
               )}
@@ -410,7 +406,7 @@ const KIP37Deploy = (): ReactElement => {
                   </a>
                 </Text>
               )}
-            </StyledSection>
+            </CardSection>
           )}
         </CardBody>
       </Card>
@@ -423,7 +419,7 @@ const KIP37Deploy = (): ReactElement => {
             </Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Label>Initial Supply</Label>
               <FormInput
                 type="text"
@@ -431,8 +427,8 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setInitialSupply}
                 value={initialSupply}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Label>Token URI</Label>
               <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Text>{`Ex :\n${exTokenURI}`}</Text>
@@ -456,14 +452,14 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setTokenURI}
                 value={tokenURI}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Button disabled={createButtonDisabled} onClick={create}>
                 Create
               </Button>
-            </StyledSection>
+            </CardSection>
             {createMsgVisible && (
-              <StyledSection>
+              <CardSection>
                 {createMsg !== '' && createSuccess === false && (
                   <Text style={{ color: '#c221a9' }}> {createMsg} </Text>
                 )}
@@ -485,7 +481,7 @@ const KIP37Deploy = (): ReactElement => {
                     </a>
                   </Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
@@ -586,7 +582,7 @@ const KIP37Deploy = (): ReactElement => {
             </Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Label>Recipient's Address</Label>
               <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Text>{`Ex :\n${exAddress}`}</Text>
@@ -610,8 +606,8 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setRecipientAddress}
                 value={recipientAddress}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Label>Token Amount</Label>
               <FormInput
                 type="text"
@@ -619,14 +615,14 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setTokenAmount}
                 value={tokenAmount}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Button disabled={mintButtonDisabled} onClick={mint}>
                 Mint
               </Button>
-            </StyledSection>
+            </CardSection>
             {mintMsgVisible && (
-              <StyledSection>
+              <CardSection>
                 {mintMsg !== '' && mintSuccess === false && (
                   <Text style={{ color: '#c221a9' }}> {mintMsg} </Text>
                 )}
@@ -648,7 +644,7 @@ const KIP37Deploy = (): ReactElement => {
                     </a>
                   </Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
