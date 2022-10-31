@@ -36,7 +36,6 @@ const KIP17Deploy = (): ReactElement => {
   const [senderDecryptMessageVisible, setSenderDecryptMessageVisible] =
     useState(false)
   const [deployMsg, setDeployMsg] = useState('')
-  const [deployMsgVisible, setDeployMsgVisible] = useState(false)
   const [deployButtonDisabled, setDeployButtonDisabled] = useState(false)
   const [deploySuccess, setDeploySuccess] = useState(false)
   const [tokenName, setTokenName] = useState('')
@@ -45,27 +44,22 @@ const KIP17Deploy = (): ReactElement => {
   const [nftReceiver, setNftReceiver] = useState('')
   const [tokenURI, setTokenURI] = useState('')
   const [mintMsg, setMintMsg] = useState('')
-  const [mintMsgVisible, setMintMsgVisible] = useState(false)
   const [mintButtonDisabled, setMintButtonDisabled] = useState(false)
   const [mintSuccess, setMintSuccess] = useState(false)
   const [lastTokenId, setLastTokenId] = useState(0)
   const [transferTokenId, setTransferTokenId] = useState('')
   const [transferReceiver, setTransferReceiver] = useState('')
   const [transferMsg, setTransferMsg] = useState('')
-  const [transferMsgVisible, setTransferMsgVisible] = useState(false)
   const [transferButtonDisabled, setTransferButtonDisabled] = useState(false)
   const [transferSuccess, setTransferSuccess] = useState(false)
   const [burnTokenId, setBurnTokenId] = useState('')
-  const [burMsg, setBurnMsg] = useState('')
-  const [burnMsgVisible, setBurnMsgVisible] = useState(false)
+  const [burnMsg, setBurnMsg] = useState('')
   const [burnButtonDisabled, setBurnButtonDisabled] = useState(false)
   const [burnSuccess, setBurnSuccess] = useState(false)
   const [pauseMsg, setPauseMsg] = useState('')
-  const [pauseMsgVisible, setPauseMsgVisible] = useState(false)
   const [pauseButtonDisabled, setPauseButtonDisabled] = useState(false)
   const [pauseSuccess, setPauseSuccess] = useState(false)
   const [unpauseMsg, setUnpauseMsg] = useState('')
-  const [unpauseMsgVisible, setUnpauseMsgVisible] = useState(false)
   const [unpauseButtonDisabled, setUnpauseButtonDisabled] = useState(false)
   const [unpauseSuccess, setUnpauseSuccess] = useState(false)
 
@@ -75,6 +69,8 @@ const KIP17Deploy = (): ReactElement => {
   )
 
   const exTokenURI = 'https://cryptologos.cc/logos/klaytn-klay-logo.svg?v=023'
+
+  const exTokenReceiver = '0x6CEe3d8c038ab74E2854C158d7B1b55544E814C8'
 
   const handleSenderKeystoreChange = (files?: FileList) => {
     if (files && files.length > 0) {
@@ -118,7 +114,6 @@ const KIP17Deploy = (): ReactElement => {
       setSenderAddress('')
 
       setTimeout(() => {
-        setSenderDecryptMessageVisible(false)
         setSenderDecryptMessage('')
       }, 5000)
     }
@@ -139,20 +134,17 @@ const KIP17Deploy = (): ReactElement => {
         { from: senderAddress }
       )
 
-      setDeployMsgVisible(true)
       setDeployMsg('KIP-17 smart contract is successfully deployed! ')
       setDeployButtonDisabled(false)
       setContractAddress(kip17.options.address)
       setDeploySuccess(true)
     } catch (e: any) {
       setDeployMsg(e.toString())
-      setDeployMsgVisible(true)
       setDeployButtonDisabled(false)
       setContractAddress('')
       setDeploySuccess(false)
 
       setTimeout(() => {
-        setDeployMsgVisible(false)
         setDeployMsg('')
       }, 5000)
     }
@@ -174,7 +166,6 @@ const KIP17Deploy = (): ReactElement => {
         'NFT(token ID: ' + currentTokenId + ') is successfully minted!'
 
       if (minted) {
-        setMintMsgVisible(true)
         setMintMsg(newMintMsg)
         setMintButtonDisabled(false)
         setMintSuccess(true)
@@ -184,204 +175,144 @@ const KIP17Deploy = (): ReactElement => {
       }
     } catch (e: any) {
       setMintMsg(e.toString())
-      setMintMsgVisible(true)
       setMintButtonDisabled(false)
       setNftReceiver('')
       setTokenURI('')
       setMintSuccess(false)
 
       setTimeout(() => {
-        setMintMsgVisible(false)
         setMintMsg('')
       }, 5000)
     }
   }
 
-  // burn = async (e) => {
-  //   const { contractAddress, senderAddress, burnTokenId } = this.state
-  //   try {
-  //     this.setState({
-  //       burnButtonDisabled: true,
-  //     })
+  const burn = async () => {
+    try {
+      setBurnButtonDisabled(true)
 
-  //     const deployedContract = new caver.kct.kip17(contractAddress)
-  //     deployedContract.options.from = senderAddress
-  //     const burned = await deployedContract.burn(BigNumber(burnTokenId))
-  //     const newBurnMsg =
-  //       'NFT(token ID: ' + burnTokenId + ') is successfully burned!'
+      const deployedContract = new caver.kct.kip17(contractAddress)
+      deployedContract.options.from = senderAddress
+      const burned = await deployedContract.burn(burnTokenId)
+      const newBurnMsg =
+        'NFT(token ID: ' + burnTokenId + ') is successfully burned!'
 
-  //     if (burned) {
-  //       this.setState({
-  //         burnMsgVisible: true,
-  //         burnMsg: newBurnMsg,
-  //         burnButtonDisabled: false,
-  //         burnSuccess: true,
-  //       })
-  //     } else {
-  //       throw Error('Burning is failed')
-  //     }
-  //   } catch (e) {
-  //     this.setState({
-  //       burnMsg: e.toString(),
-  //       burnMsgVisible: true,
-  //       burnButtonDisabled: false,
-  //       burnTokenId: '',
-  //       burnSuccess: false,
-  //     })
+      if (burned) {
+        setBurnMsg(newBurnMsg)
+        setBurnButtonDisabled(false)
+        setBurnSuccess(true)
+      } else {
+        throw Error('Burning is failed')
+      }
+    } catch (e: any) {
+      setBurnMsg(e.toString())
+      setBurnButtonDisabled(false)
+      setBurnTokenId('')
+      setBurnSuccess(false)
 
-  //     setTimeout(() => {
-  //       this.setState({
-  //         burnMsgVisible: false,
-  //         burnMsg: '',
-  //       })
-  //     }, 5000)
-  //   }
-  // }
+      setTimeout(() => {
+        setBurnMsg('')
+      }, 5000)
+    }
+  }
 
-  // transfer = async (e) => {
-  //   const {
-  //     contractAddress,
-  //     senderAddress,
-  //     transferTokenId,
-  //     transferReceiver,
-  //   } = this.state
-  //   try {
-  //     this.setState({
-  //       transferButtonDisabled: true,
-  //     })
+  const transfer = async () => {
+    try {
+      setTransferButtonDisabled(true)
 
-  //     const deployedContract = new caver.kct.kip17(contractAddress)
-  //     deployedContract.options.from = senderAddress
-  //     const transferred = await deployedContract.safeTransferFrom(
-  //       senderAddress,
-  //       transferReceiver,
-  //       transferTokenId
-  //     )
-  //     const newTransferMsg =
-  //       'NFT(token ID: ' + transferTokenId + ') is successfully transferred!'
+      const deployedContract = new caver.kct.kip17(contractAddress)
+      deployedContract.options.from = senderAddress
+      const transferred = await deployedContract.safeTransferFrom(
+        senderAddress,
+        transferReceiver,
+        transferTokenId
+      )
+      const newTransferMsg =
+        'NFT(token ID: ' + transferTokenId + ') is successfully transferred!'
 
-  //     if (transferred) {
-  //       this.setState({
-  //         transferMsgVisible: true,
-  //         transferMsg: newTransferMsg,
-  //         transferButtonDisabled: false,
-  //         transferSuccess: true,
-  //       })
-  //     } else {
-  //       throw Error('Transferring is failed')
-  //     }
-  //   } catch (e) {
-  //     this.setState({
-  //       transferMsg: e.toString(),
-  //       transferMsgVisible: true,
-  //       transferButtonDisabled: false,
-  //       transferTokenId: '',
-  //       transferReceiver: '',
-  //       transferSuccess: false,
-  //     })
+      if (transferred) {
+        setTransferMsg(newTransferMsg)
+        setTransferButtonDisabled(false)
+        setTransferSuccess(true)
+      } else {
+        throw Error('Transferring is failed')
+      }
+    } catch (e: any) {
+      setTransferMsg(e.toString())
+      setTransferButtonDisabled(false)
+      setTransferTokenId('')
+      setTransferReceiver('')
+      setTransferSuccess(false)
 
-  //     setTimeout(() => {
-  //       this.setState({
-  //         transferMsgVisible: false,
-  //         transferMsg: '',
-  //       })
-  //     }, 5000)
-  //   }
-  // }
+      setTimeout(() => {
+        setTransferMsg('')
+      }, 5000)
+    }
+  }
 
-  // pause = async (e) => {
-  //   const { contractAddress, senderAddress } = this.state
-  //   try {
-  //     this.setState({
-  //       pauseButtonDisabled: true,
-  //     })
+  const pause = async () => {
+    try {
+      setPauseButtonDisabled(true)
 
-  //     const deployedContract = new caver.kct.kip17(contractAddress)
-  //     deployedContract.options.from = senderAddress
-  //     await deployedContract.pause()
-  //     const paused = await deployedContract.paused()
+      const deployedContract = new caver.kct.kip17(contractAddress)
+      deployedContract.options.from = senderAddress
+      await deployedContract.pause()
+      const paused = await deployedContract.paused()
 
-  //     if (paused) {
-  //       this.setState({
-  //         pauseMsgVisible: true,
-  //         pauseMsg: 'The KIP-17 token smart contract is successfully paused.',
-  //         pauseButtonDisabled: false,
-  //         pauseSuccess: true,
-  //       })
+      if (paused) {
+        setPauseMsg('The KIP-17 token smart contract is successfully paused.')
+        setPauseButtonDisabled(false)
+        setPauseSuccess(true)
 
-  //       setTimeout(() => {
-  //         this.setState({
-  //           pauseMsgVisible: false,
-  //           pauseMsg: '',
-  //         })
-  //       }, 4000)
-  //     } else {
-  //       throw Error('Pausing is failed')
-  //     }
-  //   } catch (e) {
-  //     this.setState({
-  //       pauseMsg: e.toString(),
-  //       pauseMsgVisible: true,
-  //       pauseButtonDisabled: false,
-  //       pauseSuccess: false,
-  //     })
+        setTimeout(() => {
+          setPauseMsg('')
+        }, 4000)
+      } else {
+        throw Error('Pausing is failed')
+      }
+    } catch (e: any) {
+      setPauseMsg(e.toString())
+      setPauseButtonDisabled(false)
+      setPauseSuccess(false)
 
-  //     setTimeout(() => {
-  //       this.setState({
-  //         pauseMsgVisible: false,
-  //         pauseMsg: '',
-  //       })
-  //     }, 4000)
-  //   }
-  // }
+      setTimeout(() => {
+        setPauseMsg('')
+      }, 4000)
+    }
+  }
 
-  // unpause = async (e) => {
-  //   const { contractAddress, senderAddress } = this.state
-  //   try {
-  //     this.setState({
-  //       unpauseButtonDisabled: true,
-  //     })
+  const unpause = async () => {
+    try {
+      setUnpauseButtonDisabled(true)
 
-  //     const deployedContract = new caver.kct.kip17(contractAddress)
-  //     deployedContract.options.from = senderAddress
-  //     await deployedContract.unpause()
-  //     const paused = await deployedContract.paused()
+      const deployedContract = new caver.kct.kip17(contractAddress)
+      deployedContract.options.from = senderAddress
+      await deployedContract.unpause()
+      const paused = await deployedContract.paused()
 
-  //     if (!paused) {
-  //       this.setState({
-  //         unpauseMsgVisible: true,
-  //         unpauseMsg:
-  //           'The KIP-17 token smart contract is successfully resumed.',
-  //         unpauseButtonDisabled: false,
-  //         unpauseSuccess: true,
-  //         pauseSuccess: false,
-  //       })
+      if (!paused) {
+        setUnpauseMsg(
+          'The KIP-17 token smart contract is successfully resumed.'
+        )
+        setUnpauseButtonDisabled(false)
+        setUnpauseSuccess(true)
+        setPauseSuccess(false)
 
-  //       setTimeout(() => {
-  //         this.setState({
-  //           unpauseMsgVisible: false,
-  //           unpauseMsg: '',
-  //         })
-  //       }, 4000)
-  //     } else {
-  //       throw Error('Unpausing is failed')
-  //     }
-  //   } catch (e) {
-  //     this.setState({
-  //       unpauseMsg: e.toString(),
-  //       unpauseMsgVisible: true,
-  //       unpauseButtonDisabled: false,
-  //       unpauseSuccess: false,
-  //     })
+        setTimeout(() => {
+          setUnpauseMsg('')
+        }, 4000)
+      } else {
+        throw Error('Unpausing is failed')
+      }
+    } catch (e: any) {
+      setUnpauseMsg(e.toString())
+      setUnpauseButtonDisabled(false)
+      setUnpauseSuccess(false)
 
-  //     setTimeout(() => {
-  //       this.setState({
-  //         unpauseMsgVisible: false,
-  //         unpauseMsg: '',
-  //       })
-  //     }, 4000)
-  //   }
-  // }
+      setTimeout(() => {
+        setUnpauseMsg('')
+      }, 4000)
+    }
+  }
 
   return (
     <Column>
@@ -479,12 +410,9 @@ const KIP17Deploy = (): ReactElement => {
               Deploy
             </Button>
           </StyledSection>
-          {deployMsgVisible && (
+          {!!deployMsg && (
             <StyledSection>
-              {deployMsg !== '' && !deploySuccess && (
-                <Text style={{ color: '#c221a9' }}>{deployMsg}</Text>
-              )}
-              {deployMsg !== '' && deploySuccess && (
+              {deploySuccess ? (
                 <Text>
                   {deployMsg}You can check it below link:
                   <br />
@@ -498,6 +426,8 @@ const KIP17Deploy = (): ReactElement => {
                     NFT Address
                   </a>
                 </Text>
+              ) : (
+                <Text style={{ color: '#c221a9' }}>{deployMsg}</Text>
               )}
             </StyledSection>
           )}
@@ -552,12 +482,9 @@ const KIP17Deploy = (): ReactElement => {
                 Mint
               </Button>
             </StyledSection>
-            {mintMsgVisible && (
+            {!!mintMsg && (
               <StyledSection>
-                {mintMsg !== '' && !mintSuccess && (
-                  <Text style={{ color: '#c221a9' }}>{mintMsg}</Text>
-                )}
-                {mintMsg !== '' && mintSuccess && (
+                {mintSuccess ? (
                   <Text>
                     {mintMsg} You can check it below link:
                     <br />
@@ -574,72 +501,58 @@ const KIP17Deploy = (): ReactElement => {
                       NFT Inventory
                     </a>
                   </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}>{mintMsg}</Text>
                 )}
               </StyledSection>
             )}
           </CardBody>
         </Card>
       )}
-      {/* {mintSuccess && (
+      {mintSuccess && (
         <Card>
           <CardHeader>
             <h3 className="title">Burn the Non-fungible Token (NFT)</h3>
-            <p style={{ color: '#6c757d' }}>
-              Enter the token Id you own and want to burn.
-            </p>
+            <Text>Enter the token Id you own and want to burn.</Text>
           </CardHeader>
           <CardBody>
-            <Row>
-              <Col md="8">
-                <InputField
-                  label="Burn Token Id"
-                  type="text"
-                  name="burnTokenId"
-                  placeholder="NFT TokenId you own"
-                  value={burnTokenId}
-                  onChange={(e) => this.onInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md="8">
-                <Button
-                  disabled={burnButtonDisabled}
-                  onClick={(e) => this.burn(e)}
-                >
-                  Burn
-                </Button>
-              </Col>
-            </Row>
-            {burnMsgVisible && (
-              <Row>
-                <Col md="8">
-                  {burnMsg !== '' && !burnSuccess && (
-                    <CardText style={{ color: '#c221a9' }}>
-                      {' '}
-                      {burnMsg}{' '}
-                    </CardText>
-                  )}
-                  {burnMsg !== '' && burnSuccess && (
-                    <CardText>
-                      {burnMsg} You can see that the NFT you just removed no
-                      longer exists:{' '}
-                      <a
-                        href={
-                          networkLinks[network]['finderNFT'] +
-                          contractAddress +
-                          '?tabId=nftInventory&search=' +
-                          senderAddress
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        NFT Inventory
-                      </a>
-                    </CardText>
-                  )}
-                </Col>
-              </Row>
+            <StyledSection>
+              <Label>Burn Token Id</Label>
+              <FormInput
+                type="text"
+                placeholder="NFT TokenId you own"
+                onChange={setBurnTokenId}
+                value={burnTokenId}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Button disabled={burnButtonDisabled} onClick={burn}>
+                Burn
+              </Button>
+            </StyledSection>
+            {!!burnMsg && (
+              <StyledSection>
+                {burnSuccess ? (
+                  <Text>
+                    {burnMsg} You can see that the NFT you just removed no
+                    longer exists:{' '}
+                    <a
+                      href={
+                        URLMAP.network[network]['finderNFT'] +
+                        contractAddress +
+                        '?tabId=nftInventory&search=' +
+                        senderAddress
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      NFT Inventory
+                    </a>
+                  </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {burnMsg} </Text>
+                )}
+              </StyledSection>
             )}
           </CardBody>
         </Card>
@@ -648,73 +561,74 @@ const KIP17Deploy = (): ReactElement => {
         <Card>
           <CardHeader>
             <h3 className="title">Send the Non-fungible Token (NFT)</h3>
-            <p style={{ color: '#6c757d' }}>
-              Enter the token Id you own and want to transfer.
-            </p>
+            <Text>Enter the token Id you own and want to transfer.</Text>
           </CardHeader>
           <CardBody>
-            <Row>
-              <Col md="8">
-                <InputField
-                  label="Transfer Receiver"
-                  type="text"
-                  name="transferReceiver"
-                  placeholder="The address of the receiver"
-                  value={transferReceiver}
-                  onChange={(e) => this.onInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md="8">
-                <InputField
-                  label="Transfer Token Id"
-                  type="text"
-                  name="transferTokenId"
-                  placeholder="NFT TokenId you own"
-                  value={transferTokenId}
-                  onChange={(e) => this.onInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md="8">
-                <Button
-                  disabled={transferButtonDisabled}
-                  onClick={(e) => this.transfer(e)}
-                >
-                  Transfer
-                </Button>
-              </Col>
-            </Row>
-            {transferMsgVisible && (
-              <Row>
-                <Col md="8">
-                  {transferMsg !== '' && !transferSuccess && (
-                    <CardText style={{ color: '#c221a9' }}>
-                      {' '}
-                      {transferMsg}{' '}
-                    </CardText>
-                  )}
-                  {transferMsg !== '' && transferSuccess && (
-                    <CardText>
-                      {transferMsg} You can see that the NFT you just sent:{' '}
-                      <a
-                        href={
-                          networkLinks[network]['finderNFT'] +
-                          contractAddress +
-                          '?tabId=nftInventory&search=' +
-                          transferReceiver
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        NFT Inventory
-                      </a>
-                    </CardText>
-                  )}
-                </Col>
+            <StyledSection>
+              <Label>Transfer Receiver</Label>
+              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <Text>{`Ex :\n${exTokenReceiver}`}</Text>
+                <View style={{ gap: 4 }}>
+                  <Button
+                    size="sm"
+                    onClick={(): void => {
+                      setTransferReceiver(exTokenReceiver)
+                    }}
+                  >
+                    Try
+                  </Button>
+                  <CopyButton
+                    text={exTokenReceiver}
+                    buttonProps={{ size: 'sm' }}
+                  >
+                    Copy
+                  </CopyButton>
+                </View>
               </Row>
+              <FormInput
+                type="text"
+                placeholder="The address of the receiver"
+                onChange={setTransferReceiver}
+                value={transferReceiver}
+              />
+            </StyledSection>
+
+            <StyledSection>
+              <Label>Transfer Token Id</Label>
+              <FormInput
+                type="text"
+                placeholder="NFT TokenId you own"
+                onChange={setTransferTokenId}
+                value={transferTokenId}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Button disabled={transferButtonDisabled} onClick={transfer}>
+                Transfer
+              </Button>
+            </StyledSection>
+            {!!transferMsg && (
+              <StyledSection>
+                {transferSuccess ? (
+                  <Text>
+                    {transferMsg} You can see that the NFT you just sent:{' '}
+                    <a
+                      href={
+                        URLMAP.network[network]['finderNFT'] +
+                        contractAddress +
+                        '?tabId=nftInventory&search=' +
+                        transferReceiver
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      NFT Inventory
+                    </a>
+                  </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}>{transferMsg}</Text>
+                )}
+              </StyledSection>
             )}
           </CardBody>
         </Card>
@@ -723,35 +637,22 @@ const KIP17Deploy = (): ReactElement => {
         <Card>
           <CardHeader>
             <h3 className="title">Pause the KIP-17 Token Smart Contract</h3>
-            <p style={{ color: '#6c757d' }}>
-              You can suspend functions related to sending tokens.
-            </p>
+            <Text>You can suspend functions related to sending tokens.</Text>
           </CardHeader>
           <CardBody>
-            <Row>
-              <Col md="8">
-                <Button
-                  disabled={pauseButtonDisabled}
-                  onClick={(e) => this.pause(e)}
-                >
-                  Pause
-                </Button>
-              </Col>
-            </Row>
-            {unpauseMsgVisible && (
-              <Row>
-                <Col md="8">
-                  {unpauseMsg !== '' && !unpauseSuccess && (
-                    <CardText style={{ color: '#c221a9' }}>
-                      {' '}
-                      {unpauseMsg}{' '}
-                    </CardText>
-                  )}
-                  {unpauseMsg !== '' && unpauseSuccess && (
-                    <CardText>{unpauseMsg}</CardText>
-                  )}
-                </Col>
-              </Row>
+            <StyledSection>
+              <Button disabled={pauseButtonDisabled} onClick={pause}>
+                Pause
+              </Button>
+            </StyledSection>
+            {!!unpauseMsg && (
+              <StyledSection>
+                {unpauseSuccess ? (
+                  <Text>{unpauseMsg}</Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}>{unpauseMsg}</Text>
+                )}
+              </StyledSection>
             )}
           </CardBody>
         </Card>
@@ -760,39 +661,26 @@ const KIP17Deploy = (): ReactElement => {
         <Card>
           <CardHeader>
             <h3 className="title">Unpause the KIP-17 Token Smart Contract</h3>
-            <p style={{ color: '#6c757d' }}>
-              You can resume the paused contract.
-            </p>
+            <Text>You can resume the paused contract.</Text>
           </CardHeader>
           <CardBody>
-            <Row>
-              <Col md="8">
-                <Button
-                  disabled={unpauseButtonDisabled}
-                  onClick={(e) => this.unpause(e)}
-                >
-                  Unpause
-                </Button>
-              </Col>
-            </Row>
-            {pauseMsgVisible && (
-              <Row>
-                <Col md="8">
-                  {pauseMsg !== '' && !pauseSuccess && (
-                    <CardText style={{ color: '#c221a9' }}>
-                      {' '}
-                      {pauseMsg}{' '}
-                    </CardText>
-                  )}
-                  {pauseMsg !== '' && pauseSuccess && (
-                    <CardText>{pauseMsg}</CardText>
-                  )}
-                </Col>
-              </Row>
+            <StyledSection>
+              <Button disabled={unpauseButtonDisabled} onClick={unpause}>
+                Unpause
+              </Button>
+            </StyledSection>
+            {pauseMsg && (
+              <StyledSection>
+                {pauseSuccess ? (
+                  <Text>{pauseMsg}</Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}>{pauseMsg}</Text>
+                )}
+              </StyledSection>
             )}
           </CardBody>
         </Card>
-      )} */}
+      )}
     </Column>
   )
 }
