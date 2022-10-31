@@ -1,5 +1,6 @@
 import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
+import styled from 'styled-components'
 import _ from 'lodash'
 
 import { URLMAP, UTIL } from 'consts'
@@ -20,6 +21,10 @@ import {
   FormFile,
 } from 'components'
 
+const StyledSection = styled(View)`
+  padding-bottom: 10px;
+`
+
 type NetworkType = 'mainnet' | 'testnet'
 
 const KIP37Deploy = (): ReactElement => {
@@ -31,7 +36,6 @@ const KIP37Deploy = (): ReactElement => {
   const [senderDecryptMessageVisible, setSenderDecryptMessageVisible] =
     useState(false)
   const [deployMsg, setDeployMsg] = useState('')
-  const [deployMsgVisible, setDeployMsgVisible] = useState(false)
   const [deployButtonDisabled, setDeployButtonDisabled] = useState(false)
   const [deploySuccess, setDeploySuccess] = useState(false)
   const [contractAddress, setContractAddress] = useState('')
@@ -40,20 +44,17 @@ const KIP37Deploy = (): ReactElement => {
   const [initialSupply, setInitialSupply] = useState('')
   const [tokenURI, setTokenURI] = useState('')
   const [createMsg, setCreateMsg] = useState('')
-  const [createMsgVisible, setCreateMsgVisible] = useState(false)
   const [createButtonDisabled, setCreateButtonDisabled] = useState(false)
   const [createSuccess, setCreateSuccess] = useState(false)
   const [toAddress, setToAddress] = useState('')
   const [transferId, setTransferId] = useState('')
   const [transferAmount, setTransferAmount] = useState('')
   const [transferMsg, setTransferMsg] = useState('')
-  const [transferMsgVisible, setTransferMsgVisible] = useState(false)
   const [transferButtonDisabled, setTransferButtonDisabled] = useState(false)
   const [transferSuccess, setTransferSuccess] = useState(false)
   const [recipientAddress, setRecipientAddress] = useState('')
   const [tokenAmount, setTokenAmount] = useState('')
   const [mintMsg, setMintMsg] = useState('')
-  const [mintMsgVisible, setMintMsgVisible] = useState(false)
   const [mintButtonDisabled, setMintButtonDisabled] = useState(false)
   const [mintSuccess, setMintSuccess] = useState(false)
 
@@ -131,20 +132,17 @@ const KIP37Deploy = (): ReactElement => {
         { from: senderAddress }
       )
 
-      setDeployMsgVisible(true)
       setDeployMsg('KIP-37 smart contract is successfully deployed! ')
       setDeployButtonDisabled(false)
       setContractAddress(kip37.options.address)
       setDeploySuccess(true)
     } catch (e: any) {
       setDeployMsg(e.toString())
-      setDeployMsgVisible(true)
       setDeployButtonDisabled(false)
       setContractAddress('')
       setDeploySuccess(false)
 
       setTimeout(() => {
-        setDeployMsgVisible(false)
         setDeployMsg('')
       }, 5000)
     }
@@ -168,7 +166,6 @@ const KIP37Deploy = (): ReactElement => {
         ') is successfully created!'
 
       if (created) {
-        setCreateMsgVisible(true)
         setCreateMsg(newCreateMsg)
         setCreateButtonDisabled(false)
         setLastTokenId(currentTokenId + 1)
@@ -178,14 +175,12 @@ const KIP37Deploy = (): ReactElement => {
       }
     } catch (e: any) {
       setCreateMsg(e.toString())
-      setCreateMsgVisible(true)
       setCreateButtonDisabled(false)
       setInitialSupply('')
       setTokenURI('')
       setCreateSuccess(false)
 
       setTimeout(() => {
-        setCreateMsgVisible(false)
         setCreateMsg('')
       }, 5000)
     }
@@ -225,7 +220,6 @@ const KIP37Deploy = (): ReactElement => {
       }
 
       if (transferred) {
-        setTransferMsgVisible(true)
         setTransferMsg(newTransferMsg)
         setTransferButtonDisabled(false)
         setTransferSuccess(true)
@@ -234,7 +228,6 @@ const KIP37Deploy = (): ReactElement => {
       }
     } catch (e: any) {
       setTransferMsg(e.toString())
-      setTransferMsgVisible(true)
       setTransferButtonDisabled(false)
       setToAddress('')
       setTransferId('')
@@ -242,7 +235,6 @@ const KIP37Deploy = (): ReactElement => {
       setTransferSuccess(false)
 
       setTimeout(() => {
-        setTransferMsgVisible(false)
         setTransferMsg('')
       }, 5000)
     }
@@ -264,7 +256,6 @@ const KIP37Deploy = (): ReactElement => {
         'KIP-37 Token(Token ID: ' + currentTokenId + ') is successfully minted!'
 
       if (minted) {
-        setMintMsgVisible(true)
         setMintMsg(newMintMsg)
         setMintButtonDisabled(false)
         setMintSuccess(true)
@@ -273,14 +264,12 @@ const KIP37Deploy = (): ReactElement => {
       }
     } catch (e: any) {
       setMintMsg(e.toString())
-      setMintMsgVisible(true)
       setMintButtonDisabled(false)
       setRecipientAddress('')
       setTokenAmount('')
       setMintSuccess(false)
 
       setTimeout(() => {
-        setMintMsgVisible(false)
         setMintMsg('')
       }, 5000)
     }
@@ -386,12 +375,9 @@ const KIP37Deploy = (): ReactElement => {
               Deploy
             </Button>
           </CardSection>
-          {deployMsgVisible && (
+          {!!deployMsg && (
             <CardSection>
-              {deployMsg !== '' && deploySuccess === false && (
-                <Text style={{ color: '#c221a9' }}> {deployMsg} </Text>
-              )}
-              {deployMsg !== '' && deploySuccess === true && (
+              {deploySuccess ? (
                 <Text>
                   {deployMsg}You can check it below link:
                   <br />
@@ -405,6 +391,8 @@ const KIP37Deploy = (): ReactElement => {
                     KIP-37 Token Address
                   </a>
                 </Text>
+              ) : (
+                <Text style={{ color: '#c221a9' }}> {deployMsg} </Text>
               )}
             </CardSection>
           )}
@@ -458,12 +446,9 @@ const KIP37Deploy = (): ReactElement => {
                 Create
               </Button>
             </CardSection>
-            {createMsgVisible && (
+            {!!createMsg && (
               <CardSection>
-                {createMsg !== '' && createSuccess === false && (
-                  <Text style={{ color: '#c221a9' }}> {createMsg} </Text>
-                )}
-                {createMsg !== '' && createSuccess === true && (
+                {createSuccess ? (
                   <Text>
                     {createMsg} You can check it below link:
                     <br />
@@ -480,6 +465,8 @@ const KIP37Deploy = (): ReactElement => {
                       KIP-37 Token Inventory
                     </a>
                   </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {createMsg} </Text>
                 )}
               </CardSection>
             )}
@@ -544,12 +531,9 @@ const KIP37Deploy = (): ReactElement => {
                 Transfer
               </Button>
             </StyledSection>
-            {transferMsgVisible && (
+            {!!transferMsg && (
               <StyledSection>
-                {transferMsg !== '' && transferSuccess === false && (
-                  <Text style={{ color: '#c221a9' }}> {transferMsg} </Text>
-                )}
-                {transferMsg !== '' && transferSuccess === true && (
+                {transferSuccess ? (
                   <Text>
                     {transferMsg} You can check it below link:
                     <br />
@@ -566,6 +550,8 @@ const KIP37Deploy = (): ReactElement => {
                       KIP-37 Token Inventory
                     </a>
                   </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {transferMsg} </Text>
                 )}
               </StyledSection>
             )}
@@ -621,12 +607,9 @@ const KIP37Deploy = (): ReactElement => {
                 Mint
               </Button>
             </CardSection>
-            {mintMsgVisible && (
+            {!!mintMsg && (
               <CardSection>
-                {mintMsg !== '' && mintSuccess === false && (
-                  <Text style={{ color: '#c221a9' }}> {mintMsg} </Text>
-                )}
-                {mintMsg !== '' && mintSuccess === true && (
+                {mintSuccess ? (
                   <Text>
                     {mintMsg} You can check it below link:
                     <br />
@@ -643,6 +626,8 @@ const KIP37Deploy = (): ReactElement => {
                       KIP-37 Token Inventory
                     </a>
                   </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {mintMsg} </Text>
                 )}
               </CardSection>
             )}
