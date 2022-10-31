@@ -74,6 +74,8 @@ const KIP17Deploy = (): ReactElement => {
     [network]
   )
 
+  const exTokenURI = 'https://cryptologos.cc/logos/klaytn-klay-logo.svg?v=023'
+
   const handleSenderKeystoreChange = (files?: FileList) => {
     if (files && files.length > 0) {
       const fileReader = new FileReader()
@@ -156,59 +158,44 @@ const KIP17Deploy = (): ReactElement => {
     }
   }
 
-  // mint = async (e) => {
-  //   const {
-  //     contractAddress,
-  //     senderAddress,
-  //     nftReceiver,
-  //     tokenURI,
-  //     lastTokenId,
-  //   } = this.state
-  //   try {
-  //     this.setState({
-  //       mintButtonDisabled: true,
-  //     })
+  const mint = async () => {
+    try {
+      setMintButtonDisabled(true)
 
-  //     const deployedContract = new caver.kct.kip17(contractAddress)
-  //     deployedContract.options.from = senderAddress
-  //     const currentTokenId = lastTokenId
-  //     const minted = await deployedContract.mintWithTokenURI(
-  //       nftReceiver,
-  //       currentTokenId,
-  //       tokenURI
-  //     )
-  //     const newMintMsg =
-  //       'NFT(token ID: ' + currentTokenId + ') is successfully minted!'
+      const deployedContract = new caver.kct.kip17(contractAddress)
+      deployedContract.options.from = senderAddress
+      const currentTokenId = lastTokenId
+      const minted = await deployedContract.mintWithTokenURI(
+        nftReceiver,
+        currentTokenId,
+        tokenURI
+      )
+      const newMintMsg =
+        'NFT(token ID: ' + currentTokenId + ') is successfully minted!'
 
-  //     if (minted) {
-  //       this.setState({
-  //         mintMsgVisible: true,
-  //         mintMsg: newMintMsg,
-  //         mintButtonDisabled: false,
-  //         mintSuccess: true,
-  //         lastTokenId: currentTokenId + 1,
-  //       })
-  //     } else {
-  //       throw Error('Minting is failed')
-  //     }
-  //   } catch (e) {
-  //     this.setState({
-  //       mintMsg: e.toString(),
-  //       mintMsgVisible: true,
-  //       mintButtonDisabled: false,
-  //       nftReceiver: '',
-  //       tokenURI: '',
-  //       mintSuccess: false,
-  //     })
+      if (minted) {
+        setMintMsgVisible(true)
+        setMintMsg(newMintMsg)
+        setMintButtonDisabled(false)
+        setMintSuccess(true)
+        setLastTokenId(currentTokenId + 1)
+      } else {
+        throw Error('Minting is failed')
+      }
+    } catch (e: any) {
+      setMintMsg(e.toString())
+      setMintMsgVisible(true)
+      setMintButtonDisabled(false)
+      setNftReceiver('')
+      setTokenURI('')
+      setMintSuccess(false)
 
-  //     setTimeout(() => {
-  //       this.setState({
-  //         mintMsgVisible: false,
-  //         mintMsg: '',
-  //       })
-  //     }, 5000)
-  //   }
-  // }
+      setTimeout(() => {
+        setMintMsgVisible(false)
+        setMintMsg('')
+      }, 5000)
+    }
+  }
 
   // burn = async (e) => {
   //   const { contractAddress, senderAddress, burnTokenId } = this.state
@@ -516,83 +503,84 @@ const KIP17Deploy = (): ReactElement => {
           )}
         </CardBody>
       </Card>
-      {/* {deploySuccess && (
+      {deploySuccess && (
         <Card>
           <CardHeader>
             <h3 className="title">Mint the Non-fungible Token (NFT)</h3>
-            <p style={{ color: '#6c757d' }}>
+            <Text>
               Enter the NFT's receiver and token URI for the image file's
               location.
-            </p>
+            </Text>
           </CardHeader>
           <CardBody>
-            <Row>
-              <Col md="8">
-                <InputField
-                  label="NFT Receiver"
-                  type="text"
-                  name="nftReceiver"
-                  placeholder="Receiver's address"
-                  value={nftReceiver}
-                  onChange={(e) => this.onInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md="8">
-                <InputField
-                  label="Token URI"
-                  type="text"
-                  name="tokenURI"
-                  placeholder="Token URI (e.g., https://cryptologos.cc/logos/klaytn-klay-logo.svg?v=023)"
-                  value={tokenURI}
-                  onChange={(e) => this.onInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md="8">
-                <Button
-                  disabled={mintButtonDisabled}
-                  onClick={(e) => this.mint(e)}
-                >
-                  Mint
-                </Button>
-              </Col>
-            </Row>
-            {mintMsgVisible && (
-              <Row>
-                <Col md="8">
-                  {mintMsg !== '' && !mintSuccess && (
-                    <CardText style={{ color: '#c221a9' }}>
-                      {' '}
-                      {mintMsg}{' '}
-                    </CardText>
-                  )}
-                  {mintMsg !== '' && mintSuccess && (
-                    <CardText>
-                      {mintMsg} You can check it here:{' '}
-                      <a
-                        href={
-                          networkLinks[network]['finderNFT'] +
-                          contractAddress +
-                          '?tabId=nftInventory&search=' +
-                          nftReceiver
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        NFT Inventory
-                      </a>
-                    </CardText>
-                  )}
-                </Col>
+            <StyledSection>
+              <Label>NFT Receiver</Label>
+              <FormInput
+                type="text"
+                placeholder="Receiver's address"
+                onChange={setNftReceiver}
+                value={nftReceiver}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Label>Token URI</Label>
+              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <Text>{`Ex :\n${exTokenURI}`}</Text>
+                <View style={{ gap: 4 }}>
+                  <Button
+                    size="sm"
+                    onClick={(): void => {
+                      setTokenURI(exTokenURI)
+                    }}
+                  >
+                    Try
+                  </Button>
+                  <CopyButton text={exTokenURI} buttonProps={{ size: 'sm' }}>
+                    Copy
+                  </CopyButton>
+                </View>
               </Row>
+              <FormInput
+                type="text"
+                placeholder="Token URI"
+                onChange={setTokenURI}
+                value={tokenURI}
+              />
+            </StyledSection>
+            <StyledSection>
+              <Button disabled={mintButtonDisabled} onClick={mint}>
+                Mint
+              </Button>
+            </StyledSection>
+            {mintMsgVisible && (
+              <StyledSection>
+                {mintMsg !== '' && !mintSuccess && (
+                  <Text style={{ color: '#c221a9' }}>{mintMsg}</Text>
+                )}
+                {mintMsg !== '' && mintSuccess && (
+                  <Text>
+                    {mintMsg} You can check it below link:
+                    <br />
+                    <a
+                      href={
+                        URLMAP.network[network]['finderNFT'] +
+                        contractAddress +
+                        '?tabId=nftInventory&search=' +
+                        nftReceiver
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      NFT Inventory
+                    </a>
+                  </Text>
+                )}
+              </StyledSection>
             )}
           </CardBody>
         </Card>
       )}
-      {mintSuccess && (
+      {/* {mintSuccess && (
         <Card>
           <CardHeader>
             <h3 className="title">Burn the Non-fungible Token (NFT)</h3>
