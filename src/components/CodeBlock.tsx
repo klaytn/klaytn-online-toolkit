@@ -23,7 +23,7 @@ const StyledCopyIconBox = styled(View)`
 const StyledPre = styled.pre`
   text-align: left;
   padding: 5px;
-  overflow: scroll;
+  overflow-x: scroll;
   margin: 0;
 
   & .token-line {
