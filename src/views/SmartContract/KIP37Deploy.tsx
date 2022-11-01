@@ -196,7 +196,6 @@ const KIP37Deploy = (): ReactElement => {
         senderAddress,
         transferId
       )
-      console.log('balance:', balance)
 
       const transferred = await deployedContract.safeTransferFrom(
         senderAddress,
@@ -208,10 +207,7 @@ const KIP37Deploy = (): ReactElement => {
 
       let newTransferMsg
       if (transferAmount === '1') {
-        newTransferMsg =
-          'KIP-37 Token(Token ID: ' +
-          transferId +
-          ') is successfully transferred!'
+        newTransferMsg = `KIP-37 Token(Token ID: ${transferId}) is successfully transferred!`
       } else {
         newTransferMsg =
           'KIP-37 Tokens(Token ID: ' +
@@ -483,7 +479,7 @@ const KIP37Deploy = (): ReactElement => {
             </Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Label>Recipient's Address</Label>
               <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Text>{`Ex :\n${exAddress}`}</Text>
@@ -507,8 +503,8 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setToAddress}
                 value={toAddress}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Label>Token ID</Label>
               <FormInput
                 type="text"
@@ -516,8 +512,8 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setTransferId}
                 value={transferId}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Label>Token Amount</Label>
               <FormInput
                 type="text"
@@ -525,14 +521,14 @@ const KIP37Deploy = (): ReactElement => {
                 onChange={setTransferAmount}
                 value={transferAmount}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Button disabled={transferButtonDisabled} onClick={transfer}>
                 Transfer
               </Button>
-            </StyledSection>
+            </CardSection>
             {!!transferMsg && (
-              <StyledSection>
+              <CardSection>
                 {transferSuccess ? (
                   <Text>
                     {transferMsg} You can check it below link:
@@ -553,7 +549,7 @@ const KIP37Deploy = (): ReactElement => {
                 ) : (
                   <Text style={{ color: '#c221a9' }}> {transferMsg} </Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
