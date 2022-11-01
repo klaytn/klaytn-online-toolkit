@@ -160,10 +160,7 @@ const KIP37Deploy = (): ReactElement => {
         initialSupply,
         tokenURI
       )
-      const newCreateMsg =
-        'KIP-37 Token(Token ID: ' +
-        currentTokenId +
-        ') is successfully created!'
+      const newCreateMsg = `KIP-37 Token(Token ID: ${currentTokenId}) is successfully created!`
 
       if (created) {
         setCreateMsg(newCreateMsg)
@@ -209,10 +206,7 @@ const KIP37Deploy = (): ReactElement => {
       if (transferAmount === '1') {
         newTransferMsg = `KIP-37 Token(Token ID: ${transferId}) is successfully transferred!`
       } else {
-        newTransferMsg =
-          'KIP-37 Tokens(Token ID: ' +
-          transferId +
-          ') are successfully transferred!'
+        newTransferMsg = `KIP-37 Tokens(Token ID: ${transferId}) are successfully transferred!`
       }
 
       if (transferred) {
@@ -248,8 +242,7 @@ const KIP37Deploy = (): ReactElement => {
         currentTokenId,
         tokenAmount
       )
-      const newMintMsg =
-        'KIP-37 Token(Token ID: ' + currentTokenId + ') is successfully minted!'
+      const newMintMsg = `KIP-37 Token(Token ID: ${currentTokenId}) is successfully minted!`
 
       if (minted) {
         setMintMsg(newMintMsg)
