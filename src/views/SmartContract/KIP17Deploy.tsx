@@ -18,12 +18,9 @@ import {
   FormInput,
   FormSelect,
   CopyButton,
+  CardSection,
 } from 'components'
 import FormFile from 'components/FormFile'
-
-const StyledSection = styled(View)`
-  padding-bottom: 10px;
-`
 
 type NetworkType = 'mainnet' | 'testnet'
 
@@ -162,8 +159,7 @@ const KIP17Deploy = (): ReactElement => {
         currentTokenId,
         tokenURI
       )
-      const newMintMsg =
-        'NFT(token ID: ' + currentTokenId + ') is successfully minted!'
+      const newMintMsg = `NFT(token ID: ${currentTokenId}) is successfully mintend!`
 
       if (minted) {
         setMintMsg(newMintMsg)
@@ -193,8 +189,7 @@ const KIP17Deploy = (): ReactElement => {
       const deployedContract = new caver.kct.kip17(contractAddress)
       deployedContract.options.from = senderAddress
       const burned = await deployedContract.burn(burnTokenId)
-      const newBurnMsg =
-        'NFT(token ID: ' + burnTokenId + ') is successfully burned!'
+      const newBurnMsg = `NFT(token ID: ${burnTokenId}) is successfully burned!`
 
       if (burned) {
         setBurnMsg(newBurnMsg)
@@ -226,8 +221,7 @@ const KIP17Deploy = (): ReactElement => {
         transferReceiver,
         transferTokenId
       )
-      const newTransferMsg =
-        'NFT(token ID: ' + transferTokenId + ') is successfully transferred!'
+      const newTransferMsg = `NFT(token ID: ${transferTokenId}) is successfully transferred!`
 
       if (transferred) {
         setTransferMsg(newTransferMsg)
@@ -338,7 +332,7 @@ const KIP17Deploy = (): ReactElement => {
             Upload the Keystore file. This account must have enough KLAY to
             deploy a KIP-17 smart contract.
           </Text>
-          <StyledSection>
+          <CardSection>
             <FormGroup>
               <Label>Network</Label>
               <FormSelect
@@ -350,16 +344,16 @@ const KIP17Deploy = (): ReactElement => {
                 onChange={setNetwork}
               />
             </FormGroup>
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Keystore</Label>
             <FormFile
               placeholder="Keystore File"
               accept=".json"
               onChange={handleSenderKeystoreChange}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>Password</Label>
             <FormInput
               type="password"
@@ -367,14 +361,14 @@ const KIP17Deploy = (): ReactElement => {
               onChange={setSenderKeystorePassword}
               value={senderKeystorePassword}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
-          </StyledSection>
+          </CardSection>
           {senderDecryptMessageVisible && (
-            <StyledSection>
+            <CardSection>
               <Text style={{ color: '#c221a9' }}>{senderDecryptMessage}</Text>
-            </StyledSection>
+            </CardSection>
           )}
         </CardBody>
       </Card>
@@ -387,7 +381,7 @@ const KIP17Deploy = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <StyledSection>
+          <CardSection>
             <Label>NFT Name</Label>
             <FormInput
               type="text"
@@ -395,8 +389,8 @@ const KIP17Deploy = (): ReactElement => {
               onChange={setTokenName}
               value={tokenName}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Label>NFT Symbol</Label>
             <FormInput
               type="text"
@@ -404,14 +398,14 @@ const KIP17Deploy = (): ReactElement => {
               onChange={setTokenSymbol}
               value={tokenSymbol}
             />
-          </StyledSection>
-          <StyledSection>
+          </CardSection>
+          <CardSection>
             <Button disabled={deployButtonDisabled} onClick={deploy}>
               Deploy
             </Button>
-          </StyledSection>
+          </CardSection>
           {!!deployMsg && (
-            <StyledSection>
+            <CardSection>
               {deploySuccess ? (
                 <Text>
                   {deployMsg}You can check it below link:
@@ -429,7 +423,7 @@ const KIP17Deploy = (): ReactElement => {
               ) : (
                 <Text style={{ color: '#c221a9' }}>{deployMsg}</Text>
               )}
-            </StyledSection>
+            </CardSection>
           )}
         </CardBody>
       </Card>
@@ -443,7 +437,7 @@ const KIP17Deploy = (): ReactElement => {
             </Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Label>NFT Receiver</Label>
               <FormInput
                 type="text"
@@ -451,8 +445,8 @@ const KIP17Deploy = (): ReactElement => {
                 onChange={setNftReceiver}
                 value={nftReceiver}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Label>Token URI</Label>
               <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Text>{`Ex :\n${exTokenURI}`}</Text>
@@ -476,14 +470,14 @@ const KIP17Deploy = (): ReactElement => {
                 onChange={setTokenURI}
                 value={tokenURI}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Button disabled={mintButtonDisabled} onClick={mint}>
                 Mint
               </Button>
-            </StyledSection>
+            </CardSection>
             {!!mintMsg && (
-              <StyledSection>
+              <CardSection>
                 {mintSuccess ? (
                   <Text>
                     {mintMsg} You can check it below link:
@@ -504,7 +498,7 @@ const KIP17Deploy = (): ReactElement => {
                 ) : (
                   <Text style={{ color: '#c221a9' }}>{mintMsg}</Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
@@ -516,7 +510,7 @@ const KIP17Deploy = (): ReactElement => {
             <Text>Enter the token Id you own and want to burn.</Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Label>Burn Token Id</Label>
               <FormInput
                 type="text"
@@ -524,14 +518,14 @@ const KIP17Deploy = (): ReactElement => {
                 onChange={setBurnTokenId}
                 value={burnTokenId}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Button disabled={burnButtonDisabled} onClick={burn}>
                 Burn
               </Button>
-            </StyledSection>
+            </CardSection>
             {!!burnMsg && (
-              <StyledSection>
+              <CardSection>
                 {burnSuccess ? (
                   <Text>
                     {burnMsg} You can see that the NFT you just removed no
@@ -552,7 +546,7 @@ const KIP17Deploy = (): ReactElement => {
                 ) : (
                   <Text style={{ color: '#c221a9' }}> {burnMsg} </Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
@@ -564,7 +558,7 @@ const KIP17Deploy = (): ReactElement => {
             <Text>Enter the token Id you own and want to transfer.</Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Label>Transfer Receiver</Label>
               <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Text>{`Ex :\n${exTokenReceiver}`}</Text>
@@ -591,9 +585,9 @@ const KIP17Deploy = (): ReactElement => {
                 onChange={setTransferReceiver}
                 value={transferReceiver}
               />
-            </StyledSection>
+            </CardSection>
 
-            <StyledSection>
+            <CardSection>
               <Label>Transfer Token Id</Label>
               <FormInput
                 type="text"
@@ -601,14 +595,14 @@ const KIP17Deploy = (): ReactElement => {
                 onChange={setTransferTokenId}
                 value={transferTokenId}
               />
-            </StyledSection>
-            <StyledSection>
+            </CardSection>
+            <CardSection>
               <Button disabled={transferButtonDisabled} onClick={transfer}>
                 Transfer
               </Button>
-            </StyledSection>
+            </CardSection>
             {!!transferMsg && (
-              <StyledSection>
+              <CardSection>
                 {transferSuccess ? (
                   <Text>
                     {transferMsg} You can see that the NFT you just sent:{' '}
@@ -628,7 +622,7 @@ const KIP17Deploy = (): ReactElement => {
                 ) : (
                   <Text style={{ color: '#c221a9' }}>{transferMsg}</Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
@@ -640,19 +634,19 @@ const KIP17Deploy = (): ReactElement => {
             <Text>You can suspend functions related to sending tokens.</Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Button disabled={pauseButtonDisabled} onClick={pause}>
                 Pause
               </Button>
-            </StyledSection>
+            </CardSection>
             {!!unpauseMsg && (
-              <StyledSection>
+              <CardSection>
                 {unpauseSuccess ? (
                   <Text>{unpauseMsg}</Text>
                 ) : (
                   <Text style={{ color: '#c221a9' }}>{unpauseMsg}</Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
@@ -664,19 +658,19 @@ const KIP17Deploy = (): ReactElement => {
             <Text>You can resume the paused contract.</Text>
           </CardHeader>
           <CardBody>
-            <StyledSection>
+            <CardSection>
               <Button disabled={unpauseButtonDisabled} onClick={unpause}>
                 Unpause
               </Button>
-            </StyledSection>
+            </CardSection>
             {pauseMsg && (
-              <StyledSection>
+              <CardSection>
                 {pauseSuccess ? (
                   <Text>{pauseMsg}</Text>
                 ) : (
                   <Text style={{ color: '#c221a9' }}>{pauseMsg}</Text>
                 )}
-              </StyledSection>
+              </CardSection>
             )}
           </CardBody>
         </Card>
