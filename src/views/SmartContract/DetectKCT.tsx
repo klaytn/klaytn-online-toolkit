@@ -104,6 +104,7 @@ const DetectKCT = (): ReactElement => {
               onChange={setContractAddress}
               value={contractAddress}
             />
+            <br />
             <Button onClick={detectKCT}>Check</Button>
           </CardSection>
           {success ? (
