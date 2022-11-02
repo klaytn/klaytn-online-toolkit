@@ -19,6 +19,7 @@ import {
   FormSelect,
   CopyButton,
   CardSection,
+  CardExample,
 } from 'components'
 import FormFile from 'components/FormFile'
 
@@ -439,6 +440,10 @@ const KIP17Deploy = (): ReactElement => {
           <CardBody>
             <CardSection>
               <Label>NFT Receiver</Label>
+              <CardExample
+                exValue={exTokenReceiver}
+                onClickTry={setNftReceiver}
+              />
               <FormInput
                 type="text"
                 placeholder="Receiver's address"
@@ -448,22 +453,7 @@ const KIP17Deploy = (): ReactElement => {
             </CardSection>
             <CardSection>
               <Label>Token URI</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exTokenURI}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setTokenURI(exTokenURI)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton text={exTokenURI} buttonProps={{ size: 'sm' }}>
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample exValue={exTokenURI} onClickTry={setTokenURI} />
               <FormInput
                 type="text"
                 placeholder="Token URI"
@@ -560,25 +550,10 @@ const KIP17Deploy = (): ReactElement => {
           <CardBody>
             <CardSection>
               <Label>Transfer Receiver</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exTokenReceiver}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setTransferReceiver(exTokenReceiver)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton
-                    text={exTokenReceiver}
-                    buttonProps={{ size: 'sm' }}
-                  >
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample
+                exValue={exTokenReceiver}
+                onClickTry={setTransferReceiver}
+              />
               <FormInput
                 type="text"
                 placeholder="The address of the receiver"
@@ -586,7 +561,6 @@ const KIP17Deploy = (): ReactElement => {
                 value={transferReceiver}
               />
             </CardSection>
-
             <CardSection>
               <Label>Transfer Token Id</Label>
               <FormInput
@@ -631,7 +605,10 @@ const KIP17Deploy = (): ReactElement => {
         <Card>
           <CardHeader>
             <h3 className="title">Pause the KIP-17 Token Smart Contract</h3>
-            <Text>You can suspend functions related to sending tokens.</Text>
+            <Text>
+              You can suspend functions related to sending tokens. If you pause
+              a smart contract, you could not send an NFT.
+            </Text>
           </CardHeader>
           <CardBody>
             <CardSection>
@@ -655,7 +632,10 @@ const KIP17Deploy = (): ReactElement => {
         <Card>
           <CardHeader>
             <h3 className="title">Unpause the KIP-17 Token Smart Contract</h3>
-            <Text>You can resume the paused contract.</Text>
+            <Text>
+              You can resume the paused contract. If you unpause a smart
+              contract, you could resend an NFT.
+            </Text>
           </CardHeader>
           <CardBody>
             <CardSection>
