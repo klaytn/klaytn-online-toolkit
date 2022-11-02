@@ -24,7 +24,7 @@ import { COLOR } from 'consts'
 const SuccessMsgForm = ({ result }: { result?: string }): ReactElement => {
   return (
     <>
-      {result && (
+      {!!result && (
         <CardSection>
           <Text style={{ color: COLOR.error }}> {result}</Text>
         </CardSection>
@@ -183,7 +183,7 @@ const FunctionCall = (): ReactElement => {
               </CardSection>
             </>
           )}
-          {!!encodeResultMsg && <SuccessMsgForm result={parseResultMsg} />}
+          {!!encodeResultMsg && <SuccessMsgForm result={encodeResultMsg} />}
           {!!data && (
             <>
               <Text>
