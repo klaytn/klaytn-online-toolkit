@@ -9,15 +9,12 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
-  View,
   FormGroup,
   FormInput,
   FormSelect,
-  CopyButton,
   CardSection,
   CardExample,
 } from 'components'
@@ -107,11 +104,12 @@ const KIP17Deploy = (): ReactElement => {
         }, 5000)
       }
     } catch (e: any) {
-      setSenderDecryptMessage(e.toString())
       setSenderDecryptMessageVisible(true)
+      setSenderDecryptMessage(e.toString())
       setSenderAddress('')
 
       setTimeout(() => {
+        setSenderDecryptMessageVisible(false)
         setSenderDecryptMessage('')
       }, 5000)
     }
