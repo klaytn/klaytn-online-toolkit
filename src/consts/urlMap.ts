@@ -13,7 +13,7 @@ const network = {
   },
 }
 
-const kip = {
+const kip: { [key: string]: string } = {
   'KIP-7': 'https://kips.klaytn.foundation/KIPs/kip-7',
   'KIP-17': 'https://kips.klaytn.foundation/KIPs/kip-17',
   'KIP-37': 'https://kips.klaytn.foundation/KIPs/kip-37',
