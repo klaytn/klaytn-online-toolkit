@@ -82,7 +82,7 @@ const FunctionCall = (): ReactElement => {
   const parseABI = async (): Promise<void> => {
     try {
       const parsedABI = JSON.parse(abi)
-      if (!Object.keys(parsedABI).includes('inputs')) {
+      if (false === _.has(parsedABI, 'inputs')) {
         throw Error('This JSON object doesn\'t include "inputs" field.')
       }
       const params = new Array(parsedABI?.inputs.length)
