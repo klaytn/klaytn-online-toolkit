@@ -19,6 +19,7 @@ import {
   CopyButton,
   CardSection,
   FormFile,
+  CardExample,
 } from 'components'
 
 const StyledSection = styled(View)`
@@ -336,22 +337,7 @@ const KIP37Deploy = (): ReactElement => {
         <CardBody>
           <CardSection>
             <Label>URI</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exURI}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setUri(exURI)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exURI} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exURI} onClickTry={setUri} />
             <FormInput
               type="text"
               placeholder="URI"
@@ -407,22 +393,7 @@ const KIP37Deploy = (): ReactElement => {
             </CardSection>
             <CardSection>
               <Label>Token URI</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exTokenURI}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setTokenURI(exTokenURI)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton text={exTokenURI} buttonProps={{ size: 'sm' }}>
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample exValue={exTokenURI} onClickTry={setTokenURI} />
               <FormInput
                 type="text"
                 placeholder="Token URI"
@@ -474,22 +445,7 @@ const KIP37Deploy = (): ReactElement => {
           <CardBody>
             <CardSection>
               <Label>Recipient's Address</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exAddress}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setToAddress(exAddress)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton text={exAddress} buttonProps={{ size: 'sm' }}>
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample exValue={exAddress} onClickTry={setToAddress} />
               <FormInput
                 type="text"
                 placeholder="Recipient Address"
@@ -559,22 +515,10 @@ const KIP37Deploy = (): ReactElement => {
           <CardBody>
             <CardSection>
               <Label>Recipient's Address</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exAddress}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setRecipientAddress(exAddress)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton text={exAddress} buttonProps={{ size: 'sm' }}>
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample
+                exValue={exAddress}
+                onClickTry={setRecipientAddress}
+              />
               <FormInput
                 type="text"
                 placeholder="Recipient Address"
