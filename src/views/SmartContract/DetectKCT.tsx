@@ -1,8 +1,9 @@
-import { ReactElement, useEffect, useMemo, useState } from 'react'
-import Caver, { AbiItem } from 'caver-js'
+import { ReactElement, useMemo, useState } from 'react'
+import Caver from 'caver-js'
 import _ from 'lodash'
 
 import { URLMAP } from 'consts'
+import { ResultFormType } from 'types'
 import {
   Card,
   CardHeader,
@@ -16,8 +17,6 @@ import {
   CardSection,
   ResultForm,
 } from 'components'
-
-import { ResultFormType } from 'types'
 
 type NetworkType = 'mainnet' | 'testnet'
 
