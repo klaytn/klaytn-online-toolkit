@@ -198,7 +198,7 @@ const SendMultiSigTx = (): ReactElement => {
           from: senderAddress,
           to: recipientAddress,
           value: caver.utils.toPeb(amount, 'KLAY'),
-          gas: 50000,
+          gas: 1000000,
         })
         signed = await caver.wallet.sign(senderAddress, vt)
       } else {
@@ -207,7 +207,7 @@ const SendMultiSigTx = (): ReactElement => {
         const decimal = await contractInstance.decimals()
         const value = BigNumber(_.toNumber(amount) * Math.pow(10, decimal))
         signed = await contractInstance.sign(
-          { from: senderAddress, gas: 50000 },
+          { from: senderAddress, gas: 1000000 },
           'transfer',
           recipientAddress,
           value
