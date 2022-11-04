@@ -25,11 +25,9 @@ const delay: number = 3000
 
 const FormChildBlock = styled.div`
   width: 50%;
-  display: inline-block;
-  box-sizing: border-box;
 `
 const FormBlock = styled.div`
-  display: block;
+  display: flex;
   margin-bottom: 5px;
 `
 
