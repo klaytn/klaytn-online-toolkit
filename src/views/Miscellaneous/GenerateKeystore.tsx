@@ -1,5 +1,5 @@
 import React, { ReactElement, useMemo, useState } from 'react'
-import Caver, { Keystore } from 'caver-js'
+import Caver, { Account, Keystore } from 'caver-js'
 import _ from 'lodash'
 
 import {
@@ -15,6 +15,7 @@ import {
   FormInput,
   ResultForm,
   CardSection,
+  FormRadio,
 } from 'components'
 import { ResultFormType } from 'types'
 import classNames from 'classnames'
@@ -238,13 +239,16 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
   )
 }
 
+enum AccountKeyTypeEnum {
+  SINGLE = 'Single',
+  MULTIPLE = 'Multiple',
+  ROLEBASED = 'Role-Based',
+}
+
 const GenerateKeystore = (): ReactElement => {
-  const [checkboxIdList, setCheckboxIdList] = useState([
-    'Single',
-    'Multiple',
-    'Role-Based',
-  ])
-  const [isCheckedList, setIsCheckedList] = useState([true, false, false])
+  const [accountKeyType, setAccountKeyType] = useState<AccountKeyTypeEnum>(
+    AccountKeyTypeEnum.SINGLE
+  )
   const [password, setPassword] = useState('')
   const [address, setAddress] = useState('')
   const [privateKey, setPrivateKey] = useState('')
@@ -259,10 +263,8 @@ const GenerateKeystore = (): ReactElement => {
 
   const caver = useMemo(() => new Caver(), [])
 
-  const checkBoxClicked = (idx: number) => {
-    let tempIsCheckedList = [false, false, false]
-    tempIsCheckedList[idx] = true
-    setIsCheckedList(tempIsCheckedList)
+  const changeAccountKeyType = (val: AccountKeyTypeEnum) => {
+    setAccountKeyType(val)
     setAddress('')
     setPassword('')
     setPrivateKey('')
@@ -289,11 +291,11 @@ const GenerateKeystore = (): ReactElement => {
   const generateKeystoreV4 = () => {
     try {
       let keyring
-      if (isCheckedList[0]) {
+      if (accountKeyType === AccountKeyTypeEnum.SINGLE) {
         keyring = caver.wallet.keyring.create(address, privateKey)
-      } else if (isCheckedList[1]) {
+      } else if (accountKeyType === AccountKeyTypeEnum.MULTIPLE) {
         keyring = caver.wallet.keyring.create(address, privateKeys)
-      } else if (isCheckedList[2]) {
+      } else if (accountKeyType === AccountKeyTypeEnum.ROLEBASED) {
         keyring = caver.wallet.keyring.create(address, rolePrivateKeys)
       }
 
@@ -337,28 +339,18 @@ const GenerateKeystore = (): ReactElement => {
       <Card>
         <CardHeader>
           <h3 className="title">Generate Keystore</h3>
-          {checkboxIdList.map((id, idx) => {
-            return (
-              <Button
-                key={idx}
-                tag="label"
-                className={classNames('btn-simple', {
-                  active: isCheckedList[idx],
-                })}
-                color="info"
-                id="0"
-                size="sm"
-                onClick={() => checkBoxClicked(idx)}
-              >
-                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                  {id}
-                </span>
-                <span className="d-block d-sm-none">
-                  <i className="tim-icons icon-map-02" />
-                </span>
-              </Button>
-            )
-          })}
+          <FormRadio
+            itemList={[
+              { title: 'Single', value: AccountKeyTypeEnum.SINGLE },
+              { title: 'Multiple', value: AccountKeyTypeEnum.MULTIPLE },
+              { title: 'Role-Based', value: AccountKeyTypeEnum.ROLEBASED },
+            ]}
+            selectedValue={accountKeyType}
+            onClick={(v) => {
+              changeAccountKeyType(v)
+              setAccountKeyType(v)
+            }}
+          />
           <Text>
             Generate Private Key(s), encrypt a keyring, and return a keystore.
             Since Klaytn provides various account key types such as
@@ -374,7 +366,7 @@ const GenerateKeystore = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          {isCheckedList[0] ? (
+          {accountKeyType === AccountKeyTypeEnum.SINGLE ? (
             <SingleKey
               singleProps={{
                 setPrivateKey,
@@ -386,12 +378,12 @@ const GenerateKeystore = (): ReactElement => {
           ) : (
             ''
           )}
-          {isCheckedList[1] ? (
+          {accountKeyType === AccountKeyTypeEnum.MULTIPLE ? (
             <MultipleKey multiProps={{ privateKeys, setPrivateKeys, caver }} />
           ) : (
             ''
           )}
-          {isCheckedList[2] ? (
+          {accountKeyType === AccountKeyTypeEnum.ROLEBASED ? (
             <RoleBasedKey
               roleBasedProps={{ rolePrivateKeys, setRolePrivateKeys, caver }}
             />
@@ -414,7 +406,7 @@ const GenerateKeystore = (): ReactElement => {
               value={password}
             />
             <ButtonGroup>
-              {isCheckedList[0] ? (
+              {accountKeyType === AccountKeyTypeEnum.SINGLE ? (
                 <Button onClick={generateKeystoreV3}>
                   Generate Keystore(v3)
                 </Button>
