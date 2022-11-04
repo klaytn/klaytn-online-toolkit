@@ -24,6 +24,8 @@ import {
 const delay: number = 3000
 
 const FormChildBlock = styled.div`
+  display: flex;
+  align-items: center;
   width: 50%;
 `
 const FormBlock = styled.div`
