@@ -111,6 +111,7 @@ const SendMultiSigTx = (): ReactElement => {
         try {
           if (typeof event.target?.result === 'string') {
             const json = UTIL.jsonTryParse<Keystore>(event.target.result)
+            setSenderKeystorePassword('')
             if (!!json) {
               setSenderKeystoreJSON(json)
               setKeystoreFileName(files[0].name)
