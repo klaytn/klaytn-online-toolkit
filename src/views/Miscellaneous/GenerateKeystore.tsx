@@ -40,18 +40,16 @@ const SingleKey = ({ singleProps }: SingleType): ReactElement => {
   }
 
   return (
-    <>
-      <CardSection>
-        <Label>Private Key</Label>
-        <FormInput
-          type="text"
-          placeholder="Private Key"
-          onChange={setPrivateKey}
-          value={privateKey}
-        />
-        <Button onClick={generateSingleKey}>Generate Key</Button>
-      </CardSection>
-    </>
+    <CardSection>
+      <Label>Private Key</Label>
+      <FormInput
+        type="text"
+        placeholder="Private Key"
+        onChange={setPrivateKey}
+        value={privateKey}
+      />
+      <Button onClick={generateSingleKey}>Generate Key</Button>
+    </CardSection>
   )
 }
 
@@ -89,45 +87,43 @@ const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
   }
 
   return (
-    <>
-      <CardSection>
-        <Label>Number of Private Keys</Label>
-        <FormInput
-          type="number"
-          placeholder="Number of Private Keys (<100)"
-          onChange={handleNumberChange}
-          value={numOfPrivateKeys}
-        />
-        {!numOfPrivateKeys && (
-          <Text>
-            <br />
-            Please fill in the number of private keys. The number of private
-            keys must be a positive integer.
-            <br />
-            NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
-          </Text>
-        )}
-        {!!numOfPrivateKeys && <Label>Private Keys</Label>}
-        {!!numOfPrivateKeys &&
-          privateKeys.map((key, idx) => {
-            return (
-              <FormInput
-                key={`${key}${idx}`}
-                type="text"
-                placeholder="Private Key"
-                onChange={(v) => {
-                  handleInputChange(v, idx)
-                }}
-                value={key}
-                style={{ marginTop: '5px' }}
-              />
-            )
-          })}
-        {!!numOfPrivateKeys && (
-          <Button onClick={generateMultipleKeys}>Generate All Keys</Button>
-        )}
-      </CardSection>
-    </>
+    <CardSection>
+      <Label>Number of Private Keys</Label>
+      <FormInput
+        type="number"
+        placeholder="Number of Private Keys (<100)"
+        onChange={handleNumberChange}
+        value={numOfPrivateKeys}
+      />
+      {!numOfPrivateKeys && (
+        <Text>
+          <br />
+          Please fill in the number of private keys. The number of private keys
+          must be a positive integer.
+          <br />
+          NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
+        </Text>
+      )}
+      {!!numOfPrivateKeys && <Label>Private Keys</Label>}
+      {!!numOfPrivateKeys &&
+        privateKeys.map((key, idx) => {
+          return (
+            <FormInput
+              key={`${key}${idx}`}
+              type="text"
+              placeholder="Private Key"
+              onChange={(v) => {
+                handleInputChange(v, idx)
+              }}
+              value={key}
+              style={{ marginTop: '5px' }}
+            />
+          )
+        })}
+      {!!numOfPrivateKeys && (
+        <Button onClick={generateMultipleKeys}>Generate All Keys</Button>
+      )}
+    </CardSection>
   )
 }
 
@@ -180,57 +176,55 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
   }
 
   return (
-    <>
-      <CardSection>
-        <Row>
-          {numOfRolePrivateKeys.map((val, idx) => {
-            return (
-              <Column key={idx}>
-                <Label>{types[idx]}</Label>
-                <FormInput
-                  type="number"
-                  placeholder={`Number of ${types[idx]}s (<100)`}
-                  onChange={(v) => {
-                    handleNumberChange(v, idx)
-                  }}
-                  value={val}
-                  style={{ width: '100%' }}
-                />
-                {!!numOfRolePrivateKeys[idx] && <Label>Private Keys</Label>}
-                {!!numOfRolePrivateKeys[idx] &&
-                  rolePrivateKeys[idx].map((key, i) => {
-                    return (
-                      <FormInput
-                        key={`${key}${i}`}
-                        type="text"
-                        placeholder="Private Key"
-                        onChange={(v) => {
-                          handleInputChange(v, idx, i)
-                        }}
-                        value={key}
-                        style={{ marginTop: '5px', width: '100%' }}
-                      />
-                    )
-                  })}
-              </Column>
-            )
-          })}
-        </Row>
-        {!!numOfRolePrivateKeys[0] ||
-        !!numOfRolePrivateKeys[1] ||
-        !!numOfRolePrivateKeys[2] ? (
-          <Button onClick={generateRoleBasedKeys}>Generate All Keys</Button>
-        ) : (
-          <Text>
-            <br />
-            Please fill in the number of private keys. The number of private
-            keys must be a positive integer.
-            <br />
-            NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
-          </Text>
-        )}
-      </CardSection>
-    </>
+    <CardSection>
+      <Row>
+        {numOfRolePrivateKeys.map((val, idx) => {
+          return (
+            <Column key={idx}>
+              <Label>{types[idx]}</Label>
+              <FormInput
+                type="number"
+                placeholder={`Number of ${types[idx]}s (<100)`}
+                onChange={(v) => {
+                  handleNumberChange(v, idx)
+                }}
+                value={val}
+                style={{ width: '100%' }}
+              />
+              {!!numOfRolePrivateKeys[idx] && <Label>Private Keys</Label>}
+              {!!numOfRolePrivateKeys[idx] &&
+                rolePrivateKeys[idx].map((key, i) => {
+                  return (
+                    <FormInput
+                      key={`${key}${i}`}
+                      type="text"
+                      placeholder="Private Key"
+                      onChange={(v) => {
+                        handleInputChange(v, idx, i)
+                      }}
+                      value={key}
+                      style={{ marginTop: '5px', width: '100%' }}
+                    />
+                  )
+                })}
+            </Column>
+          )
+        })}
+      </Row>
+      {!!numOfRolePrivateKeys[0] ||
+      !!numOfRolePrivateKeys[1] ||
+      !!numOfRolePrivateKeys[2] ? (
+        <Button onClick={generateRoleBasedKeys}>Generate All Keys</Button>
+      ) : (
+        <Text>
+          <br />
+          Please fill in the number of private keys. The number of private keys
+          must be a positive integer.
+          <br />
+          NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
+        </Text>
+      )}
+    </CardSection>
   )
 }
 
