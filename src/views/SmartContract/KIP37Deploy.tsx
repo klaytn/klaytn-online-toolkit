@@ -298,6 +298,7 @@ const KIP37Deploy = (): ReactElement => {
                 { value: 'testnet', label: 'Testnet' },
               ]}
               onChange={setNetwork}
+              containerStyle={{ width: 200 }}
             />
           </CardSection>
           <CardSection>
