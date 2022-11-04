@@ -1,5 +1,5 @@
 import React, { ReactElement, useMemo, useState } from 'react'
-import Caver, { Account, Keystore } from 'caver-js'
+import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
 import {
@@ -18,7 +18,6 @@ import {
   FormRadio,
 } from 'components'
 import { ResultFormType } from 'types'
-import classNames from 'classnames'
 
 type SingleType = {
   singleProps: {
@@ -95,18 +94,17 @@ const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
         <Label>Number of Private Keys</Label>
         <FormInput
           type="number"
-          placeholder="Number of Private Keys"
+          placeholder="Number of Private Keys (<100)"
           onChange={handleNumberChange}
           value={numOfPrivateKeys}
         />
         {!numOfPrivateKeys && (
           <Text>
             <br />
-            For rendering, the number of private keys must be a positive integer
-            less than 100.
+            Please fill in the number of private keys. The number of private
+            keys must be a positive integer.
             <br />
-            <br />
-            Please fill in the number of private keys.
+            NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
           </Text>
         )}
         {!!numOfPrivateKeys && <Label>Private Keys</Label>}
@@ -191,20 +189,14 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
                 <Label>{types[idx]}</Label>
                 <FormInput
                   type="number"
-                  placeholder={`Number of ${types[idx]}s`}
+                  placeholder={`Number of ${types[idx]}s (<100)`}
                   onChange={(v) => {
                     handleNumberChange(v, idx)
                   }}
                   value={val}
                   style={{ width: '100%' }}
                 />
-                {!numOfRolePrivateKeys[idx] && (
-                  <Text>
-                    <br />
-                    For rendering, the number of private keys must be a positive
-                    integer less than 100.
-                  </Text>
-                )}
+                {!!numOfRolePrivateKeys[idx] && <Label>Private Keys</Label>}
                 {!!numOfRolePrivateKeys[idx] &&
                   rolePrivateKeys[idx].map((key, i) => {
                     return (
@@ -231,7 +223,10 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
         ) : (
           <Text>
             <br />
-            Please fill in the number of private keys.
+            Please fill in the number of private keys. The number of private
+            keys must be a positive integer.
+            <br />
+            NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
           </Text>
         )}
       </CardSection>
