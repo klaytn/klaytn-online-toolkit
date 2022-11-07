@@ -105,6 +105,17 @@ const SendMultiSigTx = (): ReactElement => {
     }
   }, [decryptMsg])
 
+  useEffect(() => {
+    setResultMsg(undefined)
+  }, [
+    senderAddress,
+    recipientAddress,
+    amount,
+    contractAddress,
+    network,
+    tokenType,
+  ])
+
   const handleSenderKeystoreChange = (files?: FileList): void => {
     if (files && files.length > 0) {
       const fileReader = new FileReader()
@@ -344,8 +355,7 @@ const SendMultiSigTx = (): ReactElement => {
               </Button>
             </FormBlock>
           </CardSection>
-
-          {!!resultMsg && <SuccessMsgForm result={resultMsg} />}
+          <SuccessMsgForm result={resultMsg} />
         </CardBody>
       </Card>
       <Card>
@@ -374,7 +384,7 @@ const SendMultiSigTx = (): ReactElement => {
             />
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
           </CardSection>
-          {!!decryptMsg && <SuccessMsgForm result={decryptMsg} />}
+          <SuccessMsgForm result={decryptMsg} />
           <CardSection>
             <Label>Decrypted Keystore List </Label>
             {keyList.length > 0 ? (
