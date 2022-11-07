@@ -389,29 +389,23 @@ const GenerateKeystore = (): ReactElement => {
               value={password}
             />
             <ButtonGroup>
-              {accountKeyType === AccountKeyTypeEnum.SINGLE ? (
+              {accountKeyType === AccountKeyTypeEnum.SINGLE && (
                 <Button onClick={generateKeystoreV3}>
                   Generate Keystore(v3)
                 </Button>
-              ) : (
-                ''
               )}
               <Button onClick={generateKeystoreV4}>
                 Generate Keystore(v4)
               </Button>
             </ButtonGroup>
           </CardSection>
-          {keystoreShown ? (
+          {keystoreShown && (
             <CardSection>
               <ResultForm title={'Keystore'} result={result} />
-              {result?.success ? (
+              {result?.success && (
                 <Button onClick={downloadFile}>Download</Button>
-              ) : (
-                ''
               )}
             </CardSection>
-          ) : (
-            ''
           )}
         </CardBody>
       </Card>
