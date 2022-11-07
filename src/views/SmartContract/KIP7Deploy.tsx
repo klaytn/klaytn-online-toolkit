@@ -1,4 +1,4 @@
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -11,7 +11,6 @@ import {
   Label,
   Column,
   Text,
-  FormGroup,
   LinkA,
   FormInput,
   FormSelect,
@@ -26,9 +25,7 @@ const KIP7Deploy = (): ReactElement => {
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
-  const [senderDecryptMessage, setSenderDecryptMessage] = useState('')
-  const [senderDecryptMessageVisible, setSenderDecryptMessageVisible] =
-    useState(false)
+  const [senderDecryptMsg, setSenderDecryptMsg] = useState('')
   const [deployMsg, setDeployMsg] = useState('')
   const [deploySuccess, setDeploySuccess] = useState(false)
   const [deployButtonDisabled, setDeployButtonDisabled] = useState(false)
@@ -42,6 +39,12 @@ const KIP7Deploy = (): ReactElement => {
     () => new Caver(URLMAP.network[network]['rpc']),
     [network]
   )
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSenderDecryptMsg('')
+    }, 5000)
+  }, [senderDecryptMsg])
 
   const handleSenderKeystoreChange = (files?: FileList) => {
     if (files && files.length > 0) {
@@ -70,24 +73,14 @@ const KIP7Deploy = (): ReactElement => {
           caver.wallet.add(keyring)
         }
 
-        setSenderDecryptMessage('Decryption succeeds!')
+        setSenderDecryptMsg('Decryption succeeds!')
         setSenderAddress(keyring.address)
-        setSenderDecryptMessageVisible(true)
-
-        setTimeout(() => {
-          setSenderDecryptMessageVisible(false)
-          setSenderDecryptMessage('')
-        }, 5000)
+      } else {
+        throw Error('Keystore file is not uploaded!')
       }
     } catch (err) {
-      setSenderDecryptMessageVisible(true)
-      setSenderDecryptMessage(_.toString(err))
+      setSenderDecryptMsg(_.toString(err))
       setSenderAddress('')
-
-      setTimeout(() => {
-        setSenderDecryptMessageVisible(false)
-        setSenderDecryptMessage('')
-      }, 5000)
     }
   }
 
@@ -113,13 +106,12 @@ const KIP7Deploy = (): ReactElement => {
       setDeployButtonDisabled(false)
       setContractAddress(kip7.options.address)
     } catch (err) {
+      setDeploySuccess(false)
       setDeployMsg(_.toString(err))
-      setDeploySuccess(true)
       setDeployButtonDisabled(false)
       setContractAddress('')
 
       setTimeout(() => {
-        setDeploySuccess(false)
         setDeployMsg('')
       }, 5000)
     }
@@ -146,17 +138,15 @@ const KIP7Deploy = (): ReactElement => {
             token contract.
           </Text>
           <CardSection>
-            <FormGroup>
-              <Label> Network </Label>
-              <FormSelect
-                defaultValue={network}
-                itemList={[
-                  { value: 'mainnet', label: 'Mainnet' },
-                  { value: 'testnet', label: 'Testnet' },
-                ]}
-                onChange={setNetwork}
-              />
-            </FormGroup>
+            <Label> Network </Label>
+            <FormSelect
+              defaultValue={network}
+              itemList={[
+                { value: 'mainnet', label: 'Mainnet' },
+                { value: 'testnet', label: 'Testnet' },
+              ]}
+              onChange={setNetwork}
+            />
           </CardSection>
           <CardSection>
             <Label>Kesytore</Label>
@@ -178,9 +168,9 @@ const KIP7Deploy = (): ReactElement => {
           <CardSection>
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
           </CardSection>
-          {senderDecryptMessageVisible && (
+          {!!senderDecryptMsg && (
             <CardSection>
-              <Text style={{ color: '#c221a9' }}>{senderDecryptMessage}</Text>
+              <Text style={{ color: '#c221a9' }}>{senderDecryptMsg}</Text>
             </CardSection>
           )}
         </CardBody>
