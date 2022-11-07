@@ -24,7 +24,7 @@ const StyledInput = styled.input`
 `
 
 type FormInputProps = {
-  type?: 'text' | 'password'
+  type?: 'text' | 'password' | 'number'
   value: string
   onChange: (value: string) => void
   placeholder?: string
