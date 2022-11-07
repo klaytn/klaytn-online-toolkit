@@ -355,7 +355,7 @@ const GenerateKeystore = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          {accountKeyType === AccountKeyTypeEnum.SINGLE ? (
+          {accountKeyType === AccountKeyTypeEnum.SINGLE && (
             <SingleKey
               singleProps={{
                 setPrivateKey,
@@ -364,20 +364,14 @@ const GenerateKeystore = (): ReactElement => {
                 caver,
               }}
             />
-          ) : (
-            ''
           )}
-          {accountKeyType === AccountKeyTypeEnum.MULTIPLE ? (
+          {accountKeyType === AccountKeyTypeEnum.MULTIPLE && (
             <MultipleKey multiProps={{ privateKeys, setPrivateKeys, caver }} />
-          ) : (
-            ''
           )}
-          {accountKeyType === AccountKeyTypeEnum.ROLEBASED ? (
+          {accountKeyType === AccountKeyTypeEnum.ROLEBASED && (
             <RoleBasedKey
               roleBasedProps={{ rolePrivateKeys, setRolePrivateKeys, caver }}
             />
-          ) : (
-            ''
           )}
           <CardSection>
             <Label>Address</Label>
