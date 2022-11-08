@@ -1,5 +1,6 @@
 import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
+import styled from 'styled-components'
 import _ from 'lodash'
 
 import { URLMAP, UTIL } from 'consts'
@@ -18,7 +19,12 @@ import {
   CopyButton,
   CardSection,
   FormFile,
+  CardExample,
 } from 'components'
+
+const StyledSection = styled(View)`
+  padding-bottom: 10px;
+`
 
 type NetworkType = 'mainnet' | 'testnet'
 
@@ -31,7 +37,6 @@ const KIP37Deploy = (): ReactElement => {
   const [senderDecryptMessageVisible, setSenderDecryptMessageVisible] =
     useState(false)
   const [deployMsg, setDeployMsg] = useState('')
-  const [deployMsgVisible, setDeployMsgVisible] = useState(false)
   const [deployButtonDisabled, setDeployButtonDisabled] = useState(false)
   const [deploySuccess, setDeploySuccess] = useState(false)
   const [contractAddress, setContractAddress] = useState('')
@@ -40,13 +45,17 @@ const KIP37Deploy = (): ReactElement => {
   const [initialSupply, setInitialSupply] = useState('')
   const [tokenURI, setTokenURI] = useState('')
   const [createMsg, setCreateMsg] = useState('')
-  const [createMsgVisible, setCreateMsgVisible] = useState(false)
   const [createButtonDisabled, setCreateButtonDisabled] = useState(false)
   const [createSuccess, setCreateSuccess] = useState(false)
+  const [toAddress, setToAddress] = useState('')
+  const [transferId, setTransferId] = useState('')
+  const [transferAmount, setTransferAmount] = useState('')
+  const [transferMsg, setTransferMsg] = useState('')
+  const [transferButtonDisabled, setTransferButtonDisabled] = useState(false)
+  const [transferSuccess, setTransferSuccess] = useState(false)
   const [recipientAddress, setRecipientAddress] = useState('')
   const [tokenAmount, setTokenAmount] = useState('')
   const [mintMsg, setMintMsg] = useState('')
-  const [mintMsgVisible, setMintMsgVisible] = useState(false)
   const [mintButtonDisabled, setMintButtonDisabled] = useState(false)
   const [mintSuccess, setMintSuccess] = useState(false)
 
@@ -124,20 +133,17 @@ const KIP37Deploy = (): ReactElement => {
         { from: senderAddress }
       )
 
-      setDeployMsgVisible(true)
       setDeployMsg('KIP-37 smart contract is successfully deployed! ')
       setDeployButtonDisabled(false)
       setContractAddress(kip37.options.address)
       setDeploySuccess(true)
     } catch (e: any) {
       setDeployMsg(e.toString())
-      setDeployMsgVisible(true)
       setDeployButtonDisabled(false)
       setContractAddress('')
       setDeploySuccess(false)
 
       setTimeout(() => {
-        setDeployMsgVisible(false)
         setDeployMsg('')
       }, 5000)
     }
@@ -155,13 +161,9 @@ const KIP37Deploy = (): ReactElement => {
         initialSupply,
         tokenURI
       )
-      const newCreateMsg =
-        'KIP-37 Token(Token ID: ' +
-        currentTokenId +
-        ') is successfully created!'
+      const newCreateMsg = `KIP-37 Token(Token ID: ${currentTokenId}) is successfully created!`
 
       if (created) {
-        setCreateMsgVisible(true)
         setCreateMsg(newCreateMsg)
         setCreateButtonDisabled(false)
         setLastTokenId(currentTokenId + 1)
@@ -171,15 +173,60 @@ const KIP37Deploy = (): ReactElement => {
       }
     } catch (e: any) {
       setCreateMsg(e.toString())
-      setCreateMsgVisible(true)
       setCreateButtonDisabled(false)
       setInitialSupply('')
       setTokenURI('')
       setCreateSuccess(false)
 
       setTimeout(() => {
-        setCreateMsgVisible(false)
         setCreateMsg('')
+      }, 5000)
+    }
+  }
+
+  const transfer = async () => {
+    try {
+      setTransferButtonDisabled(true)
+
+      const deployedContract = new caver.kct.kip37(contractAddress)
+      deployedContract.options.from = senderAddress
+      const balance = await deployedContract.balanceOf(
+        senderAddress,
+        transferId
+      )
+
+      const transferred = await deployedContract.safeTransferFrom(
+        senderAddress,
+        toAddress,
+        transferId,
+        transferAmount,
+        'data'
+      )
+
+      let newTransferMsg
+      if (transferAmount === '1') {
+        newTransferMsg = `KIP-37 Token(Token ID: ${transferId}) is successfully transferred!`
+      } else {
+        newTransferMsg = `KIP-37 Tokens(Token ID: ${transferId}) are successfully transferred!`
+      }
+
+      if (transferred) {
+        setTransferMsg(newTransferMsg)
+        setTransferButtonDisabled(false)
+        setTransferSuccess(true)
+      } else {
+        throw Error('Transferring is failed')
+      }
+    } catch (e: any) {
+      setTransferMsg(e.toString())
+      setTransferButtonDisabled(false)
+      setToAddress('')
+      setTransferId('')
+      setTransferAmount('')
+      setTransferSuccess(false)
+
+      setTimeout(() => {
+        setTransferMsg('')
       }, 5000)
     }
   }
@@ -196,11 +243,9 @@ const KIP37Deploy = (): ReactElement => {
         currentTokenId,
         tokenAmount
       )
-      const newMintMsg =
-        'KIP-37 Token(Token ID: ' + currentTokenId + ') is successfully minted!'
+      const newMintMsg = `KIP-37 Token(Token ID: ${currentTokenId}) is successfully minted!`
 
       if (minted) {
-        setMintMsgVisible(true)
         setMintMsg(newMintMsg)
         setMintButtonDisabled(false)
         setMintSuccess(true)
@@ -209,14 +254,12 @@ const KIP37Deploy = (): ReactElement => {
       }
     } catch (e: any) {
       setMintMsg(e.toString())
-      setMintMsgVisible(true)
       setMintButtonDisabled(false)
       setRecipientAddress('')
       setTokenAmount('')
       setMintSuccess(false)
 
       setTimeout(() => {
-        setMintMsgVisible(false)
         setMintMsg('')
       }, 5000)
     }
@@ -294,22 +337,7 @@ const KIP37Deploy = (): ReactElement => {
         <CardBody>
           <CardSection>
             <Label>URI</Label>
-            <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text>{`Ex :\n${exURI}`}</Text>
-              <View style={{ gap: 4 }}>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    setUri(exURI)
-                  }}
-                >
-                  Try
-                </Button>
-                <CopyButton text={exURI} buttonProps={{ size: 'sm' }}>
-                  Copy
-                </CopyButton>
-              </View>
-            </Row>
+            <CardExample exValue={exURI} onClickTry={setUri} />
             <FormInput
               type="text"
               placeholder="URI"
@@ -322,12 +350,9 @@ const KIP37Deploy = (): ReactElement => {
               Deploy
             </Button>
           </CardSection>
-          {deployMsgVisible && (
+          {!!deployMsg && (
             <CardSection>
-              {deployMsg !== '' && deploySuccess === false && (
-                <Text style={{ color: '#c221a9' }}> {deployMsg} </Text>
-              )}
-              {deployMsg !== '' && deploySuccess === true && (
+              {deploySuccess ? (
                 <Text>
                   {deployMsg}You can check it below link:
                   <br />
@@ -341,6 +366,8 @@ const KIP37Deploy = (): ReactElement => {
                     KIP-37 Token Address
                   </a>
                 </Text>
+              ) : (
+                <Text style={{ color: '#c221a9' }}> {deployMsg} </Text>
               )}
             </CardSection>
           )}
@@ -366,22 +393,7 @@ const KIP37Deploy = (): ReactElement => {
             </CardSection>
             <CardSection>
               <Label>Token URI</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exTokenURI}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setTokenURI(exTokenURI)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton text={exTokenURI} buttonProps={{ size: 'sm' }}>
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample exValue={exTokenURI} onClickTry={setTokenURI} />
               <FormInput
                 type="text"
                 placeholder="Token URI"
@@ -394,12 +406,9 @@ const KIP37Deploy = (): ReactElement => {
                 Create
               </Button>
             </CardSection>
-            {createMsgVisible && (
+            {!!createMsg && (
               <CardSection>
-                {createMsg !== '' && createSuccess === false && (
-                  <Text style={{ color: '#c221a9' }}> {createMsg} </Text>
-                )}
-                {createMsg !== '' && createSuccess === true && (
+                {createSuccess ? (
                   <Text>
                     {createMsg} You can check it below link:
                     <br />
@@ -416,6 +425,78 @@ const KIP37Deploy = (): ReactElement => {
                       KIP-37 Token Inventory
                     </a>
                   </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {createMsg} </Text>
+                )}
+              </CardSection>
+            )}
+          </CardBody>
+        </Card>
+      )}
+      {createSuccess && (
+        <Card>
+          <CardHeader>
+            <h3 className="title">Transfer the KIP-37 Token</h3>
+            <Text>
+              Enter the recipient address, token ID, and amount of the KIP-37
+              Token to be transferred among the KIP-37 Tokens you have.
+            </Text>
+          </CardHeader>
+          <CardBody>
+            <CardSection>
+              <Label>Recipient's Address</Label>
+              <CardExample exValue={exAddress} onClickTry={setToAddress} />
+              <FormInput
+                type="text"
+                placeholder="Recipient Address"
+                onChange={setToAddress}
+                value={toAddress}
+              />
+            </CardSection>
+            <CardSection>
+              <Label>Token ID</Label>
+              <FormInput
+                type="text"
+                placeholder="Token ID (e.g., 0)"
+                onChange={setTransferId}
+                value={transferId}
+              />
+            </CardSection>
+            <CardSection>
+              <Label>Token Amount</Label>
+              <FormInput
+                type="text"
+                placeholder="Token Amount (e.g., 2)"
+                onChange={setTransferAmount}
+                value={transferAmount}
+              />
+            </CardSection>
+            <CardSection>
+              <Button disabled={transferButtonDisabled} onClick={transfer}>
+                Transfer
+              </Button>
+            </CardSection>
+            {!!transferMsg && (
+              <CardSection>
+                {transferSuccess ? (
+                  <Text>
+                    {transferMsg} You can check it below link:
+                    <br />
+                    <a
+                      href={
+                        URLMAP.network[network]['finderNFT'] +
+                        contractAddress +
+                        '?tabId=nftInventory&search=' +
+                        toAddress
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      KIP-37 Token Inventory
+                    </a>
+                  </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {transferMsg} </Text>
                 )}
               </CardSection>
             )}
@@ -434,22 +515,10 @@ const KIP37Deploy = (): ReactElement => {
           <CardBody>
             <CardSection>
               <Label>Recipient's Address</Label>
-              <Row style={{ alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Text>{`Ex :\n${exAddress}`}</Text>
-                <View style={{ gap: 4 }}>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      setRecipientAddress(exAddress)
-                    }}
-                  >
-                    Try
-                  </Button>
-                  <CopyButton text={exAddress} buttonProps={{ size: 'sm' }}>
-                    Copy
-                  </CopyButton>
-                </View>
-              </Row>
+              <CardExample
+                exValue={exAddress}
+                onClickTry={setRecipientAddress}
+              />
               <FormInput
                 type="text"
                 placeholder="Recipient Address"
@@ -471,12 +540,9 @@ const KIP37Deploy = (): ReactElement => {
                 Mint
               </Button>
             </CardSection>
-            {mintMsgVisible && (
+            {!!mintMsg && (
               <CardSection>
-                {mintMsg !== '' && mintSuccess === false && (
-                  <Text style={{ color: '#c221a9' }}> {mintMsg} </Text>
-                )}
-                {mintMsg !== '' && mintSuccess === true && (
+                {mintSuccess ? (
                   <Text>
                     {mintMsg} You can check it below link:
                     <br />
@@ -493,6 +559,8 @@ const KIP37Deploy = (): ReactElement => {
                       KIP-37 Token Inventory
                     </a>
                   </Text>
+                ) : (
+                  <Text style={{ color: '#c221a9' }}> {mintMsg} </Text>
                 )}
               </CardSection>
             )}
