@@ -1,11 +1,22 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { colors, transitions } from '../styles'
 
-const SLightbox = styled.div`
+export const transitions = {
+  short: 'all 0.1s ease-in-out',
+  base: 'all 0.2s ease-in-out',
+  long: 'all 0.3s ease-in-out',
+  button: 'all 0.15s ease-in-out',
+}
+interface ILightboxStyleProps {
+  show: boolean
+  offset: number
+  opacity?: number
+}
+
+const SLightbox = styled.div<ILightboxStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
-  position: fixed;
+  position: absolute;
   width: 100vw;
   height: 100vh;
   margin-left: -50vw;
@@ -46,7 +57,13 @@ const SHitbox = styled.div`
   bottom: 0;
 `
 
-const SCloseButton = styled.div`
+interface ICloseButtonStyleProps {
+  size: number
+  color: string
+  onClick?: any
+}
+
+const SCloseButton = styled.div<ICloseButtonStyleProps>`
   transition: ${transitions.short};
   position: absolute;
   width: ${({ size }) => `${size}px`};
@@ -64,6 +81,7 @@ const SCloseButton = styled.div`
     content: ' ';
     height: ${({ size }) => `${size}px`};
     width: 2px;
+    background: ${({ color }) => `${color}`};
   }
   &:before {
     transform: rotate(45deg);
@@ -78,7 +96,7 @@ const SCard = styled.div`
   width: 100%;
   max-width: 500px;
   padding: 25px;
-  background-color: rgb(${colors.white});
+  background-color: white;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -93,16 +111,25 @@ const SModalContent = styled.div`
   word-wrap: break-word;
 `
 
+interface IModalState {
+  offset: number
+}
+
+interface IModalProps {
+  children: React.ReactNode
+  show: boolean
+  toggleModal: any
+  opacity?: number
+}
 const INITIAL_STATE = {
   offset: 0,
 }
 
-class Modal extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      ...INITIAL_STATE,
-    }
+class Modal extends React.Component<IModalProps, IModalState> {
+  public lightbox?: HTMLDivElement | null
+
+  public state: IModalState = {
+    ...INITIAL_STATE,
   }
 
   componentDidUpdate() {
@@ -137,13 +164,13 @@ class Modal extends React.Component {
         show={show}
         offset={offset}
         opacity={opacity}
-        ref={(c) => (this.lightbox = c)}
+        ref={(c: any) => (this.lightbox = c)}
       >
         <SModalContainer>
           <SHitbox onClick={this.toggleModal} />
 
           <SCard>
-            <SCloseButton size={25} color='black' onClick={this.toggleModal} />
+            <SCloseButton size={25} color="black" onClick={this.toggleModal} />
             <SModalContent>{children}</SModalContent>
           </SCard>
         </SModalContainer>

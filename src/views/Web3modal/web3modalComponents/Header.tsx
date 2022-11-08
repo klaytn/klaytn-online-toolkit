@@ -1,10 +1,14 @@
-import * as React from 'react'
 import styled from 'styled-components'
 import * as PropTypes from 'prop-types'
-// import Blockie from "./Blockie";
 import { getChainData } from '../helpers/utilities'
-import { transitions } from '../styles'
 import Banner from './Banner'
+
+export const transitions = {
+  short: 'all 0.1s ease-in-out',
+  base: 'all 0.2s ease-in-out',
+  long: 'all 0.3s ease-in-out',
+  button: 'all 0.15s ease-in-out',
+}
 
 const SHeader = styled.div`
   margin-top: -1px;
@@ -38,17 +42,16 @@ const SActiveChain = styled(SActiveAccount)`
   }
 `
 
-// const SBlockie = styled(Blockie)`
-//   margin-right: 10px;
-// `;
-
-const SAddress = styled.p`
+interface IHeaderStyle {
+  connected: boolean
+}
+const SAddress = styled.p<IHeaderStyle>`
   transition: ${transitions.base};
   font-weight: bold;
   margin: ${({ connected }) => (connected ? '-2px auto 0.7em' : '0')};
 `
 
-const SDisconnect = styled.div`
+const SDisconnect = styled.div<IHeaderStyle>`
   transition: ${transitions.button};
   font-size: 12px;
   font-family: monospace;
@@ -68,7 +71,14 @@ const SDisconnect = styled.div`
   }
 `
 
-const Header = (props) => {
+interface IHeaderProps {
+  killSession: () => void
+  connected: boolean
+  address: string
+  chainId: number
+}
+
+const Header = (props: IHeaderProps) => {
   const { connected, address, chainId, killSession } = props
   const chainData = chainId ? getChainData(chainId) : null
   return (
@@ -83,7 +93,6 @@ const Header = (props) => {
       )}
       {address && (
         <SActiveAccount>
-          {/* <SBlockie address={address} /> */}
           <SAddress connected={connected}>{address}</SAddress>
           <SDisconnect connected={connected} onClick={killSession}>
             {'Disconnect'}
