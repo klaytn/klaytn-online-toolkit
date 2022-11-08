@@ -21,6 +21,7 @@ import {
   FormDownload,
   CardSection,
   FormRadio,
+  PrivateKeyWarning,
 } from 'components'
 
 const CreateKeystore = (): ReactElement => {
@@ -71,6 +72,7 @@ const CreateKeystore = (): ReactElement => {
           <Text>
             Generate private key, encrypt a keyring, and return a keystore.
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
           <CardSection>
@@ -110,6 +112,7 @@ const CreateKeystore = (): ReactElement => {
                 <Label>Enter the password for the keystore file</Label>
                 <View style={{ paddingBottom: 10 }}>
                   <FormInput
+                    type="password"
                     value={password}
                     onChange={setPassword}
                     placeholder="Input password"

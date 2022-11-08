@@ -201,6 +201,7 @@ const FunctionCall = (): ReactElement => {
                     { value: 'testnet', label: 'Testnet' },
                   ]}
                   onChange={setNetwork}
+                  containerStyle={{ width: 200 }}
                 />
                 <Label>Contract Address</Label>
                 <FormInput

@@ -1,10 +1,9 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { TransactionReceipt } from 'caver-js'
 import _ from 'lodash'
-import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 
-import { COLOR, URLMAP, UTIL } from 'consts'
+import { COLOR, URLMAP } from 'consts'
 
 import {
   Column,
@@ -21,8 +20,11 @@ import {
   LinkA,
   ResultForm,
   CardSection,
+  PrivateKeyWarning,
 } from 'components'
 import { ResultFormType } from 'types'
+import useAccounts from 'hooks/account/useAccounts'
+import { generateSingleKey } from 'logics/caverFuncntions'
 
 const AccountKeyLegacyOnchain = (): ReactElement => {
   const navigate = useNavigate()
@@ -30,11 +32,6 @@ const AccountKeyLegacyOnchain = (): ReactElement => {
 
   const [privateKey, setPrivateKey] = useState('')
   const [result, setResult] = useState<ResultFormType<TransactionReceipt>>()
-
-  const generateKey = (): void => {
-    const key = caver.wallet.keyring.generateSingleKey()
-    setPrivateKey(key)
-  }
 
   const { keyring, keyringErrMsg } = useMemo(() => {
     if (privateKey) {
@@ -51,26 +48,10 @@ const AccountKeyLegacyOnchain = (): ReactElement => {
     return {}
   }, [privateKey])
 
-  const { data: accountInfo, refetch } = useQuery(
-    [keyring],
-    async () => {
-      if (keyring) {
-        const accountKey = await caver.rpc.klay.getAccountKey(keyring.address)
-
-        if (accountKey) {
-          const hexBalance = await caver.rpc.klay.getBalance(keyring.address)
-          return {
-            address: keyring.address,
-            accountKey,
-            klay_balance: caver.utils.fromPeb(hexBalance, 'KLAY'),
-          }
-        }
-      }
-    },
-    {
-      enabled: !!keyring,
-    }
-  )
+  const { accountInfo, refetchAccountInfo } = useAccounts({
+    caver,
+    keyring,
+  })
 
   useEffect(() => {
     setResult(undefined)
@@ -89,6 +70,7 @@ const AccountKeyLegacyOnchain = (): ReactElement => {
               [Docs : AccountKeyLegacy]
             </LinkA>
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
           <CardSection>
@@ -106,7 +88,9 @@ const AccountKeyLegacyOnchain = (): ReactElement => {
                 <Text style={{ color: COLOR.error }}>{keyringErrMsg}</Text>
               )}
             </View>
-            <Button onClick={generateKey}>Generate a private key</Button>
+            <Button onClick={(): void => setPrivateKey(generateSingleKey())}>
+              Generate a private key
+            </Button>
             <CodeBlock
               title="caver-js code"
               text={`const privateKey = caver.wallet.keyring.generateSingleKey()`}
@@ -132,14 +116,7 @@ const AccountKeyLegacyOnchain = (): ReactElement => {
                   <Text style={{ color: COLOR.primary }}>
                     1. Get some testnet KLAY
                   </Text>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      refetch()
-                    }}
-                  >
-                    Move to get KLAY
-                  </Button>
+                  <Button size="sm">Move to get KLAY</Button>
                 </Row>
               </LinkA>
               <Row style={{ gap: 4, alignItems: 'center' }}>
@@ -153,12 +130,7 @@ const AccountKeyLegacyOnchain = (): ReactElement => {
                   2. After getting testnet KLAY, you can retrieve your account
                   info from Baobab network.
                 </Text>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    refetch()
-                  }}
-                >
+                <Button size="sm" onClick={refetchAccountInfo}>
                   Refetch account info
                 </Button>
               </Row>

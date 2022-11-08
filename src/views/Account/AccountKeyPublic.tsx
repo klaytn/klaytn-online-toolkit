@@ -2,11 +2,10 @@ import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, {
   EncryptedKeystoreV3Json,
   EncryptedKeystoreV4Json,
+  Keyring,
   TransactionReceipt,
 } from 'caver-js'
 import _ from 'lodash'
-import { useQuery } from 'react-query'
-import { useSearchParams } from 'react-router-dom'
 
 import { COLOR, URLMAP, UTIL } from 'consts'
 
@@ -27,14 +26,24 @@ import {
   CardSection,
   Loading,
   FormDownload,
+  PrivateKeyWarning,
 } from 'components'
 import { ResultFormType } from 'types'
+import useAccounts from 'hooks/account/useAccounts'
+import GetKeySection from './components/GetKeySection'
+import { generateSingleKey } from 'logics/caverFuncntions'
 
 const AccountKeyPublic = (): ReactElement => {
   const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
-  const [params] = useSearchParams()
-  const [privateKey, setPrivateKey] = useState(params.get('pkey') || '')
+  const [keyring, setKeyring] = useState<Keyring>()
+  const useAccountsReturn = useAccounts({
+    caver,
+    keyring,
+  })
+
   const [newPrivateKey, setNewPrivateKey] = useState('')
+  const { accountInfo, refetchAccountInfo } = useAccountsReturn
+
   const [password, setPassword] = useState('')
   const [keystoreV4, setKeystoreV4] = useState<EncryptedKeystoreV4Json>()
   const [keystoreV3, setkeystoreV3] = useState<EncryptedKeystoreV3Json>()
@@ -42,26 +51,6 @@ const AccountKeyPublic = (): ReactElement => {
   const [isUpdating, setIsUpdating] = useState(false)
   const [isUpdated, setIsUpdated] = useState(false)
   const [result, setResult] = useState<ResultFormType<TransactionReceipt>>()
-
-  const generateKey = (setter: (value: string) => void): void => {
-    const key = caver.wallet.keyring.generateSingleKey()
-    setter(key)
-  }
-
-  const { keyring, keyringErrMsg } = useMemo(() => {
-    if (privateKey) {
-      try {
-        return {
-          keyring: caver.wallet.keyring.createFromPrivateKey(privateKey),
-        }
-      } catch (error) {
-        return {
-          keyringErrMsg: _.toString(error),
-        }
-      }
-    }
-    return {}
-  }, [privateKey])
 
   const { newKeyring, newKeyringErrMsg } = useMemo(() => {
     if (keyring && newPrivateKey) {
@@ -81,34 +70,14 @@ const AccountKeyPublic = (): ReactElement => {
     return {}
   }, [keyring, newPrivateKey])
 
-  const { data: accountInfo, refetch } = useQuery(
-    [keyring],
-    async () => {
-      if (keyring) {
-        const accountKey = await caver.rpc.klay.getAccountKey(keyring.address)
-
-        if (accountKey) {
-          const hexBalance = await caver.rpc.klay.getBalance(keyring.address)
-          return {
-            address: keyring.address,
-            accountKey,
-            klay_balance: caver.utils.fromPeb(hexBalance, 'KLAY'),
-          }
-        }
-      }
-    },
-    {
-      enabled: !!keyring,
-    }
-  )
-
-  const updateKeyring = async (): Promise<void> => {
+  const updateAccount = async (): Promise<void> => {
     setResult(undefined)
     try {
       if (keyring && newKeyring) {
         setIsUpdating(true)
         caver.wallet.add(keyring)
         const account = newKeyring.toAccount()
+        account.address = keyring.address
         const accountUpdate = caver.transaction.accountUpdate.create({
           from: keyring.address,
           account,
@@ -123,7 +92,7 @@ const AccountKeyPublic = (): ReactElement => {
           success: true,
           value: receipt,
         })
-        refetch()
+        refetchAccountInfo()
         setIsUpdated(true)
       }
     } catch (error) {
@@ -139,13 +108,13 @@ const AccountKeyPublic = (): ReactElement => {
   const generateKeystores = (): void => {
     if (newKeyring) {
       setKeystoreV4(newKeyring.encrypt(password))
-      setkeystoreV3(newKeyring.encryptV3(password))
+      'encryptV3' in newKeyring && setkeystoreV3(newKeyring.encryptV3(password))
     }
   }
 
   useEffect(() => {
     setResult(undefined)
-  }, [privateKey])
+  }, [keyring])
 
   useEffect(() => {
     setKeystoreV4(undefined)
@@ -165,83 +134,17 @@ const AccountKeyPublic = (): ReactElement => {
               [Docs : AccountKeyPublic]
             </LinkA>
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
           <CardSection>
             <Text>Testnet</Text>
           </CardSection>
-          <CardSection>
-            <Label>Original private Key</Label>
-            <View style={{ paddingBottom: 10 }}>
-              <FormInput
-                value={privateKey}
-                onChange={setPrivateKey}
-                placeholder="Input private key"
-              />
-              {keyringErrMsg && (
-                <Text style={{ color: COLOR.error }}>{keyringErrMsg}</Text>
-              )}
-            </View>
-            <Button onClick={(): void => generateKey(setPrivateKey)}>
-              Generate a private key
-            </Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`const privateKey = caver.wallet.keyring.generateSingleKey()
-const keyring = caver.wallet.keyring.createFromPrivateKey(privateKey)`}
-            />
-          </CardSection>
-          {keyring && (
-            <CardSection>
-              <Label>Keyring from original private key</Label>
-              <View style={{ paddingBottom: 10 }}>
-                <CodeBlock
-                  text={JSON.stringify(keyring, null, 2)}
-                  toggle={false}
-                />
-                <CodeBlock
-                  title="caver-js code"
-                  text={`const keyring = caver.wallet.keyring.createFromPrivateKey(privateKey)`}
-                />
-              </View>
-
-              <LinkA link="https://baobab.wallet.klaytn.foundation/faucet">
-                <Row style={{ gap: 4, alignItems: 'center' }}>
-                  <Text style={{ color: COLOR.primary }}>
-                    1. Get some testnet KLAY
-                  </Text>
-                  <Button
-                    size="sm"
-                    onClick={(): void => {
-                      refetch()
-                    }}
-                  >
-                    Move to get KLAY
-                  </Button>
-                </Row>
-              </LinkA>
-              <Row style={{ gap: 4, alignItems: 'center' }}>
-                <Text>Address : </Text>
-                <View style={{ flex: 1 }}>
-                  <CodeBlock text={keyring.address} toggle={false} />
-                </View>
-              </Row>
-              <Row style={{ gap: 4, alignItems: 'center' }}>
-                <Text style={{ color: COLOR.primary }}>
-                  2. After getting testnet KLAY, you can retrieve your account
-                  info from Baobab network.
-                </Text>
-                <Button
-                  size="sm"
-                  onClick={(): void => {
-                    refetch()
-                  }}
-                >
-                  Refetch account info
-                </Button>
-              </Row>
-            </CardSection>
-          )}
+          <GetKeySection
+            keyring={keyring}
+            setKeyring={setKeyring}
+            useAccountsReturn={useAccountsReturn}
+          />
           {accountInfo && (
             <>
               <CardSection>
@@ -284,7 +187,9 @@ return {
                   </View>
                   {false === isUpdated && (
                     <Button
-                      onClick={(): void => generateKey(setNewPrivateKey)}
+                      onClick={(): void =>
+                        setNewPrivateKey(generateSingleKey())
+                      }
                       disabled={isUpdating}
                     >
                       Generate a private key for new
@@ -306,7 +211,7 @@ return {
                     </View>
                     {false === isUpdated && (
                       <Button
-                        onClick={updateKeyring}
+                        onClick={updateAccount}
                         disabled={isUpdating || !newPrivateKey}
                       >
                         {isUpdating ? (
@@ -335,6 +240,7 @@ caver.wallet.remove(keyring.address)`}
                       <Label>Enter the password for the keystore file</Label>
                       <View style={{ paddingBottom: 10 }}>
                         <FormInput
+                          type="password"
                           value={password}
                           onChange={setPassword}
                           placeholder="Input password"
