@@ -228,7 +228,7 @@ return {
                       />
                     </View>
                     <View style={{ gap: 4 }}>
-                      <Text>Number of private key</Text>
+                      <Text>Number of private keys</Text>
                       <FormRadio
                         itemList={[
                           { title: '2', value: 2 },
