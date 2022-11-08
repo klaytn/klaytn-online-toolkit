@@ -286,7 +286,7 @@ return {
                         onClick={(): void => generateNewKeys()}
                         disabled={isUpdating}
                       >
-                        Generate a private key for new
+                        Generate private keys for account update
                       </Button>
                     )}
                   </StyledNewPrivateKeyBox>
