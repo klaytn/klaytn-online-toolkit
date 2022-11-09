@@ -103,6 +103,7 @@ const DetectKCT = (): ReactElement => {
                 { value: 'testnet', label: 'Testnet' },
               ]}
               onChange={setNetwork}
+              containerStyle={{ width: 200 }}
             />
           </CardSection>
         </CardHeader>

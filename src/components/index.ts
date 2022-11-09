@@ -18,5 +18,7 @@ export { default as CardSection } from './CardSection'
 export { default as Loading } from './Loading'
 export { default as FormFile } from './FormFile'
 export { default as CardExample } from './CardExample'
+export { default as FormGetKey } from './FormGetKey'
+export { default as PrivateKeyWarning } from './PrivateKeyWarning'
 
 export { Card, CardHeader, CardBody, Label, FormGroup } from 'reactstrap'

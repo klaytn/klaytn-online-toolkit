@@ -341,6 +341,7 @@ const KIP17Deploy = (): ReactElement => {
                   { value: 'testnet', label: 'Testnet' },
                 ]}
                 onChange={setNetwork}
+                containerStyle={{ width: 200 }}
               />
             </FormGroup>
           </CardSection>

@@ -175,6 +175,7 @@ const RLPEncoder = (): ReactElement => {
                 value: key as TxType,
               }))}
               onChange={setTxType}
+              containerStyle={{ width: 200 }}
             />
           </CardSection>
           <CardSection>
