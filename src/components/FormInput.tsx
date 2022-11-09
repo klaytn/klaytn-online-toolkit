@@ -25,10 +25,11 @@ const StyledInput = styled.input`
 
 type FormInputProps = {
   type?: 'text' | 'password' | 'number'
-  value: string
+  value: string | number
   onChange: (value: string) => void
   placeholder?: string
   readonly?: boolean
+  style?: object
 }
 
 const FormInput = (props: FormInputProps) => {
