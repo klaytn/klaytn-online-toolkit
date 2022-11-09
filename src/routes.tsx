@@ -26,7 +26,7 @@ import LoadKeystore from './views/Miscellaneous/LoadKeystore'
 import AccountUpdateWithRoleBasedKey from './views/Miscellaneous/AccountUpdateRoleBased'
 
 import Web3modalExample from './views/Web3modal'
-import web3modalNFT from './views/Web3modal/web3modalNFT'
+import Web3modalNFT from './views/Web3modal/web3modalNFT'
 
 import { RouteType } from 'types'
 
@@ -43,7 +43,7 @@ const routes: RouteType[] = [
       {
         path: '/NFT',
         name: 'Deploy & Mint & Transfer NFT (KIP-17)',
-        component: null, // web3modalNFT,
+        component: Web3modalNFT,
       },
     ],
   },

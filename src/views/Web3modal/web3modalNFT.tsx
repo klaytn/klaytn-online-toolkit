@@ -5,7 +5,6 @@ import Web3Modal from '@klaytn/web3modal'
 import { KaikasWeb3Provider } from '@klaytn/kaikas-web3-provider'
 import { KlipWeb3Provider } from '@klaytn/klip-web3-provider'
 import _ from 'lodash'
-import { TransactionReceipt } from 'web3-core'
 
 import {
   Button,
@@ -15,28 +14,19 @@ import {
   CardBody,
   Label,
   FormInput,
-  Text,
-  LinkA,
-  View,
   CardSection,
   Loading,
 } from 'components'
 import { IAssetData } from 'types'
 import { WEB3MODAL } from 'consts'
 import {
-  apiGetAccountAssets,
-  formatTestTransaction,
-  getChainData,
-  hashPersonalMessage,
-  recoverPublicKey,
-} from './helpers/utilities'
-import {
   Header,
   AccountAssets,
   ModalResult,
   Modal,
 } from './web3modalComponents'
-import { callBalanceOf, callTransfer } from './helpers/web3'
+import { getChainData, apiGetAccountAssets } from './helpers/utilities'
+import { callTransferFrom, callDeployNFT, callMintNFT } from './helpers/web3'
 
 const SLayout = styled.div`
   position: relative;
@@ -91,24 +81,7 @@ const SBalances = styled(SLanding)`
   }
 `
 
-const STestButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding-bottom: 20px;
-`
-
-const STestButton = styled(Button)`
-  border-radius: 8px;
-  height: 44px;
-  width: 100%;
-  max-width: 220px;
-  font-size: 12px;
-`
-
-const Web3modalExample = (): ReactElement => {
+const Web3modalNFT = (): ReactElement => {
   const [chainId, setChainId] = useState<number>(1)
   const [networkId, setNetworkId] = useState<number>(1)
   const [connected, setConnected] = useState<boolean>(false)
@@ -118,9 +91,20 @@ const Web3modalExample = (): ReactElement => {
   const [pendingRequest, setPendingRequest] = useState<boolean>(false)
   const [result, setResult] = useState<any | null>(null)
   const [assets, setAssets] = useState<IAssetData[]>()
-  const [kip7ContractAddress, setKip7ContractAddress] = useState('')
   const [web3modal, setWeb3modal] = useState<any>()
   const [web3, setWeb3] = useState<any>()
+  const [kip17Name, setKIP17Name] = useState<string>('')
+  const [kip17Symbol, setKIP17Symbol] = useState<string>('')
+  const [contractAddressForTransfer, setContractAddressForTransfer] =
+    useState<string>('')
+  const [tokenIdForTransfer, setTokenIdForTransfer] = useState<string>('')
+  const [toAddressForTransfer, setToAddressForTransfer] = useState<string>('')
+  const [contractAddressForMint, setContractAddressForMint] =
+    useState<string>('')
+  const [toAddressForMint, setToAddressForMint] = useState<string>('')
+  const [tokenIdForMint, setTokenIdForMint] = useState<string>('')
+  const [tokenURIForMint, setTokenURIForMint] = useState<string>('')
+
   const getAccountAssets = async ({
     changedAddress,
     changedChainId,
@@ -237,101 +221,15 @@ const Web3modalExample = (): ReactElement => {
     setShowModal(false)
     setPendingRequest(false)
     setResult(null)
-    setKip7ContractAddress('')
-  }
-
-  const testSendTransaction = async () => {
-    const tx = await formatTestTransaction(address, chainId)
-    try {
-      toggleModal()
-      setPendingRequest(true)
-
-      // send transaction
-      const result = await web3.eth
-        .sendTransaction(tx)
-        .then((receipt: TransactionReceipt) => {
-          return receipt
-        })
-      // get native currency symbol of current chain
-      const nativeCurrency = getChainData(chainId).native_currency.symbol
-      // format displayed result
-      const formattedResult = {
-        action: WEB3MODAL.ETH_SEND_TRANSACTION,
-        txHash: result.transactionHash,
-        from: address,
-        to: address,
-        value: `${
-          chainId === 1001 || chainId === 8217 ? 0.000001 : 0
-        } ${nativeCurrency}`,
-      }
-      setPendingRequest(false)
-      setResult(formattedResult || null)
-    } catch (err) {
-      setPendingRequest(false)
-      setResult(null)
-    }
-  }
-
-  const testSignMessage = async () => {
-    try {
-      // test message
-      const message = 'My email is john@doe.com - 1537836206101'
-
-      // hash message
-      const hash = hashPersonalMessage(message)
-
-      toggleModal()
-      setPendingRequest(true)
-
-      // send message
-      const result = await web3.eth.sign(hash, address)
-
-      // verify signature
-      const signer = recoverPublicKey(result, hash)
-      const verified = signer.toLowerCase() === address.toLowerCase()
-
-      // format displayed result
-      const formattedResult = {
-        action: WEB3MODAL.ETH_SIGN,
-        address,
-        signer,
-        verified,
-        result,
-      }
-      setPendingRequest(false)
-      setResult(formattedResult || null)
-    } catch (err) {
-      setPendingRequest(false)
-      setResult(null)
-    }
-  }
-
-  const testSignPersonalMessage = async () => {
-    try {
-      toggleModal()
-      setPendingRequest(true)
-      const message = 'My email is john@doe.com - 1537836206101'
-
-      const result = await web3.eth.personal.sign(message, address, '')
-
-      // verify signature
-      const signer = await web3.eth.personal.ecRecover(message, result)
-      const verified = signer.toLowerCase() === address.toLowerCase()
-
-      // format displayed result
-      const formattedResult = {
-        action: WEB3MODAL.PERSONAL_SIGN,
-        address,
-        signer,
-        verified,
-        result,
-      }
-      setPendingRequest(false)
-      setResult(formattedResult || null)
-    } catch (err) {
-      setPendingRequest(false)
-      setResult(null)
-    }
+    setKIP17Name('')
+    setKIP17Symbol('')
+    setContractAddressForMint('')
+    setContractAddressForTransfer('')
+    setToAddressForMint('')
+    setToAddressForTransfer('')
+    setTokenIdForMint('')
+    setTokenIdForTransfer('')
+    setTokenURIForMint('')
   }
 
   const testContractCall = async (functionSig: string) => {
@@ -339,46 +237,48 @@ const Web3modalExample = (): ReactElement => {
       toggleModal()
       setPendingRequest(true)
 
-      // check if address is entered
-      if (kip7ContractAddress === '') {
-        throw new Error('Please enter token contract address!')
-      }
-
-      let contractCall = null
-      switch (functionSig) {
-        case WEB3MODAL.KIP7_BALANCE_OF:
-          contractCall = callBalanceOf
-          break
-        case WEB3MODAL.KIP7_TRANSFER:
-          contractCall = callTransfer
-          break
-        default:
-          throw new Error(
-            `No matching contract calls for functionSig=${functionSig}`
-          )
-      }
-
       // send transaction
-      const result = await contractCall(
-        address,
-        chainId,
-        kip7ContractAddress,
-        web3
-      )
-
-      // format displayed result
+      let result
+      if (WEB3MODAL.KIP17_TRANSFER_FROM === functionSig) {
+        result = await callTransferFrom(
+          address,
+          chainId,
+          contractAddressForTransfer,
+          web3,
+          toAddressForTransfer,
+          _.toNumber(tokenIdForTransfer)
+        )
+      } else if (WEB3MODAL.KIP17_DEPLOY_NFT === functionSig) {
+        result = await callDeployNFT(
+          address,
+          chainId,
+          web3,
+          kip17Name,
+          kip17Symbol
+        )
+      } else if (WEB3MODAL.KIP17_MINT_NFT === functionSig) {
+        result = await callMintNFT(
+          address,
+          chainId,
+          contractAddressForMint,
+          web3,
+          toAddressForMint,
+          _.toNumber(tokenIdForMint),
+          tokenURIForMint
+        )
+      }
       const formattedResult = {
         action: functionSig,
         result,
       }
+
       setPendingRequest(false)
-      setResult(formattedResult || null)
-    } catch (err) {
+      setResult(formattedResult)
+    } catch (error) {
       setPendingRequest(false)
       setResult(null)
     }
   }
-
   return (
     <SLayout>
       <Column maxWidth={1000} spanHeight>
@@ -403,71 +303,103 @@ const Web3modalExample = (): ReactElement => {
               </SBalances>
               <Card>
                 <CardHeader>
-                  <h3 className="title">Actions</h3>
+                  <h3 className="title"> Deploy NFT (KIP-17)</h3>
                 </CardHeader>
                 <CardBody>
-                  <View>
-                    <STestButtonContainer>
-                      <STestButton onClick={testSendTransaction}>
-                        {WEB3MODAL.ETH_SEND_TRANSACTION}
-                      </STestButton>
-                      <STestButton onClick={testSignMessage}>
-                        {WEB3MODAL.ETH_SIGN}
-                      </STestButton>
-                      <STestButton onClick={testSignPersonalMessage}>
-                        {WEB3MODAL.PERSONAL_SIGN}
-                      </STestButton>
-                    </STestButtonContainer>
-                    <Text>
-                      Sendtransaction(): send 0.000001 KLAY to the sender
-                      account on Klaytn Network(Mainnet, Testnet). On other
-                      networks, the amount is zero.{'\n'}
-                      eth.sign() allows signing an arbitrary hash, which means
-                      it can be used to sign transactions, or any other data,
-                      making it a dangerous phishing risk. So Kaikas and Klip
-                      don't support that function.
-                      <LinkA link="https://docs.metamask.io/guide/signing-data.html#a-brief-history">
-                        [Ref]
-                      </LinkA>
-                    </Text>
-                  </View>
+                  <CardSection>
+                    <Label>NFT Name</Label>
+                    <FormInput
+                      placeholder={'NFT Name (ex: Test)'}
+                      onChange={setKIP17Name}
+                      value={kip17Name}
+                    />
+                    <Label>NFT Symbol</Label>
+                    <FormInput
+                      placeholder={'NFT Symbol (ex: TST)'}
+                      onChange={setKIP17Symbol}
+                      value={kip17Symbol}
+                    />
+                  </CardSection>
+
+                  <Button
+                    onClick={() => testContractCall(WEB3MODAL.KIP17_DEPLOY_NFT)}
+                  >
+                    {WEB3MODAL.KIP17_DEPLOY_NFT}
+                  </Button>
                 </CardBody>
               </Card>
               <Card>
                 <CardHeader>
-                  <h3>KIP-7 Token</h3>
-                  <Text>
-                    Check{' '}
-                    <LinkA link="/klaytn-online-toolkit/smartcontract/KCTDetection">
-                      here
-                    </LinkA>{' '}
-                    which KCT the smart contract implements by using Contract
-                    Address.
-                  </Text>
+                  <h3 className="title">Mint NFT (KIP-17)</h3>
                 </CardHeader>
                 <CardBody>
                   <CardSection>
-                    <Label>Token Contract Address</Label>
+                    <Label>Contract Address</Label>
                     <FormInput
-                      placeholder={'Token Contract Address'}
-                      onChange={setKip7ContractAddress}
-                      value={kip7ContractAddress}
+                      placeholder={'Contract Address'}
+                      onChange={setContractAddressForMint}
+                      value={contractAddressForMint}
+                    />
+                    <Label>Recipient</Label>
+                    <FormInput
+                      placeholder={'Account Address'}
+                      onChange={setToAddressForMint}
+                      value={toAddressForMint}
+                    />
+                    <Label>Token ID</Label>
+                    <FormInput
+                      type="number"
+                      placeholder={'Token ID'}
+                      onChange={setTokenIdForMint}
+                      value={tokenIdForMint}
+                    />
+                    <Label>Toekn URI</Label>
+                    <FormInput
+                      placeholder={'Token URI'}
+                      onChange={setTokenURIForMint}
+                      value={tokenURIForMint}
                     />
                   </CardSection>
-                  <STestButtonContainer>
-                    <STestButton
-                      onClick={() =>
-                        testContractCall(WEB3MODAL.KIP7_BALANCE_OF)
-                      }
-                    >
-                      {WEB3MODAL.KIP7_BALANCE_OF}
-                    </STestButton>
-                    <STestButton
-                      onClick={() => testContractCall(WEB3MODAL.KIP7_TRANSFER)}
-                    >
-                      {WEB3MODAL.KIP7_TRANSFER}
-                    </STestButton>
-                  </STestButtonContainer>
+                  <Button
+                    onClick={() => testContractCall(WEB3MODAL.KIP17_MINT_NFT)}
+                  >
+                    {WEB3MODAL.KIP17_MINT_NFT}
+                  </Button>
+                </CardBody>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <h3>Transfer NFT (KIP-17)</h3>
+                </CardHeader>
+                <CardBody>
+                  <CardSection>
+                    <Label>Contract Address</Label>
+                    <FormInput
+                      placeholder={'Token Contract Address'}
+                      onChange={setContractAddressForTransfer}
+                      value={contractAddressForTransfer}
+                    />
+                    <Label>Recipient</Label>
+                    <FormInput
+                      placeholder={'Account Address'}
+                      onChange={setToAddressForTransfer}
+                      value={toAddressForTransfer}
+                    />
+                    <Label>Token ID</Label>
+                    <FormInput
+                      type="number"
+                      placeholder={'Token ID'}
+                      onChange={setTokenIdForTransfer}
+                      value={tokenIdForTransfer}
+                    />
+                  </CardSection>
+                  <Button
+                    onClick={() =>
+                      testContractCall(WEB3MODAL.KIP17_TRANSFER_FROM)
+                    }
+                  >
+                    {WEB3MODAL.KIP17_TRANSFER_FROM}
+                  </Button>
                 </CardBody>
               </Card>
             </>
@@ -505,5 +437,4 @@ const Web3modalExample = (): ReactElement => {
     </SLayout>
   )
 }
-
-export default Web3modalExample
+export default Web3modalNFT
