@@ -2,7 +2,6 @@ import { ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
 import Caver, { Keystore, MultipleKeyring, SingleKeyring } from 'caver-js'
 import _ from 'lodash'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 
 import { URLMAP, UTIL, COLOR } from 'consts'
 import {
@@ -219,7 +218,7 @@ const SendMultiSigTx = (): ReactElement => {
         //KIP-7 & ERC20
         const contractInstance = new caver.kct.kip7(contractAddress)
         const decimal = await contractInstance.decimals()
-        const value = BigNumber(_.toNumber(amount) * Math.pow(10, decimal))
+        const value = UTIL.toBn(amount).multipliedBy(Math.pow(10, decimal))
         signed = await contractInstance.sign(
           { from: senderAddress, gas: 1000000 },
           'transfer',
