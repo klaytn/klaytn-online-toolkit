@@ -16,6 +16,7 @@ import {
   ResultForm,
   CardSection,
   FormRadio,
+  LinkA,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -68,6 +69,7 @@ const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
   const handleNumberChange = (val: string) => {
     if (Number(val) <= 0 || Number(val) >= 100 || val === '') {
       setNumOfPrivateKeys('')
+      setPrivateKeys([])
     } else {
       setNumOfPrivateKeys(Number(val))
       setPrivateKeys(new Array<string>(Number(val)).fill(''))
@@ -109,7 +111,7 @@ const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
         privateKeys.map((key, idx) => {
           return (
             <FormInput
-              key={`${key}${idx}`}
+              key={`multiple-privateKey-${idx}`}
               type="text"
               placeholder="Private Key"
               onChange={(v) => {
@@ -151,14 +153,13 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
   const handleNumberChange = (val: string, idx: number) => {
     if (Number(val) <= 0 || Number(val) >= 100 || val === '') {
       numOfRolePrivateKeys[idx] = ''
-      setNumberOfRolePrivateKeys([...numOfRolePrivateKeys])
-      rolePrivateKeys[idx] = ['']
+      rolePrivateKeys[idx] = []
     } else {
       numOfRolePrivateKeys[idx] = Number(val)
-      setNumberOfRolePrivateKeys([...numOfRolePrivateKeys])
       rolePrivateKeys[idx] = new Array<string>(Number(val)).fill('')
-      setRolePrivateKeys([...rolePrivateKeys])
     }
+    setNumberOfRolePrivateKeys([...numOfRolePrivateKeys])
+    setRolePrivateKeys([...rolePrivateKeys])
   }
 
   const handleInputChange = (val: string, roleIdx: number, keyIdx: number) => {
@@ -180,7 +181,7 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
       <Row>
         {numOfRolePrivateKeys.map((val, idx) => {
           return (
-            <Column key={idx}>
+            <Column key={`column-${idx}`}>
               <Label>{types[idx]}</Label>
               <FormInput
                 type="number"
@@ -196,7 +197,7 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
                 rolePrivateKeys[idx].map((key, i) => {
                   return (
                     <FormInput
-                      key={`${key}${i}`}
+                      key={`rolebased-privateKey-${types[idx]}-${i}`}
                       type="text"
                       placeholder="Private Key"
                       onChange={(v) => {
@@ -241,11 +242,11 @@ const GenerateKeystore = (): ReactElement => {
   const [password, setPassword] = useState('')
   const [address, setAddress] = useState('')
   const [privateKey, setPrivateKey] = useState('')
-  const [privateKeys, setPrivateKeys] = useState<Array<string>>([''])
+  const [privateKeys, setPrivateKeys] = useState<Array<string>>([])
   const [rolePrivateKeys, setRolePrivateKeys] = useState<Array<Array<string>>>([
-    [''],
-    [''],
-    [''],
+    [],
+    [],
+    [],
   ])
   const [keystoreShown, setKeystoreShown] = useState(false)
   const [result, setResult] = useState<ResultFormType<Keystore>>()
@@ -254,9 +255,11 @@ const GenerateKeystore = (): ReactElement => {
 
   const changeAccountKeyType = (val: AccountKeyTypeEnum) => {
     setAccountKeyType(val)
-    setAddress('')
     setPassword('')
+    setAddress('')
     setPrivateKey('')
+    setPrivateKeys([])
+    setRolePrivateKeys([[], [], []])
     setKeystoreShown(false)
   }
 
@@ -267,12 +270,12 @@ const GenerateKeystore = (): ReactElement => {
         success: true,
         value: keyring.encryptV3(password),
       })
-      setKeystoreShown(true)
     } catch (e) {
       setResult({
         success: false,
         message: _.toString(e),
       })
+    } finally {
       setKeystoreShown(true)
     }
   }
@@ -292,12 +295,12 @@ const GenerateKeystore = (): ReactElement => {
         success: true,
         value: keyring?.encrypt(password),
       })
-      setKeystoreShown(true)
     } catch (e) {
       setResult({
         success: false,
         message: _.toString(e),
       })
+    } finally {
       setKeystoreShown(true)
     }
   }
@@ -337,7 +340,6 @@ const GenerateKeystore = (): ReactElement => {
             selectedValue={accountKeyType}
             onClick={(v) => {
               changeAccountKeyType(v)
-              setAccountKeyType(v)
             }}
           />
           <Text>
@@ -348,9 +350,9 @@ const GenerateKeystore = (): ReactElement => {
             Keyring keystore file can be generated in both v3 and v4 format,
             while other keyring types are encrypted in v4 format. <br />
             For more details, please visit here:{' '}
-            <a href="https://kips.klaytn.foundation/KIPs/kip-3">
+            <LinkA link="https://kips.klaytn.foundation/KIPs/kip-3">
               [KIP 3: Klaytn Keystore Format v4]
-            </a>
+            </LinkA>
             .{' '}
           </Text>
         </CardHeader>
@@ -391,11 +393,11 @@ const GenerateKeystore = (): ReactElement => {
             <ButtonGroup>
               {accountKeyType === AccountKeyTypeEnum.SINGLE && (
                 <Button onClick={generateKeystoreV3}>
-                  Generate Keystore(v3)
+                  Generate Keystore (v3)
                 </Button>
               )}
               <Button onClick={generateKeystoreV4}>
-                Generate Keystore(v4)
+                Generate Keystore (v4)
               </Button>
             </ButtonGroup>
           </CardSection>
