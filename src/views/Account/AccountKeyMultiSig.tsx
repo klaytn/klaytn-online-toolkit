@@ -33,6 +33,7 @@ import {
 import { ResultFormType } from 'types'
 import GetKeySection from './components/GetKeySection'
 import useAccounts from 'hooks/account/useAccounts'
+import { generateSingleKey } from 'logics/caverFuncntions'
 
 const StyledNewPrivateKeyBox = styled(View)`
   display: grid;
@@ -86,11 +87,7 @@ const AccountKeyMultiSig = (): ReactElement => {
   const [result, setResult] = useState<ResultFormType<TransactionReceipt>>()
 
   const generateNewKeys = (): void => {
-    const generatedList = _.times(
-      numOfNewPrivateKey,
-      (index) =>
-        newPrivateKeyList[index] || caver.wallet.keyring.generateSingleKey()
-    )
+    const generatedList = _.times(numOfNewPrivateKey, () => generateSingleKey())
 
     setNewPrivateKeyList(generatedList)
   }
@@ -302,6 +299,13 @@ return {
                       {newKeyringErrMsg}
                     </Text>
                   )}
+
+                  <CodeBlock
+                    title="caver-js code"
+                    text={`const newPrivateKeys: string[]
+
+const newKeyring = caver.wallet.keyring.create(keyring.address, newPrivateKeys)`}
+                  />
                 </CardSection>
               )}
               {newKeyring && (
@@ -338,7 +342,7 @@ const account = newKeyring.toAccount({
 const accountUpdate = caver.transaction.accountUpdate.create({
   from: keyring.address,
   account,
-  gas: 100000,
+  gas: 200000,
 })
 await caver.wallet.sign(keyring.address, accountUpdate)
 const receipt = await caver.rpc.klay.sendRawTransaction(accountUpdate)

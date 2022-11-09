@@ -4,6 +4,7 @@ import CreateKeystore from './views/Account/CreateKeystore'
 import AccountKeyLegacy from './views/Account/AccountKeyLegacy'
 import AccountKeyPublic from './views/Account/AccountKeyPublic'
 import AccountKeyMultiSig from './views/Account/AccountKeyMultiSig'
+import AccountKeyRoleBased from './views/Account/AccountKeyRoleBased'
 
 import SendMultisigTx from './views/Transaction/SendMultisigTx'
 import TxHashDecoder from './views/Transaction/TxHashDecoder'
@@ -23,7 +24,6 @@ import CheckAccountKey from './views/Miscellaneous/CheckAccountKey'
 import GenerateKeystore from './views/Miscellaneous/GenerateKeystore'
 import KeccakFromString from './views/Miscellaneous/KeccakFromString'
 import LoadKeystore from './views/Miscellaneous/LoadKeystore'
-import AccountUpdateWithRoleBasedKey from './views/Miscellaneous/AccountUpdateRoleBased'
 
 import Web3modalExample from './views/Web3modal'
 import Web3modalNFT from './views/Web3modal/web3modalNFT'
@@ -81,6 +81,11 @@ const routes: RouteType[] = [
         path: '/accountKeyMultiSig',
         name: 'Advanced (AccountKeyMultiSig)',
         component: AccountKeyMultiSig,
+      },
+      {
+        path: '/accountKeyRoleBased',
+        name: 'Advanced (AccountKeyRoleBased)',
+        component: AccountKeyRoleBased,
       },
     ],
   },
@@ -174,11 +179,6 @@ const routes: RouteType[] = [
         path: '/hashFromStr',
         name: 'Hash From String(Keccak256)',
         component: KeccakFromString,
-      },
-      {
-        path: '/accountUpdateToRoleBasedKey',
-        name: 'Update to RoleBasedKey Account',
-        component: AccountUpdateWithRoleBasedKey,
       },
       {
         path: '/checkAccountKey',
