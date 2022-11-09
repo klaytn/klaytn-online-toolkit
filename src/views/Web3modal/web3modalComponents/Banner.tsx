@@ -1,16 +1,12 @@
-import * as React from 'react'
 import styled from 'styled-components'
-import logo from '../assets/web3modal-logo.png'
-import { fonts, colors } from '../styles'
+import logo from 'images/web3modal-logo.png'
 
 const SBannerWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
   & span {
-    color: rgb(${colors.lightBlue});
-    font-weight: ${fonts.weight.bold};
-    font-size: ${fonts.size.h5};
+    color: 'lightBlue';
     margin-left: 12px;
   }
 `

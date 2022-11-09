@@ -1,8 +1,8 @@
-import * as React from 'react'
-import Column from './Column'
+import { Column } from 'components'
+import { IAssetData } from 'types'
 import AssetRow from './AssetRow'
 
-const AccountAssets = (props) => {
+const AccountAssets = (props: any) => {
   const { assets, chainId } = props
   const defaultNativeCurrency =
     chainId === 1001 || chainId === 8217
@@ -21,10 +21,10 @@ const AccountAssets = (props) => {
           balance: '0',
         }
 
-  let nativeCurrency = defaultNativeCurrency
-  let tokens = []
+  let nativeCurrency: IAssetData = defaultNativeCurrency
+  let tokens: IAssetData[] = []
   if (assets && assets.length) {
-    const filteredNativeCurrency = assets.filter((asset) =>
+    const filteredNativeCurrency = assets.filter((asset: IAssetData) =>
       asset && asset.symbol
         ? asset.symbol.toLowerCase() === nativeCurrency.symbol.toLowerCase()
         : false
@@ -33,7 +33,7 @@ const AccountAssets = (props) => {
       filteredNativeCurrency && filteredNativeCurrency.length
         ? filteredNativeCurrency[0]
         : defaultNativeCurrency
-    tokens = assets.filter((asset) =>
+    tokens = assets.filter((asset: IAssetData) =>
       asset && asset.symbol
         ? asset.symbol.toLowerCase() !== nativeCurrency.symbol.toLowerCase()
         : false

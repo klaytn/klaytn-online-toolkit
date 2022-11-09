@@ -1,9 +1,8 @@
-import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import Icon from './Icon'
-import erc20 from '../assets/erc20.svg'
+import erc20 from 'images/erc20.svg'
 
-const ERC20Icon = (props) => {
+const ERC20Icon = (props: any) => {
   const src = `https://raw.githubusercontent.com/TrustWallet/tokens/master/tokens/${props.contractAddress.toLowerCase()}.png`
   return <Icon src={src} fallback={erc20} />
 }
