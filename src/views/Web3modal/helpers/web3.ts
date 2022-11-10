@@ -34,7 +34,6 @@ export function callBalanceOf(
           { from: '0x0000000000000000000000000000000000000000' },
           (err: any, data: any) => {
             if (err) {
-              console.log('err', err)
               reject(err)
             }
             resolve(data)

@@ -46,7 +46,6 @@ export const apiGetGasPrices = async (): Promise<IGasPrices>=> {
 }
 
 export async function apiGetAccountAssets(address: string, chainId: number): Promise<IAssetData[]> {
-  console.log('get Assets', address, chainId, getChainData(chainId).chain)
   if (getChainData(chainId).chain === 'klaytn') {
     return await apiGetAccountAssetsKlaytn(address, chainId)
   }
