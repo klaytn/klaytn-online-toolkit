@@ -2,7 +2,7 @@ import supportedChains from './chains'
 import * as ethUtil from 'ethereumjs-util'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
-import { IAssetData, IChainData, IGasPrices} from 'types';
+import { IAssetData, IChainData, IGasPrices } from 'types'
 
 const api = axios.create({
   baseURL: 'https://ethereum-api.xyz',
@@ -31,7 +31,10 @@ export async function apiGetGasPriceKlaytn(chainId: number): Promise<string> {
   return result
 }
 
-export const apiGetAccountNonce = async (address: string, chainId: number): Promise<string> => {
+export const apiGetAccountNonce = async (
+  address: string,
+  chainId: number
+): Promise<string> => {
   const response = await api.get(
     `/account-nonce?address=${address}&chainId=${chainId}`
   )
@@ -39,13 +42,16 @@ export const apiGetAccountNonce = async (address: string, chainId: number): Prom
   return result
 }
 
-export const apiGetGasPrices = async (): Promise<IGasPrices>=> {
+export const apiGetGasPrices = async (): Promise<IGasPrices> => {
   const response = await api.get(`/gas-prices`)
   const { result } = response.data
   return result
 }
 
-export async function apiGetAccountAssets(address: string, chainId: number): Promise<IAssetData[]> {
+export async function apiGetAccountAssets(
+  address: string,
+  chainId: number
+): Promise<IAssetData[]> {
   if (getChainData(chainId).chain === 'klaytn') {
     return await apiGetAccountAssetsKlaytn(address, chainId)
   }
@@ -59,7 +65,7 @@ export async function apiGetAccountAssets(address: string, chainId: number): Pro
 export async function apiGetAccountAssetsKlaytn(
   address: string,
   chainId: number
-): Promise<IAssetData[]>{
+): Promise<IAssetData[]> {
   const url =
     chainId === 8217
       ? 'https://public-node-api.klaytnapi.com/v1/cypress'
@@ -94,7 +100,10 @@ export function convertStringToHex(value: string): string {
   return new BigNumber(`${value}`).toString(16)
 }
 
-export function convertAmountToRawNumber(value: string | number, decimals = 18): string {
+export function convertAmountToRawNumber(
+  value: string | number,
+  decimals = 18
+): string {
   return new BigNumber(`${value}`)
     .times(new BigNumber('10').pow(decimals))
     .toString()
@@ -147,7 +156,10 @@ export function recoverPublicKey(sig: string, hash: string): string {
   return signer
 }
 
-export async function formatTestTransaction(address: string, chainId: number): Promise<any> {
+export async function formatTestTransaction(
+  address: string,
+  chainId: number
+): Promise<any> {
   if (getChainData(chainId).chain === 'klaytn') {
     const gasPrice = await apiGetGasPriceKlaytn(chainId)
     return {

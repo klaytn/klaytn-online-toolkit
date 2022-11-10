@@ -1,4 +1,4 @@
-import {Contract} from 'web3-eth-contract'
+import { Contract } from 'web3-eth-contract'
 import { WEB3MODAL } from 'consts'
 import { apiGetGasPriceKlaytn, getChainData } from './utilities'
 
@@ -23,7 +23,7 @@ export function callBalanceOf(
   chainId: number,
   contractAddress: string,
   web3: any
-) : Promise<any> {
+): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const contract = getKIP7Contract(web3, contractAddress)
@@ -162,7 +162,7 @@ export function callMintNFT(
   toAddress: string,
   tokenId: number,
   tokenURI: string
-): Promise<any>{
+): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const contract = getKIP17Contract(web3, contractAddress)
