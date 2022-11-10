@@ -4,6 +4,7 @@ import ERC20Icon from './ERC20Icon'
 import KlaytnIcon from 'images/klaytn-logo.png'
 import eth from 'images/eth.svg'
 import { UTIL } from 'consts'
+import { ReactElement } from 'react'
 
 const SAssetRow = styled.div`
   width: 100%;
@@ -25,7 +26,7 @@ const SAssetBalance = styled.div`
   display: flex;
 `
 
-const AssetRow = (props: any) => {
+const AssetRow = (props: any): ReactElement => {
   const { asset } = props
   const nativeCurrencyIcon =
     asset.symbol && asset.symbol.toLowerCase() === 'eth'

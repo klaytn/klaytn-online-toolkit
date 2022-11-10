@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import * as PropTypes from 'prop-types'
 
 export const transitions = {
   short: 'all 0.1s ease-in-out',
@@ -20,20 +21,20 @@ const SLightbox = styled.div<ILightboxStyleProps>`
   width: 100vw;
   height: 100vh;
   margin-left: -50vw;
-  top: ${({ offset }) => (offset ? `-${offset}px` : 0)};
+  top: ${({ offset }): string | number => (offset ? `-${offset}px` : 0)};
   left: 50%;
   z-index: 2;
   will-change: opacity;
-  background-color: ${({ opacity }) => {
+  background-color: ${({ opacity }): string => {
     let alpha = 0.4
     if (typeof opacity === 'number') {
       alpha = opacity
     }
     return `rgba(0, 0, 0, ${alpha})`
   }};
-  opacity: ${({ show }) => (show ? 1 : 0)};
-  visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
-  pointer-events: ${({ show }) => (show ? 'auto' : 'none')};
+  opacity: ${({ show }): number => (show ? 1 : 0)};
+  visibility: ${({ show }): string => (show ? 'visible' : 'hidden')};
+  pointer-events: ${({ show }): string => (show ? 'auto' : 'none')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,10 +67,10 @@ interface ICloseButtonStyleProps {
 const SCloseButton = styled.div<ICloseButtonStyleProps>`
   transition: ${transitions.short};
   position: absolute;
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
-  right: ${({ size }) => `${size / 1.6667}px`};
-  top: ${({ size }) => `${size / 1.6667}px`};
+  width: ${({ size }): string => `${size}px`};
+  height: ${({ size }): string => `${size}px`};
+  right: ${({ size }): string => `${size / 1.6667}px`};
+  top: ${({ size }): string => `${size / 1.6667}px`};
   opacity: 0.5;
   cursor: pointer;
   &:hover {
@@ -79,9 +80,9 @@ const SCloseButton = styled.div<ICloseButtonStyleProps>`
   &:after {
     position: absolute;
     content: ' ';
-    height: ${({ size }) => `${size}px`};
+    height: ${({ size }): string => `${size}px`};
     width: 2px;
-    background: ${({ color }) => `${color}`};
+    background: ${({ color }): string => `${color}`};
   }
   &:before {
     transform: rotate(45deg);
@@ -126,13 +127,20 @@ const INITIAL_STATE = {
 }
 
 class Modal extends React.Component<IModalProps, IModalState> {
+  public static propTypes = {
+    children: PropTypes.node.isRequired,
+    show: PropTypes.bool.isRequired,
+    toggleModal: PropTypes.func.isRequired,
+    opacity: PropTypes.number,
+  }
+
   public lightbox?: HTMLDivElement | null
 
   public state: IModalState = {
     ...INITIAL_STATE,
   }
 
-  componentDidUpdate() {
+  public componentDidUpdate(): void {
     if (this.lightbox) {
       const lightboxRect = this.lightbox.getBoundingClientRect()
       const offset = lightboxRect.top > 0 ? lightboxRect.top : 0
@@ -143,7 +151,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
     }
   }
 
-  toggleModal = async () => {
+  public toggleModal = async (): Promise<void> => {
     const d = typeof window !== 'undefined' ? document : ''
     const body = d ? d.body || d.getElementsByTagName('body')[0] : ''
     if (body) {
@@ -156,7 +164,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
     this.props.toggleModal()
   }
 
-  render() {
+  render(): React.ReactElement {
     const { offset } = this.state
     const { children, show, opacity } = this.props
     return (
@@ -164,7 +172,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
         show={show}
         offset={offset}
         opacity={opacity}
-        ref={(c: any) => (this.lightbox = c)}
+        ref={(c: any): void => (this.lightbox = c)}
       >
         <SModalContainer>
           <SHitbox onClick={this.toggleModal} />

@@ -81,6 +81,10 @@ const SBalances = styled(SLanding)`
   }
 `
 
+const SFormInput = styled(FormInput)`
+  margin-bottom: 10px;
+`
+
 const Web3modalNFT = (): ReactElement => {
   const [chainId, setChainId] = useState<number>(1)
   const [networkId, setNetworkId] = useState<number>(1)
@@ -136,7 +140,7 @@ const Web3modalNFT = (): ReactElement => {
     const web3: any = new Web3(provider)
     return web3
   }
-  const onConnect = async () => {
+  const onConnect = async (): Promise<void> => {
     const provider = await web3modal.connect()
     await provider.enable()
     const web3 = initWeb3(provider)
@@ -155,7 +159,7 @@ const Web3modalNFT = (): ReactElement => {
     })
   }
 
-  const getProviderOptions = () => {
+  const getProviderOptions = (): any => {
     const providerOptions = {
       kaikas: {
         package: KaikasWeb3Provider,
@@ -171,8 +175,8 @@ const Web3modalNFT = (): ReactElement => {
     return providerOptions
   }
 
-  const getNetwork = () => getChainData(chainId).network
-  const subscribeProvider = async (provider: any, web3: any) => {
+  const getNetwork = (): string => getChainData(chainId).network
+  const subscribeProvider = async (provider: any, web3: any): Promise<void> => {
     if (!provider.on) {
       return
     }
@@ -206,7 +210,7 @@ const Web3modalNFT = (): ReactElement => {
       })
     })
   }
-  const toggleModal = () => setShowModal(!showModal)
+  const toggleModal = (): void => setShowModal(!showModal)
 
   const resetApp = async (): Promise<void> => {
     web3modal.clearCachedProvider()
@@ -232,7 +236,7 @@ const Web3modalNFT = (): ReactElement => {
     setTokenURIForMint('')
   }
 
-  const testContractCall = async (functionSig: string) => {
+  const testContractCall = async (functionSig: string): Promise<void> => {
     try {
       toggleModal()
       setPendingRequest(true)
@@ -308,13 +312,13 @@ const Web3modalNFT = (): ReactElement => {
                 <CardBody>
                   <CardSection>
                     <Label>NFT Name</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'NFT Name (ex: Test)'}
                       onChange={setKIP17Name}
                       value={kip17Name}
                     />
                     <Label>NFT Symbol</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'NFT Symbol (ex: TST)'}
                       onChange={setKIP17Symbol}
                       value={kip17Symbol}
@@ -322,7 +326,9 @@ const Web3modalNFT = (): ReactElement => {
                   </CardSection>
 
                   <Button
-                    onClick={() => testContractCall(WEB3MODAL.KIP17_DEPLOY_NFT)}
+                    onClick={(): Promise<void> =>
+                      testContractCall(WEB3MODAL.KIP17_DEPLOY_NFT)
+                    }
                   >
                     {WEB3MODAL.KIP17_DEPLOY_NFT}
                   </Button>
@@ -335,33 +341,35 @@ const Web3modalNFT = (): ReactElement => {
                 <CardBody>
                   <CardSection>
                     <Label>Contract Address</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'Contract Address'}
                       onChange={setContractAddressForMint}
                       value={contractAddressForMint}
                     />
                     <Label>Recipient</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'Account Address'}
                       onChange={setToAddressForMint}
                       value={toAddressForMint}
                     />
                     <Label>Token ID</Label>
-                    <FormInput
-                      type="number"
+                    <SFormInput
+                      type="text"
                       placeholder={'Token ID'}
                       onChange={setTokenIdForMint}
                       value={tokenIdForMint}
                     />
                     <Label>Toekn URI</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'Token URI'}
                       onChange={setTokenURIForMint}
                       value={tokenURIForMint}
                     />
                   </CardSection>
                   <Button
-                    onClick={() => testContractCall(WEB3MODAL.KIP17_MINT_NFT)}
+                    onClick={(): Promise<void> =>
+                      testContractCall(WEB3MODAL.KIP17_MINT_NFT)
+                    }
                   >
                     {WEB3MODAL.KIP17_MINT_NFT}
                   </Button>
@@ -374,27 +382,27 @@ const Web3modalNFT = (): ReactElement => {
                 <CardBody>
                   <CardSection>
                     <Label>Contract Address</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'Token Contract Address'}
                       onChange={setContractAddressForTransfer}
                       value={contractAddressForTransfer}
                     />
                     <Label>Recipient</Label>
-                    <FormInput
+                    <SFormInput
                       placeholder={'Account Address'}
                       onChange={setToAddressForTransfer}
                       value={toAddressForTransfer}
                     />
                     <Label>Token ID</Label>
-                    <FormInput
-                      type="number"
+                    <SFormInput
+                      type="text"
                       placeholder={'Token ID'}
                       onChange={setTokenIdForTransfer}
                       value={tokenIdForTransfer}
                     />
                   </CardSection>
                   <Button
-                    onClick={() =>
+                    onClick={(): Promise<void> =>
                       testContractCall(WEB3MODAL.KIP17_TRANSFER_FROM)
                     }
                   >

@@ -1,8 +1,9 @@
 import { Column } from 'components'
+import { ReactElement } from 'react'
 import { IAssetData } from 'types'
 import AssetRow from './AssetRow'
 
-const AccountAssets = (props: any) => {
+const AccountAssets = (props: any): ReactElement => {
   const { assets, chainId } = props
   const defaultNativeCurrency =
     chainId === 1001 || chainId === 8217

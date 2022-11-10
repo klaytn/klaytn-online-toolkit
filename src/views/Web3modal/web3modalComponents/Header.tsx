@@ -1,3 +1,4 @@
+import { ReactElement } from 'react'
 import styled from 'styled-components'
 import * as PropTypes from 'prop-types'
 import { getChainData } from '../helpers/utilities'
@@ -48,7 +49,7 @@ interface IHeaderStyle {
 const SAddress = styled.p<IHeaderStyle>`
   transition: ${transitions.base};
   font-weight: bold;
-  margin: ${({ connected }) => (connected ? '-2px auto 0.7em' : '0')};
+  margin: ${({ connected }): string => (connected ? '-2px auto 0.7em' : '0')};
 `
 
 const SDisconnect = styled.div<IHeaderStyle>`
@@ -61,9 +62,9 @@ const SDisconnect = styled.div<IHeaderStyle>`
   opacity: 0.7;
   cursor: pointer;
 
-  opacity: ${({ connected }) => (connected ? 1 : 0)};
-  visibility: ${({ connected }) => (connected ? 'visible' : 'hidden')};
-  pointer-events: ${({ connected }) => (connected ? 'auto' : 'none')};
+  opacity: ${({ connected }): number => (connected ? 1 : 0)};
+  visibility: ${({ connected }): string => (connected ? 'visible' : 'hidden')};
+  pointer-events: ${({ connected }): string => (connected ? 'auto' : 'none')};
 
   &:hover {
     transform: translateY(-1px);
@@ -78,7 +79,7 @@ interface IHeaderProps {
   chainId: number
 }
 
-const Header = (props: IHeaderProps) => {
+const Header = (props: IHeaderProps): ReactElement => {
   const { connected, address, chainId, killSession } = props
   const chainData = chainId ? getChainData(chainId) : null
   return (

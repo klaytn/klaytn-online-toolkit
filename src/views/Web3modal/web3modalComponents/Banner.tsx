@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import logo from 'images/web3modal-logo.png'
+import { ReactElement } from 'react'
 
 const SBannerWrapper = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const SBanner = styled.div`
   background-position: center;
 `
 
-const Banner = () => (
+const Banner = (): ReactElement => (
   <SBannerWrapper>
     <SBanner />
     <span>{`Web3Modal`}</span>

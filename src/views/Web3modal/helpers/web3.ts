@@ -1,7 +1,8 @@
+import {Contract} from 'web3-eth-contract'
 import { WEB3MODAL } from 'consts'
 import { apiGetGasPriceKlaytn, getChainData } from './utilities'
 
-export function getKIP7Contract(web3: any, contractAddress: string) {
+export function getKIP7Contract(web3: any, contractAddress: string): Contract {
   const tokenContract = new web3.eth.Contract(
     WEB3MODAL.KIP7_CONTRACT.abi,
     contractAddress
@@ -9,7 +10,7 @@ export function getKIP7Contract(web3: any, contractAddress: string) {
   return tokenContract
 }
 
-export function getKIP17Contract(web3: any, contractAddress: string) {
+export function getKIP17Contract(web3: any, contractAddress: string): Contract {
   const tokenContract = new web3.eth.Contract(
     WEB3MODAL.KIP17_CONTRACT.abi,
     contractAddress
@@ -22,7 +23,7 @@ export function callBalanceOf(
   chainId: number,
   contractAddress: string,
   web3: any
-) {
+) : Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const contract = getKIP7Contract(web3, contractAddress)
@@ -50,7 +51,7 @@ export function callTransfer(
   chainId: number,
   contractAddress: string,
   web3: any
-) {
+): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const contract = getKIP7Contract(web3, contractAddress)
@@ -87,7 +88,7 @@ export function callTransferFrom(
   web3: any,
   toAddress: string,
   tokenId: number
-) {
+): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const contract = getKIP17Contract(web3, contractAddress)
@@ -123,7 +124,7 @@ export function callDeployNFT(
   web3: any,
   name: string,
   symbol: string
-) {
+): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const contract = new web3.eth.Contract(WEB3MODAL.KIP17_CONTRACT.abi)
@@ -162,7 +163,7 @@ export function callMintNFT(
   toAddress: string,
   tokenId: number,
   tokenURI: string
-) {
+): Promise<any>{
   return new Promise(async (resolve, reject) => {
     try {
       const contract = getKIP17Contract(web3, contractAddress)

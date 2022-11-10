@@ -2,6 +2,7 @@ import supportedChains from './chains'
 import * as ethUtil from 'ethereumjs-util'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
+import { IAssetData, IChainData, IGasPrices} from 'types';
 
 const api = axios.create({
   baseURL: 'https://ethereum-api.xyz',
@@ -16,7 +17,7 @@ export function isObject(obj: any): boolean {
   return typeof obj === 'object' && !!Object.keys(obj).length
 }
 
-export async function apiGetGasPriceKlaytn(chainId: number) {
+export async function apiGetGasPriceKlaytn(chainId: number): Promise<string> {
   const url =
     chainId === 8217
       ? 'https://public-node-api.klaytnapi.com/v1/cypress'
@@ -30,7 +31,7 @@ export async function apiGetGasPriceKlaytn(chainId: number) {
   return result
 }
 
-export const apiGetAccountNonce = async (address: string, chainId: number) => {
+export const apiGetAccountNonce = async (address: string, chainId: number): Promise<string> => {
   const response = await api.get(
     `/account-nonce?address=${address}&chainId=${chainId}`
   )
@@ -38,13 +39,13 @@ export const apiGetAccountNonce = async (address: string, chainId: number) => {
   return result
 }
 
-export const apiGetGasPrices = async () => {
+export const apiGetGasPrices = async (): Promise<IGasPrices>=> {
   const response = await api.get(`/gas-prices`)
   const { result } = response.data
   return result
 }
 
-export async function apiGetAccountAssets(address: string, chainId: number) {
+export async function apiGetAccountAssets(address: string, chainId: number): Promise<IAssetData[]> {
   console.log('get Assets', address, chainId, getChainData(chainId).chain)
   if (getChainData(chainId).chain === 'klaytn') {
     return await apiGetAccountAssetsKlaytn(address, chainId)
@@ -59,7 +60,7 @@ export async function apiGetAccountAssets(address: string, chainId: number) {
 export async function apiGetAccountAssetsKlaytn(
   address: string,
   chainId: number
-) {
+): Promise<IAssetData[]>{
   const url =
     chainId === 8217
       ? 'https://public-node-api.klaytnapi.com/v1/cypress'
@@ -81,7 +82,7 @@ export async function apiGetAccountAssetsKlaytn(
   return [result]
 }
 
-export function sanitizeHex(hex: string) {
+export function sanitizeHex(hex: string): string {
   hex = hex.substring(0, 2) === '0x' ? hex.substring(2) : hex
   if (hex === '') {
     return ''
@@ -90,17 +91,17 @@ export function sanitizeHex(hex: string) {
   return '0x' + hex
 }
 
-export function convertStringToHex(value: string) {
+export function convertStringToHex(value: string): string {
   return new BigNumber(`${value}`).toString(16)
 }
 
-export function convertAmountToRawNumber(value: string, decimals = 18) {
+export function convertAmountToRawNumber(value: string | number, decimals = 18): string {
   return new BigNumber(`${value}`)
     .times(new BigNumber('10').pow(decimals))
     .toString()
 }
 
-export function getChainData(chainId: number) {
+export function getChainData(chainId: number): IChainData {
   const chainData = supportedChains.filter(
     (chain) => chain.chain_id === chainId
   )[0]
@@ -127,14 +128,14 @@ export function getChainData(chainId: number) {
   return chainData
 }
 
-export function hashPersonalMessage(msg: string) {
+export function hashPersonalMessage(msg: string): string {
   const buffer = Buffer.from(msg)
   const result = ethUtil.hashPersonalMessage(buffer)
   const hash = ethUtil.bufferToHex(result)
   return hash
 }
 
-export function recoverPublicKey(sig: string, hash: string) {
+export function recoverPublicKey(sig: string, hash: string): string {
   const sigParams = ethUtil.fromRpcSig(sig)
   const hashBuffer = Buffer.from(hash.replace('0x', ''), 'hex')
   const result = ethUtil.ecrecover(
@@ -147,7 +148,7 @@ export function recoverPublicKey(sig: string, hash: string) {
   return signer
 }
 
-export async function formatTestTransaction(address: string, chainId: number) {
+export async function formatTestTransaction(address: string, chainId: number): Promise<any> {
   if (getChainData(chainId).chain === 'klaytn') {
     const gasPrice = await apiGetGasPriceKlaytn(chainId)
     return {

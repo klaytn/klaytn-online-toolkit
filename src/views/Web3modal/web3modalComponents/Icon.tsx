@@ -1,4 +1,5 @@
 import * as PropTypes from 'prop-types'
+import { ReactElement } from 'react'
 import styled from 'styled-components'
 
 interface IIconStyleProps {
@@ -6,18 +7,18 @@ interface IIconStyleProps {
 }
 
 const SIcon = styled.img<IIconStyleProps>`
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
+  width: ${({ size }): string => `${size}px`};
+  height: ${({ size }): string => `${size}px`};
 `
 
-const Icon = (props: any) => {
+const Icon = (props: any): ReactElement => {
   const { src, fallback, size } = props
   return (
     <SIcon
       {...props}
       src={src}
       size={size}
-      onError={(event: any) => (event.target.src = fallback)}
+      onError={(event: any): void => (event.target.src = fallback)}
     />
   )
 }

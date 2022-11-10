@@ -98,6 +98,7 @@ const STestButtonContainer = styled.div`
   align-items: center;
   flex-wrap: wrap;
   padding-bottom: 20px;
+  gap: 8px;
 `
 
 const STestButton = styled(Button)`
@@ -152,7 +153,7 @@ const Web3modalExample = (): ReactElement => {
     const web3: any = new Web3(provider)
     return web3
   }
-  const onConnect = async () => {
+  const onConnect = async (): Promise<void> => {
     const provider = await web3modal.connect()
     await provider.enable()
     const web3 = initWeb3(provider)
@@ -171,7 +172,7 @@ const Web3modalExample = (): ReactElement => {
     })
   }
 
-  const getProviderOptions = () => {
+  const getProviderOptions = (): any => {
     const providerOptions = {
       kaikas: {
         package: KaikasWeb3Provider,
@@ -187,8 +188,8 @@ const Web3modalExample = (): ReactElement => {
     return providerOptions
   }
 
-  const getNetwork = () => getChainData(chainId).network
-  const subscribeProvider = async (provider: any, web3: any) => {
+  const getNetwork = (): string => getChainData(chainId).network
+  const subscribeProvider = async (provider: any, web3: any): Promise<void> => {
     if (!provider.on) {
       return
     }
@@ -222,7 +223,7 @@ const Web3modalExample = (): ReactElement => {
       })
     })
   }
-  const toggleModal = () => setShowModal(!showModal)
+  const toggleModal = (): void => setShowModal(!showModal)
 
   const resetApp = async (): Promise<void> => {
     web3modal.clearCachedProvider()
@@ -240,7 +241,7 @@ const Web3modalExample = (): ReactElement => {
     setKip7ContractAddress('')
   }
 
-  const testSendTransaction = async () => {
+  const testSendTransaction = async (): Promise<void> => {
     const tx = await formatTestTransaction(address, chainId)
     try {
       toggleModal()
@@ -272,7 +273,7 @@ const Web3modalExample = (): ReactElement => {
     }
   }
 
-  const testSignMessage = async () => {
+  const testSignMessage = async (): Promise<void> => {
     try {
       // test message
       const message = 'My email is john@doe.com - 1537836206101'
@@ -306,7 +307,7 @@ const Web3modalExample = (): ReactElement => {
     }
   }
 
-  const testSignPersonalMessage = async () => {
+  const testSignPersonalMessage = async (): Promise<void> => {
     try {
       toggleModal()
       setPendingRequest(true)
@@ -334,7 +335,7 @@ const Web3modalExample = (): ReactElement => {
     }
   }
 
-  const testContractCall = async (functionSig: string) => {
+  const testContractCall = async (functionSig: string): Promise<void> => {
     try {
       toggleModal()
       setPendingRequest(true)
@@ -456,14 +457,16 @@ const Web3modalExample = (): ReactElement => {
                   </CardSection>
                   <STestButtonContainer>
                     <STestButton
-                      onClick={() =>
+                      onClick={(): Promise<void> =>
                         testContractCall(WEB3MODAL.KIP7_BALANCE_OF)
                       }
                     >
                       {WEB3MODAL.KIP7_BALANCE_OF}
                     </STestButton>
                     <STestButton
-                      onClick={() => testContractCall(WEB3MODAL.KIP7_TRANSFER)}
+                      onClick={(): Promise<void> =>
+                        testContractCall(WEB3MODAL.KIP7_TRANSFER)
+                      }
                     >
                       {WEB3MODAL.KIP7_TRANSFER}
                     </STestButton>
