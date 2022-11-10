@@ -1,6 +1,5 @@
 import BlockHashDecoder from './views/BlockInfo/BlockHashDecoder'
 
-import CreateKeystore from './views/Account/CreateKeystore'
 import AccountKeyLegacy from './views/Account/AccountKeyLegacy'
 import AccountKeyPublic from './views/Account/AccountKeyPublic'
 import AccountKeyMultiSig from './views/Account/AccountKeyMultiSig'
@@ -62,11 +61,6 @@ const routes: RouteType[] = [
     name: 'Account',
     path: '/account',
     items: [
-      {
-        path: '/keystore',
-        name: 'Keystore',
-        component: CreateKeystore,
-      },
       {
         path: '/accountKeyLegacy',
         name: 'Basic Account',
