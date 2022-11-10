@@ -19,6 +19,7 @@ import {
   View,
   PrivateKeyWarning,
   Row,
+  CodeBlock,
 } from 'components'
 import { KeystoreType } from './components/GetMultipleKeysSection'
 import GetMultipleKeysSection from './components/GetMultipleKeysSection'
@@ -260,6 +261,35 @@ const SendMultiSigTx = (): ReactElement => {
                 Send Transaction
               </Button>
             </Row>
+            {tokenType === TokenTypeEnum.KLAY ? (
+              <CodeBlock
+                title="caver-js code"
+                text={`const vt = caver.transaction.valueTransfer.create({
+  from: senderAddress,
+  to: recipientAddress,
+  value: caver.utils.toPeb(amount, 'KLAY'),
+  gas: 1000000,
+})
+const signed = await caver.wallet.sign(senderAddress, vt)
+const rawTx = signed.getRawTransaction()
+const vtReceipt = await caver.rpc.klay.sendRawTransaction(rawTx)`}
+              />
+            ) : (
+              <CodeBlock
+                title="caver-js code"
+                text={`const contractInstance = new caver.kct.kip7(contractAddress)
+const decimal = await contractInstance.decimals()
+const value = UTIL.toBn(amount).multipliedBy(Math.pow(10, decimal))
+const signed = await contractInstance.sign(
+  { from: senderAddress, gas: 1000000 },
+  'transfer',
+  recipientAddress,
+  value
+)
+const rawTx = signed.getRawTransaction()
+const vtReceipt = await caver.rpc.klay.sendRawTransaction(rawTx)`}
+              />
+            )}
           </CardSection>
           <SuccessMsgForm result={resultMsg} />
         </CardBody>
