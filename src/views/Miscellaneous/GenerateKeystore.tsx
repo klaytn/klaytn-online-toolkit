@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo, useState } from 'react'
+import React, { ReactElement, useMemo, useEffect, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -64,16 +64,11 @@ type MultiType = {
 
 const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
   const { privateKeys, setPrivateKeys, caver } = multiProps
-  const [numOfPrivateKeys, setNumOfPrivateKeys] = useState<number | string>('')
+  const [numOfPrivateKeys, setNumOfPrivateKeys] = useState<number>(2)
 
-  const handleNumberChange = (val: string) => {
-    if (Number(val) <= 0 || Number(val) >= 100 || val === '') {
-      setNumOfPrivateKeys('')
-      setPrivateKeys([])
-    } else {
-      setNumOfPrivateKeys(Number(val))
-      setPrivateKeys(new Array<string>(Number(val)).fill(''))
-    }
+  const handleNumberChange = (val: number) => {
+    setNumOfPrivateKeys(val)
+    setPrivateKeys(new Array<string>(val).fill(''))
   }
 
   const handleInputChange = (val: string, idx: number) => {
@@ -88,24 +83,23 @@ const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
     setPrivateKeys(multipleKeys)
   }
 
+  useEffect(() => {
+    setPrivateKeys(['', ''])
+  }, [])
+
   return (
     <CardSection>
       <Label>Number of Private Keys</Label>
-      <FormInput
-        type="number"
-        placeholder="Number of Private Keys (<100)"
-        onChange={handleNumberChange}
-        value={numOfPrivateKeys}
+      <FormRadio
+        itemList={[
+          { title: '2', value: 2 },
+          { title: '3', value: 3 },
+          { title: '4', value: 4 },
+          { title: '5', value: 5 },
+        ]}
+        selectedValue={numOfPrivateKeys}
+        onClick={handleNumberChange}
       />
-      {!numOfPrivateKeys && (
-        <Text>
-          <br />
-          Please fill in the number of private keys. The number of private keys
-          must be a positive integer.
-          <br />
-          NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
-        </Text>
-      )}
       {!!numOfPrivateKeys && <Label>Private Keys</Label>}
       {!!numOfPrivateKeys &&
         privateKeys.map((key, idx) => {
@@ -142,22 +136,17 @@ type RoleBasedType = {
 const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
   const { rolePrivateKeys, setRolePrivateKeys, caver } = roleBasedProps
   const [numOfRolePrivateKeys, setNumberOfRolePrivateKeys] = useState<
-    Array<number | string>
-  >(['', '', ''])
+    Array<number>
+  >([2, 2, 2])
   const types = [
     'roleTransactionKey',
     'roleAccountUpdateKey',
     'roleFeePayerKey',
   ]
 
-  const handleNumberChange = (val: string, idx: number) => {
-    if (Number(val) <= 0 || Number(val) >= 100 || val === '') {
-      numOfRolePrivateKeys[idx] = ''
-      rolePrivateKeys[idx] = []
-    } else {
-      numOfRolePrivateKeys[idx] = Number(val)
-      rolePrivateKeys[idx] = new Array<string>(Number(val)).fill('')
-    }
+  const handleNumberChange = (val: number, idx: number) => {
+    numOfRolePrivateKeys[idx] = val
+    rolePrivateKeys[idx] = new Array<string>(val).fill('')
     setNumberOfRolePrivateKeys([...numOfRolePrivateKeys])
     setRolePrivateKeys([...rolePrivateKeys])
   }
@@ -176,21 +165,32 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
     setRolePrivateKeys(roleBasedKeys)
   }
 
+  useEffect(() => {
+    setRolePrivateKeys([
+      ['', ''],
+      ['', ''],
+      ['', ''],
+    ])
+  }, [])
+
   return (
     <CardSection>
       <Row>
         {numOfRolePrivateKeys.map((val, idx) => {
           return (
             <Column key={`column-${idx}`}>
-              <Label>{types[idx]}</Label>
-              <FormInput
-                type="number"
-                placeholder={`Number of ${types[idx]}s (<100)`}
-                onChange={(v) => {
+              <Label>{`Number of ${types[idx]}s`}</Label>
+              <FormRadio
+                itemList={[
+                  { title: '0', value: 0 },
+                  { title: '1', value: 1 },
+                  { title: '2', value: 2 },
+                  { title: '3', value: 3 },
+                ]}
+                selectedValue={val}
+                onClick={(v) => {
                   handleNumberChange(v, idx)
                 }}
-                value={val}
-                style={{ width: '100%' }}
               />
               {!!numOfRolePrivateKeys[idx] && <Label>Private Keys</Label>}
               {!!numOfRolePrivateKeys[idx] &&
@@ -219,10 +219,7 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
       ) : (
         <Text>
           <br />
-          Please fill in the number of private keys. The number of private keys
-          must be a positive integer.
-          <br />
-          NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT.
+          Please click the number of private keys.
         </Text>
       )}
     </CardSection>
@@ -353,7 +350,11 @@ const GenerateKeystore = (): ReactElement => {
             <LinkA link="https://kips.klaytn.foundation/KIPs/kip-3">
               [KIP 3: Klaytn Keystore Format v4]
             </LinkA>
-            .{' '}
+            . <br />
+            <br />
+          </Text>
+          <Text style={{ color: 'red', fontWeight: 600, fontSize: 18 }}>
+            NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT!
           </Text>
         </CardHeader>
         <CardBody>
