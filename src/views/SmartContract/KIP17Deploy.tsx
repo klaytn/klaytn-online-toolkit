@@ -1,9 +1,8 @@
-import { ReactElement, useEffect, useMemo, useState } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
-import styled from 'styled-components'
 import _ from 'lodash'
 
-import { URLMAP, UTIL } from 'consts'
+import { URLMAP, UTIL, COLOR } from 'consts'
 import {
   Button,
   Card,
@@ -15,12 +14,20 @@ import {
   FormGroup,
   FormInput,
   FormSelect,
+  FormRadio,
   CardSection,
   CardExample,
+  LinkA,
 } from 'components'
 import FormFile from 'components/FormFile'
 
 type NetworkType = 'mainnet' | 'testnet'
+
+enum FunctionEnum {
+  BURN = 'Burn',
+  SEND = 'Send',
+  PUP = 'Pause/Unpause',
+}
 
 const KIP17Deploy = (): ReactElement => {
   const [network, setNetwork] = useState<NetworkType>('mainnet')
@@ -28,8 +35,6 @@ const KIP17Deploy = (): ReactElement => {
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
   const [senderDecryptMessage, setSenderDecryptMessage] = useState('')
-  const [senderDecryptMessageVisible, setSenderDecryptMessageVisible] =
-    useState(false)
   const [deployMsg, setDeployMsg] = useState('')
   const [deployButtonDisabled, setDeployButtonDisabled] = useState(false)
   const [deploySuccess, setDeploySuccess] = useState(false)
@@ -56,7 +61,7 @@ const KIP17Deploy = (): ReactElement => {
   const [pauseSuccess, setPauseSuccess] = useState(false)
   const [unpauseMsg, setUnpauseMsg] = useState('')
   const [unpauseButtonDisabled, setUnpauseButtonDisabled] = useState(false)
-  const [unpauseSuccess, setUnpauseSuccess] = useState(false)
+  const [belowPage, setBelowPage] = useState<FunctionEnum>(FunctionEnum.BURN)
 
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
@@ -66,6 +71,8 @@ const KIP17Deploy = (): ReactElement => {
   const exTokenURI = 'https://cryptologos.cc/logos/klaytn-klay-logo.svg?v=023'
 
   const exTokenReceiver = '0x6CEe3d8c038ab74E2854C158d7B1b55544E814C8'
+
+  const exposureTime = 5000
 
   const handleSenderKeystoreChange = (files?: FileList) => {
     if (files && files.length > 0) {
@@ -96,22 +103,16 @@ const KIP17Deploy = (): ReactElement => {
 
         setSenderDecryptMessage('Decryption succeeds!')
         setSenderAddress(keyring.address)
-        setSenderDecryptMessageVisible(true)
-
-        setTimeout(() => {
-          setSenderDecryptMessageVisible(false)
-          setSenderDecryptMessage('')
-        }, 5000)
+      } else {
+        throw Error('Sender Keystore is not uploaded!')
       }
-    } catch (e: any) {
-      setSenderDecryptMessageVisible(true)
-      setSenderDecryptMessage(e.toString())
+    } catch (err) {
+      setSenderDecryptMessage(_.toString(err))
       setSenderAddress('')
 
       setTimeout(() => {
-        setSenderDecryptMessageVisible(false)
         setSenderDecryptMessage('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -134,15 +135,15 @@ const KIP17Deploy = (): ReactElement => {
       setDeployButtonDisabled(false)
       setContractAddress(kip17.options.address)
       setDeploySuccess(true)
-    } catch (e: any) {
-      setDeployMsg(e.toString())
+    } catch (err) {
+      setDeployMsg(_.toString(err))
       setDeployButtonDisabled(false)
       setContractAddress('')
       setDeploySuccess(false)
 
       setTimeout(() => {
         setDeployMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -168,8 +169,8 @@ const KIP17Deploy = (): ReactElement => {
       } else {
         throw Error('Minting is failed')
       }
-    } catch (e: any) {
-      setMintMsg(e.toString())
+    } catch (err) {
+      setMintMsg(_.toString(err))
       setMintButtonDisabled(false)
       setNftReceiver('')
       setTokenURI('')
@@ -177,7 +178,7 @@ const KIP17Deploy = (): ReactElement => {
 
       setTimeout(() => {
         setMintMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -197,15 +198,15 @@ const KIP17Deploy = (): ReactElement => {
       } else {
         throw Error('Burning is failed')
       }
-    } catch (e: any) {
-      setBurnMsg(e.toString())
+    } catch (err) {
+      setBurnMsg(_.toString(err))
       setBurnButtonDisabled(false)
       setBurnTokenId('')
       setBurnSuccess(false)
 
       setTimeout(() => {
         setBurnMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -229,8 +230,8 @@ const KIP17Deploy = (): ReactElement => {
       } else {
         throw Error('Transferring is failed')
       }
-    } catch (e: any) {
-      setTransferMsg(e.toString())
+    } catch (err) {
+      setTransferMsg(_.toString(err))
       setTransferButtonDisabled(false)
       setTransferTokenId('')
       setTransferReceiver('')
@@ -238,7 +239,7 @@ const KIP17Deploy = (): ReactElement => {
 
       setTimeout(() => {
         setTransferMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -258,18 +259,18 @@ const KIP17Deploy = (): ReactElement => {
 
         setTimeout(() => {
           setPauseMsg('')
-        }, 4000)
+        }, exposureTime)
       } else {
         throw Error('Pausing is failed')
       }
-    } catch (e: any) {
-      setPauseMsg(e.toString())
+    } catch (err) {
+      setPauseMsg(_.toString(err))
       setPauseButtonDisabled(false)
       setPauseSuccess(false)
 
       setTimeout(() => {
         setPauseMsg('')
-      }, 4000)
+      }, exposureTime)
     }
   }
 
@@ -287,23 +288,21 @@ const KIP17Deploy = (): ReactElement => {
           'The KIP-17 token smart contract is successfully resumed.'
         )
         setUnpauseButtonDisabled(false)
-        setUnpauseSuccess(true)
         setPauseSuccess(false)
 
         setTimeout(() => {
           setUnpauseMsg('')
-        }, 4000)
+        }, exposureTime)
       } else {
         throw Error('Unpausing is failed')
       }
-    } catch (e: any) {
-      setUnpauseMsg(e.toString())
+    } catch (err) {
+      setUnpauseMsg(_.toString(err))
       setUnpauseButtonDisabled(false)
-      setUnpauseSuccess(false)
 
       setTimeout(() => {
         setUnpauseMsg('')
-      }, 4000)
+      }, exposureTime)
     }
   }
 
@@ -315,13 +314,13 @@ const KIP17Deploy = (): ReactElement => {
           <Text>
             Here you can deploy a KIP-17 smart contract to the Klaytn Cypress or
             Baobab network. Please refer to{' '}
-            <a href="https://kips.klaytn.foundation/KIPs/kip-17">
+            <LinkA link="https://kips.klaytn.foundation/KIPs/kip-17">
               KIP-17: Non-fungible Token Standard
-            </a>{' '}
+            </LinkA>{' '}
             and{' '}
-            <a href="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip17">
+            <LinkA link="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip17">
               caver.kct.kip17
-            </a>
+            </LinkA>
             .
           </Text>
         </CardHeader>
@@ -365,11 +364,18 @@ const KIP17Deploy = (): ReactElement => {
           <CardSection>
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
           </CardSection>
-          {senderDecryptMessageVisible && (
-            <CardSection>
-              <Text style={{ color: '#c221a9' }}>{senderDecryptMessage}</Text>
-            </CardSection>
-          )}
+          {senderDecryptMessage &&
+            (!!senderAddress ? (
+              <CardSection>
+                <Text>{senderDecryptMessage}</Text>
+              </CardSection>
+            ) : (
+              <CardSection>
+                <Text style={{ color: COLOR.error }}>
+                  {senderDecryptMessage}
+                </Text>
+              </CardSection>
+            ))}
         </CardBody>
       </Card>
       <Card>
@@ -421,7 +427,7 @@ const KIP17Deploy = (): ReactElement => {
                   </a>
                 </Text>
               ) : (
-                <Text style={{ color: '#c221a9' }}>{deployMsg}</Text>
+                <Text style={{ color: COLOR.error }}>{deployMsg}</Text>
               )}
             </CardSection>
           )}
@@ -485,7 +491,7 @@ const KIP17Deploy = (): ReactElement => {
                     </a>
                   </Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}>{mintMsg}</Text>
+                  <Text style={{ color: COLOR.error }}>{mintMsg}</Text>
                 )}
               </CardSection>
             )}
@@ -493,6 +499,17 @@ const KIP17Deploy = (): ReactElement => {
         </Card>
       )}
       {mintSuccess && (
+        <FormRadio
+          itemList={[
+            { title: 'Burn', value: FunctionEnum.BURN },
+            { title: 'Send', value: FunctionEnum.SEND },
+            { title: 'Pause/Unpause', value: FunctionEnum.PUP },
+          ]}
+          selectedValue={belowPage}
+          onClick={setBelowPage}
+        />
+      )}
+      {mintSuccess && belowPage === FunctionEnum.BURN && (
         <Card>
           <CardHeader>
             <h3 className="title">Burn the Non-fungible Token (NFT)</h3>
@@ -533,14 +550,14 @@ const KIP17Deploy = (): ReactElement => {
                     </a>
                   </Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}> {burnMsg} </Text>
+                  <Text style={{ color: COLOR.error }}> {burnMsg} </Text>
                 )}
               </CardSection>
             )}
           </CardBody>
         </Card>
       )}
-      {mintSuccess && (
+      {mintSuccess && belowPage === FunctionEnum.SEND && (
         <Card>
           <CardHeader>
             <h3 className="title">Send the Non-fungible Token (NFT)</h3>
@@ -593,14 +610,14 @@ const KIP17Deploy = (): ReactElement => {
                     </a>
                   </Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}>{transferMsg}</Text>
+                  <Text style={{ color: COLOR.error }}>{transferMsg}</Text>
                 )}
               </CardSection>
             )}
           </CardBody>
         </Card>
       )}
-      {mintSuccess && !pauseSuccess && (
+      {mintSuccess && !pauseSuccess && belowPage === FunctionEnum.PUP && (
         <Card>
           <CardHeader>
             <h3 className="title">Pause the KIP-17 Token Smart Contract</h3>
@@ -617,17 +634,17 @@ const KIP17Deploy = (): ReactElement => {
             </CardSection>
             {!!unpauseMsg && (
               <CardSection>
-                {unpauseSuccess ? (
+                {!pauseSuccess ? (
                   <Text>{unpauseMsg}</Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}>{unpauseMsg}</Text>
+                  <Text style={{ color: COLOR.error }}>{unpauseMsg}</Text>
                 )}
               </CardSection>
             )}
           </CardBody>
         </Card>
       )}
-      {mintSuccess && pauseSuccess && (
+      {mintSuccess && pauseSuccess && belowPage === FunctionEnum.PUP && (
         <Card>
           <CardHeader>
             <h3 className="title">Unpause the KIP-17 Token Smart Contract</h3>
@@ -642,12 +659,12 @@ const KIP17Deploy = (): ReactElement => {
                 Unpause
               </Button>
             </CardSection>
-            {pauseMsg && (
+            {!!pauseMsg && (
               <CardSection>
                 {pauseSuccess ? (
                   <Text>{pauseMsg}</Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}>{pauseMsg}</Text>
+                  <Text style={{ color: COLOR.error }}>{pauseMsg}</Text>
                 )}
               </CardSection>
             )}
