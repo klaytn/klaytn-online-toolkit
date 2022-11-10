@@ -18,18 +18,10 @@ import {
   FormRadio,
   View,
   PrivateKeyWarning,
+  Row,
 } from 'components'
 import { KeystoreType } from './components/GetMultipleKeysSection'
 import GetMultipleKeysSection from './components/GetMultipleKeysSection'
-
-const FormBlock = styled.div`
-  display: flex;
-  column-gap: 8px;
-`
-
-const SLabel = styled(Label)`
-  margin-bottom: 5px;
-`
 
 const SFormInput = styled(FormInput)`
   margin-bottom: 10px;
@@ -188,14 +180,16 @@ const SendMultiSigTx = (): ReactElement => {
         </CardHeader>
         <CardBody>
           <h3 className="title">Sender Information</h3>
-          <Text>
-            Enter the sender's address. Then upload keystore files or enter
-            private keys to sign the transaction. If the decryption is
-            successful, you will see the filename appended to the decrypted
-            keystore list below.
-          </Text>
+          <View style={{ paddingBottom: 10 }}>
+            <Text>
+              Enter the sender's address. Then upload keystore files or enter
+              private keys to sign the transaction. If the decryption is
+              successful, you will see the filename appended to the decrypted
+              keystore list below.
+            </Text>
+          </View>
           <CardSection>
-            <SLabel>Sender Address</SLabel>
+            <Label>Sender Address</Label>
             <SFormInput
               placeholder="Sender Address"
               onChange={setSenderAddress}
@@ -219,7 +213,7 @@ const SendMultiSigTx = (): ReactElement => {
             <Text>Testnet</Text>
           </CardSection>
           <CardSection>
-            <SLabel>Recipient Address</SLabel>
+            <Label>Recipient Address</Label>
             <SFormInput
               placeholder="Recipient Address"
               onChange={setRecipientAddress}
@@ -237,7 +231,7 @@ const SendMultiSigTx = (): ReactElement => {
             </View>
             {tokenType === TokenTypeEnum.FT && (
               <>
-                <SLabel>Contract Address</SLabel>
+                <Label>Contract Address</Label>
                 <SFormInput
                   placeholder="Contract Address"
                   onChange={setContractAddress}
@@ -245,27 +239,27 @@ const SendMultiSigTx = (): ReactElement => {
                 />
               </>
             )}
-            <SLabel>
+            <Label>
               Amount{' '}
               {`(Unit: ${
                 tokenType === TokenTypeEnum.KLAY
                   ? 'KLAY'
                   : 'Base unit of a token'
               })`}
-            </SLabel>
+            </Label>
             <SFormInput
               placeholder="Amount"
               onChange={setAmount}
               value={amount}
             />
-            <FormBlock>
+            <Row style={{ gap: '8px' }}>
               <Button disabled={buttonDisabled} onClick={onSignTxButtonClick}>
                 Sign Transaction
               </Button>
               <Button disabled={buttonDisabled} onClick={onSendTxButtonClick}>
                 Send Transaction
               </Button>
-            </FormBlock>
+            </Row>
           </CardSection>
           <SuccessMsgForm result={resultMsg} />
         </CardBody>
