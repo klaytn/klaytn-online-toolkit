@@ -3,23 +3,23 @@ import Caver, { Keystore } from 'caver-js'
 import styled from 'styled-components'
 import _ from 'lodash'
 
-import { URLMAP, UTIL } from 'consts'
+import { URLMAP, UTIL, COLOR } from 'consts'
 import {
   Button,
   Card,
   CardHeader,
   CardBody,
-  Row,
   Label,
   Column,
   Text,
   View,
   FormInput,
   FormSelect,
-  CopyButton,
+  FormRadio,
   CardSection,
   FormFile,
   CardExample,
+  LinkA,
 } from 'components'
 
 const StyledSection = styled(View)`
@@ -28,14 +28,17 @@ const StyledSection = styled(View)`
 
 type NetworkType = 'mainnet' | 'testnet'
 
+enum FunctionEnum {
+  TRANSFER = 'Transfer',
+  MINT = 'Mint',
+}
+
 const KIP37Deploy = (): ReactElement => {
   const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
   const [senderDecryptMessage, setSenderDecryptMessage] = useState('')
-  const [senderDecryptMessageVisible, setSenderDecryptMessageVisible] =
-    useState(false)
   const [deployMsg, setDeployMsg] = useState('')
   const [deployButtonDisabled, setDeployButtonDisabled] = useState(false)
   const [deploySuccess, setDeploySuccess] = useState(false)
@@ -58,6 +61,9 @@ const KIP37Deploy = (): ReactElement => {
   const [mintMsg, setMintMsg] = useState('')
   const [mintButtonDisabled, setMintButtonDisabled] = useState(false)
   const [mintSuccess, setMintSuccess] = useState(false)
+  const [belowPage, setBelowPage] = useState<FunctionEnum>(
+    FunctionEnum.TRANSFER
+  )
 
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
@@ -70,6 +76,8 @@ const KIP37Deploy = (): ReactElement => {
   const exTokenURI = 'http://www.wenyou.com/image/SC-01%20SCISSORS.JPG'
 
   const exAddress = '0x6CEe3d8c038ab74E2854C158d7B1b55544E814C8'
+
+  const exposureTime = 5000
 
   const handleSenderKeystoreChange = (files?: FileList) => {
     if (files && files.length > 0) {
@@ -100,22 +108,16 @@ const KIP37Deploy = (): ReactElement => {
 
         setSenderDecryptMessage('Decryption succeeds!')
         setSenderAddress(keyring.address)
-        setSenderDecryptMessageVisible(true)
-
-        setTimeout(() => {
-          setSenderDecryptMessageVisible(false)
-          setSenderDecryptMessage('')
-        }, 5000)
+      } else {
+        throw Error('Sender Keystore is not uploaded!')
       }
-    } catch (e: any) {
-      setSenderDecryptMessage(e.toString())
-      setSenderDecryptMessageVisible(true)
+    } catch (err) {
+      setSenderDecryptMessage(_.toString(err))
       setSenderAddress('')
 
       setTimeout(() => {
-        setSenderDecryptMessageVisible(false)
         setSenderDecryptMessage('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -137,15 +139,15 @@ const KIP37Deploy = (): ReactElement => {
       setDeployButtonDisabled(false)
       setContractAddress(kip37.options.address)
       setDeploySuccess(true)
-    } catch (e: any) {
-      setDeployMsg(e.toString())
+    } catch (err) {
+      setDeployMsg(_.toString(err))
       setDeployButtonDisabled(false)
       setContractAddress('')
       setDeploySuccess(false)
 
       setTimeout(() => {
         setDeployMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -171,8 +173,8 @@ const KIP37Deploy = (): ReactElement => {
       } else {
         throw Error('Creating is failed')
       }
-    } catch (e: any) {
-      setCreateMsg(e.toString())
+    } catch (err) {
+      setCreateMsg(_.toString(err))
       setCreateButtonDisabled(false)
       setInitialSupply('')
       setTokenURI('')
@@ -180,7 +182,7 @@ const KIP37Deploy = (): ReactElement => {
 
       setTimeout(() => {
         setCreateMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -190,11 +192,6 @@ const KIP37Deploy = (): ReactElement => {
 
       const deployedContract = new caver.kct.kip37(contractAddress)
       deployedContract.options.from = senderAddress
-      const balance = await deployedContract.balanceOf(
-        senderAddress,
-        transferId
-      )
-
       const transferred = await deployedContract.safeTransferFrom(
         senderAddress,
         toAddress,
@@ -217,8 +214,8 @@ const KIP37Deploy = (): ReactElement => {
       } else {
         throw Error('Transferring is failed')
       }
-    } catch (e: any) {
-      setTransferMsg(e.toString())
+    } catch (err) {
+      setTransferMsg(_.toString(err))
       setTransferButtonDisabled(false)
       setToAddress('')
       setTransferId('')
@@ -227,7 +224,7 @@ const KIP37Deploy = (): ReactElement => {
 
       setTimeout(() => {
         setTransferMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -252,8 +249,8 @@ const KIP37Deploy = (): ReactElement => {
       } else {
         throw Error('Minting is failed')
       }
-    } catch (e: any) {
-      setMintMsg(e.toString())
+    } catch (err) {
+      setMintMsg(_.toString(err))
       setMintButtonDisabled(false)
       setRecipientAddress('')
       setTokenAmount('')
@@ -261,7 +258,7 @@ const KIP37Deploy = (): ReactElement => {
 
       setTimeout(() => {
         setMintMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -273,13 +270,13 @@ const KIP37Deploy = (): ReactElement => {
           <Text>
             Here you can deploy a KIP-37 smart contract to the Klaytn Cypress or
             Baobab network. Please refer to{' '}
-            <a href="http://kips.klaytn.foundation/KIPs/kip-37">
+            <LinkA link="http://kips.klaytn.foundation/KIPs/kip-37">
               KIP-37: Token Standard
-            </a>{' '}
+            </LinkA>{' '}
             and{' '}
-            <a href="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip37">
+            <LinkA link="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip37">
               caver.kct.kip37
-            </a>
+            </LinkA>
             .
           </Text>
         </CardHeader>
@@ -321,11 +318,18 @@ const KIP37Deploy = (): ReactElement => {
           <CardSection>
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
           </CardSection>
-          {senderDecryptMessageVisible && (
-            <CardSection>
-              <Text style={{ color: '#c221a9' }}>{senderDecryptMessage}</Text>
-            </CardSection>
-          )}
+          {senderDecryptMessage &&
+            (!!senderAddress ? (
+              <CardSection>
+                <Text>{senderDecryptMessage}</Text>
+              </CardSection>
+            ) : (
+              <CardSection>
+                <Text style={{ color: COLOR.error }}>
+                  {senderDecryptMessage}
+                </Text>
+              </CardSection>
+            ))}
         </CardBody>
       </Card>
       <Card>
@@ -357,18 +361,14 @@ const KIP37Deploy = (): ReactElement => {
                 <Text>
                   {deployMsg}You can check it below link:
                   <br />
-                  <a
-                    href={
-                      URLMAP.network[network]['finderNFT'] + contractAddress
-                    }
-                    target="_blank"
-                    rel="noreferrer"
+                  <LinkA
+                    link={`${URLMAP.network[network]['finderNFT']}${contractAddress}`}
                   >
                     KIP-37 Token Address
-                  </a>
+                  </LinkA>
                 </Text>
               ) : (
-                <Text style={{ color: '#c221a9' }}> {deployMsg} </Text>
+                <Text style={{ color: COLOR.error }}> {deployMsg} </Text>
               )}
             </CardSection>
           )}
@@ -413,21 +413,14 @@ const KIP37Deploy = (): ReactElement => {
                   <Text>
                     {createMsg} You can check it below link:
                     <br />
-                    <a
-                      href={
-                        URLMAP.network[network]['finderNFT'] +
-                        contractAddress +
-                        '?tabId=nftInventory&search=' +
-                        senderAddress
-                      }
-                      target="_blank"
-                      rel="noreferrer"
+                    <LinkA
+                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${senderAddress}`}
                     >
                       KIP-37 Token Inventory
-                    </a>
+                    </LinkA>
                   </Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}> {createMsg} </Text>
+                  <Text style={{ color: COLOR.error }}> {createMsg} </Text>
                 )}
               </CardSection>
             )}
@@ -435,6 +428,16 @@ const KIP37Deploy = (): ReactElement => {
         </Card>
       )}
       {createSuccess && (
+        <FormRadio
+          itemList={[
+            { title: 'Transfer', value: FunctionEnum.TRANSFER },
+            { title: 'Mint', value: FunctionEnum.MINT },
+          ]}
+          selectedValue={belowPage}
+          onClick={setBelowPage}
+        />
+      )}
+      {createSuccess && belowPage === FunctionEnum.TRANSFER && (
         <Card>
           <CardHeader>
             <h3 className="title">Transfer the KIP-37 Token</h3>
@@ -483,28 +486,21 @@ const KIP37Deploy = (): ReactElement => {
                   <Text>
                     {transferMsg} You can check it below link:
                     <br />
-                    <a
-                      href={
-                        URLMAP.network[network]['finderNFT'] +
-                        contractAddress +
-                        '?tabId=nftInventory&search=' +
-                        toAddress
-                      }
-                      target="_blank"
-                      rel="noreferrer"
+                    <LinkA
+                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${toAddress}`}
                     >
                       KIP-37 Token Inventory
-                    </a>
+                    </LinkA>
                   </Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}> {transferMsg} </Text>
+                  <Text style={{ color: COLOR.error }}> {transferMsg} </Text>
                 )}
               </CardSection>
             )}
           </CardBody>
         </Card>
       )}
-      {createSuccess && (
+      {createSuccess && belowPage === FunctionEnum.MINT && (
         <Card>
           <CardHeader>
             <h3 className="title">Mint the KIP-37 Token</h3>
@@ -547,21 +543,14 @@ const KIP37Deploy = (): ReactElement => {
                   <Text>
                     {mintMsg} You can check it below link:
                     <br />
-                    <a
-                      href={
-                        URLMAP.network[network]['finderNFT'] +
-                        contractAddress +
-                        '?tabId=nftInventory&search=' +
-                        recipientAddress
-                      }
-                      target="_blank"
-                      rel="noreferrer"
+                    <LinkA
+                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${recipientAddress}`}
                     >
                       KIP-37 Token Inventory
-                    </a>
+                    </LinkA>
                   </Text>
                 ) : (
-                  <Text style={{ color: '#c221a9' }}> {mintMsg} </Text>
+                  <Text style={{ color: COLOR.error }}> {mintMsg} </Text>
                 )}
               </CardSection>
             )}

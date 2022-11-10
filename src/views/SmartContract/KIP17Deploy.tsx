@@ -416,15 +416,11 @@ const KIP17Deploy = (): ReactElement => {
                 <Text>
                   {deployMsg}You can check it below link:
                   <br />
-                  <a
-                    href={
-                      URLMAP.network[network]['finderNFT'] + contractAddress
-                    }
-                    target="_blank"
-                    rel="noreferrer"
+                  <LinkA
+                    link={`${URLMAP.network[network]['finderNFT']}${contractAddress}`}
                   >
                     NFT Address
-                  </a>
+                  </LinkA>
                 </Text>
               ) : (
                 <Text style={{ color: COLOR.error }}>{deployMsg}</Text>
@@ -477,18 +473,11 @@ const KIP17Deploy = (): ReactElement => {
                   <Text>
                     {mintMsg} You can check it below link:
                     <br />
-                    <a
-                      href={
-                        URLMAP.network[network]['finderNFT'] +
-                        contractAddress +
-                        '?tabId=nftInventory&search=' +
-                        nftReceiver
-                      }
-                      target="_blank"
-                      rel="noreferrer"
+                    <LinkA
+                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${nftReceiver}`}
                     >
                       NFT Inventory
-                    </a>
+                    </LinkA>
                   </Text>
                 ) : (
                   <Text style={{ color: COLOR.error }}>{mintMsg}</Text>
@@ -536,18 +525,11 @@ const KIP17Deploy = (): ReactElement => {
                   <Text>
                     {burnMsg} You can see that the NFT you just removed no
                     longer exists:{' '}
-                    <a
-                      href={
-                        URLMAP.network[network]['finderNFT'] +
-                        contractAddress +
-                        '?tabId=nftInventory&search=' +
-                        senderAddress
-                      }
-                      target="_blank"
-                      rel="noreferrer"
+                    <LinkA
+                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${senderAddress}`}
                     >
                       NFT Inventory
-                    </a>
+                    </LinkA>
                   </Text>
                 ) : (
                   <Text style={{ color: COLOR.error }}> {burnMsg} </Text>
@@ -596,18 +578,11 @@ const KIP17Deploy = (): ReactElement => {
                 {transferSuccess ? (
                   <Text>
                     {transferMsg} You can see that the NFT you just sent:{' '}
-                    <a
-                      href={
-                        URLMAP.network[network]['finderNFT'] +
-                        contractAddress +
-                        '?tabId=nftInventory&search=' +
-                        transferReceiver
-                      }
-                      target="_blank"
-                      rel="noreferrer"
+                    <LinkA
+                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${transferReceiver}`}
                     >
                       NFT Inventory
-                    </a>
+                    </LinkA>
                   </Text>
                 ) : (
                   <Text style={{ color: COLOR.error }}>{transferMsg}</Text>

@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
-import { URLMAP, UTIL } from 'consts'
+import { URLMAP, UTIL, COLOR } from 'consts'
 import {
   Button,
   Card,
@@ -40,11 +40,7 @@ const KIP7Deploy = (): ReactElement => {
     [network]
   )
 
-  useEffect(() => {
-    setTimeout(() => {
-      setSenderDecryptMsg('')
-    }, 5000)
-  }, [senderDecryptMsg])
+  const exposureTime = 5000
 
   const handleSenderKeystoreChange = (files?: FileList) => {
     if (files && files.length > 0) {
@@ -81,6 +77,10 @@ const KIP7Deploy = (): ReactElement => {
     } catch (err) {
       setSenderDecryptMsg(_.toString(err))
       setSenderAddress('')
+
+      setTimeout(() => {
+        setSenderDecryptMsg('')
+      }, exposureTime)
     }
   }
 
@@ -113,7 +113,7 @@ const KIP7Deploy = (): ReactElement => {
 
       setTimeout(() => {
         setDeployMsg('')
-      }, 5000)
+      }, exposureTime)
     }
   }
 
@@ -168,11 +168,16 @@ const KIP7Deploy = (): ReactElement => {
           <CardSection>
             <Button onClick={decryptSenderKeystore}>Decrypt</Button>
           </CardSection>
-          {!!senderDecryptMsg && (
-            <CardSection>
-              <Text style={{ color: '#c221a9' }}>{senderDecryptMsg}</Text>
-            </CardSection>
-          )}
+          {!!senderDecryptMsg &&
+            (!!senderAddress ? (
+              <CardSection>
+                <Text>{senderDecryptMsg}</Text>
+              </CardSection>
+            ) : (
+              <CardSection>
+                <Text style={{ color: COLOR.error }}>{senderDecryptMsg}</Text>
+              </CardSection>
+            ))}
         </CardBody>
       </Card>
       <Card>
@@ -234,15 +239,13 @@ const KIP7Deploy = (): ReactElement => {
                   link:
                   <br />
                   <LinkA
-                    link={
-                      URLMAP.network[network]['finderToken'] + contractAddress
-                    }
+                    link={`${URLMAP.network[network]['finderToken']}${contractAddress}`}
                   >
                     {contractAddress}
                   </LinkA>
                 </Text>
               ) : (
-                <Text style={{ color: '#c221a9' }}>{deployMsg}</Text>
+                <Text style={{ color: COLOR.error }}>{deployMsg}</Text>
               )}
             </CardSection>
           )}
