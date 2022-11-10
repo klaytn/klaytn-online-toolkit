@@ -18,18 +18,11 @@ import {
   FormRadio,
   View,
   PrivateKeyWarning,
+  Row,
+  CodeBlock,
 } from 'components'
 import { KeystoreType } from './components/GetMultipleKeysSection'
 import GetMultipleKeysSection from './components/GetMultipleKeysSection'
-
-const FormBlock = styled.div`
-  display: flex;
-  column-gap: 8px;
-`
-
-const SLabel = styled(Label)`
-  margin-bottom: 5px;
-`
 
 const SFormInput = styled(FormInput)`
   margin-bottom: 10px;
@@ -188,14 +181,16 @@ const SendMultiSigTx = (): ReactElement => {
         </CardHeader>
         <CardBody>
           <h3 className="title">Sender Information</h3>
-          <Text>
-            Enter the sender's address. Then upload keystore files or enter
-            private keys to sign the transaction. If the decryption is
-            successful, you will see the filename appended to the decrypted
-            keystore list below.
-          </Text>
+          <View style={{ paddingBottom: 10 }}>
+            <Text>
+              Enter the sender's address. Then upload keystore files or enter
+              private keys to sign the transaction. If the decryption is
+              successful, you will see the filename appended to the decrypted
+              keystore list below.
+            </Text>
+          </View>
           <CardSection>
-            <SLabel>Sender Address</SLabel>
+            <Label>Sender Address</Label>
             <SFormInput
               placeholder="Sender Address"
               onChange={setSenderAddress}
@@ -219,7 +214,7 @@ const SendMultiSigTx = (): ReactElement => {
             <Text>Testnet</Text>
           </CardSection>
           <CardSection>
-            <SLabel>Recipient Address</SLabel>
+            <Label>Recipient Address</Label>
             <SFormInput
               placeholder="Recipient Address"
               onChange={setRecipientAddress}
@@ -237,7 +232,7 @@ const SendMultiSigTx = (): ReactElement => {
             </View>
             {tokenType === TokenTypeEnum.FT && (
               <>
-                <SLabel>Contract Address</SLabel>
+                <Label>Contract Address</Label>
                 <SFormInput
                   placeholder="Contract Address"
                   onChange={setContractAddress}
@@ -245,27 +240,56 @@ const SendMultiSigTx = (): ReactElement => {
                 />
               </>
             )}
-            <SLabel>
+            <Label>
               Amount{' '}
               {`(Unit: ${
                 tokenType === TokenTypeEnum.KLAY
                   ? 'KLAY'
                   : 'Base unit of a token'
               })`}
-            </SLabel>
+            </Label>
             <SFormInput
               placeholder="Amount"
               onChange={setAmount}
               value={amount}
             />
-            <FormBlock>
+            <Row style={{ columnGap: '8px', marginBottom: '10px' }}>
               <Button disabled={buttonDisabled} onClick={onSignTxButtonClick}>
                 Sign Transaction
               </Button>
               <Button disabled={buttonDisabled} onClick={onSendTxButtonClick}>
                 Send Transaction
               </Button>
-            </FormBlock>
+            </Row>
+            {tokenType === TokenTypeEnum.KLAY ? (
+              <CodeBlock
+                title="caver-js code"
+                text={`const vt = caver.transaction.valueTransfer.create({
+  from: senderAddress,
+  to: recipientAddress,
+  value: caver.utils.toPeb(amount, 'KLAY'),
+  gas: 1000000,
+})
+const signed = await caver.wallet.sign(senderAddress, vt)
+const rawTx = signed.getRawTransaction()
+const vtReceipt = await caver.rpc.klay.sendRawTransaction(rawTx)`}
+              />
+            ) : (
+              <CodeBlock
+                title="caver-js code"
+                text={`const contractInstance = new caver.kct.kip7(contractAddress)
+const decimal = await contractInstance.decimals()
+const value = UTIL.toBn(amount).multipliedBy(Math.pow(10, decimal))
+const signed = await contractInstance.sign(
+  { from: senderAddress, gas: 1000000 },
+  'transfer',
+  recipientAddress,
+  value
+)
+const rawTx = signed.getRawTransaction()
+const vtReceipt = await caver.rpc.klay.sendRawTransaction(rawTx)`}
+              />
+            )}
           </CardSection>
           <SuccessMsgForm result={resultMsg} />
         </CardBody>
