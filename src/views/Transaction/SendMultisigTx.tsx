@@ -1,8 +1,7 @@
 import { ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
-import Caver, { Keystore, MultipleKeyring, SingleKeyring } from 'caver-js'
+import Caver from 'caver-js'
 import _ from 'lodash'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 
 import { URLMAP, UTIL, COLOR } from 'consts'
 import {
@@ -13,21 +12,16 @@ import {
   Label,
   Column,
   Text,
-  FormSelect,
   CardSection,
   FormInput,
   LinkA,
-  FormFile,
   FormRadio,
   View,
+  PrivateKeyWarning,
 } from 'components'
-const delay: number = 3000
+import { KeystoreType } from './components/GetMultipleKeysSection'
+import GetMultipleKeysSection from './components/GetMultipleKeysSection'
 
-const FormChildBlock = styled.div`
-  display: flex;
-  align-items: center;
-  width: 50%;
-`
 const FormBlock = styled.div`
   display: flex;
   margin-bottom: 5px;
@@ -64,135 +58,34 @@ enum TokenTypeEnum {
   FT = 'KIP-7/ERC-20',
 }
 
-type KeystoreType = {
-  privateKeys: string[]
-  filename: string
-}
 type SuccessMsgType = {
   msg: string
   success: boolean
   child?: ReactNode
 }
 
-type NetworkType = 'mainnet' | 'testnet'
-
 const SendMultiSigTx = (): ReactElement => {
-  const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [senderAddress, setSenderAddress] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
-  const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
-  const [keystoreFileName, setKeystoreFileName] = useState('')
-  const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
   const [tokenType, setTokenType] = useState<TokenTypeEnum>(TokenTypeEnum.KLAY)
-  const [decryptMsg, setDecryptMsg] = useState<SuccessMsgType>()
   const [keyList, setKeyList] = useState<KeystoreType[]>([])
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const [resultMsg, setResultMsg] = useState<SuccessMsgType>()
   const [amount, setAmount] = useState('')
   const [contractAddress, setContractAddress] = useState('')
   const [rawTx, setRawTx] = useState('')
-  const caver = useMemo(
-    () => new Caver(URLMAP.network[network]['rpc']),
-    [network]
-  )
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDecryptMsg(undefined)
-    }, delay)
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [decryptMsg])
+  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
 
   useEffect(() => {
     setResultMsg(undefined)
-  }, [
-    senderAddress,
-    recipientAddress,
-    amount,
-    contractAddress,
-    network,
-    tokenType,
-  ])
-
-  const handleSenderKeystoreChange = (files?: FileList): void => {
-    if (files && files.length > 0) {
-      const fileReader = new FileReader()
-      fileReader.readAsText(files[0], 'UTF-8')
-      fileReader.onload = (event) => {
-        try {
-          if (typeof event.target?.result === 'string') {
-            const json = UTIL.jsonTryParse<Keystore>(event.target.result)
-            setSenderKeystorePassword('')
-            if (!!json) {
-              setSenderKeystoreJSON(json)
-              setKeystoreFileName(files[0].name)
-            } else {
-              throw Error(
-                'Failed to parse json file. Please check keystore file again.'
-              )
-            }
-          }
-        } catch (err) {
-          setDecryptMsg({
-            success: false,
-            msg: _.toString(err),
-          })
-        }
-      }
-    }
-  }
-
-  const decryptSenderKeystore = (): void => {
-    try {
-      if (!!senderKeystoreJSON) {
-        const keyring = caver.wallet.keyring.decrypt(
-          senderKeystoreJSON,
-          senderKeystorePassword
-        )
-        const privKeyList: string[] = []
-        if (keyring.type === 'SingleKeyring') {
-          privKeyList.push((keyring as SingleKeyring).key.privateKey)
-        } else if (keyring.type === 'MultipleKeyring') {
-          for (const element of (keyring as MultipleKeyring).keys) {
-            privKeyList.push(element.privateKey)
-          }
-        } else if (keyring.type === 'RoleBasedKeyring') {
-          const txRoleKeys = keyring.getKeyByRole(
-            caver.wallet.keyring.role.roleTransactionKey
-          )
-          for (const element of txRoleKeys) {
-            privKeyList.push(element.privateKey)
-          }
-        }
-        setDecryptMsg({
-          msg: 'Decryption succeeds!',
-          success: true,
-        })
-        setKeyList([
-          ...keyList,
-          { privateKeys: privKeyList, filename: keystoreFileName },
-        ])
-      } else {
-        throw Error('Keystore is not uploaded!')
-      }
-    } catch (err) {
-      setDecryptMsg({ success: false, msg: _.toString(err) })
-    }
-  }
-
-  const handleKeystoreRemove = (index: number): void => {
-    const privKeyList = [...keyList]
-    privKeyList.splice(index, 1)
-    setKeyList(privKeyList)
-  }
+  }, [senderAddress, recipientAddress, amount, contractAddress, tokenType])
 
   const onSignTxButtonClick = async (): Promise<void> => {
     try {
       setButtonDisabled(true)
       let storedKeys: string[] = []
       for (const element of keyList) {
+        console.log('elemeng:', element)
         storedKeys.push(...element.privateKeys)
       }
       const newKeyring = caver.wallet.keyring.createWithMultipleKey(
@@ -219,7 +112,7 @@ const SendMultiSigTx = (): ReactElement => {
         //KIP-7 & ERC20
         const contractInstance = new caver.kct.kip7(contractAddress)
         const decimal = await contractInstance.decimals()
-        const value = BigNumber(_.toNumber(amount) * Math.pow(10, decimal))
+        const value = UTIL.toBn(amount).multipliedBy(Math.pow(10, decimal))
         signed = await contractInstance.sign(
           { from: senderAddress, gas: 1000000 },
           'transfer',
@@ -253,7 +146,7 @@ const SendMultiSigTx = (): ReactElement => {
           <Text>
             {'Transaction Hash: '}
             <LinkA
-              link={`${URLMAP.network[network]['finder']}${vtReceipt.transactionHash}`}
+              link={`${URLMAP.network['testnet']['finder']}${vtReceipt.transactionHash}`}
             >
               {vtReceipt.transactionHash}
             </LinkA>
@@ -284,32 +177,42 @@ const SendMultiSigTx = (): ReactElement => {
             </LinkA>{' '}
             or a single key.
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
-          <h3 className="title">Transaction Information</h3>
+          <h3 className="title">Sender Information</h3>
           <Text>
-            Select Mainnet or Testnet. Enter the sender address, recipient
-            address, and KLAY amount. If you'd like to transfer KIP-7 or ERC-20
-            token, enter the contract address and token amount instead of KLAY
-            amount.
+            Enter the sender's address. Then upload keystore files or enter
+            private keys to sign the transaction. If the decryption is
+            successful, you will see the filename appended to the decrypted
+            keystore list below.
           </Text>
           <CardSection>
-            <Label>Network</Label>
-            <FormSelect
-              defaultValue={network}
-              itemList={[
-                { value: 'mainnet', label: 'Mainnet' },
-                { value: 'testnet', label: 'Testnet' },
-              ]}
-              onChange={setNetwork}
-            />
-            <Label>Sender</Label>
+            <Label>Sender Address</Label>
             <FormInput
               placeholder="Sender Address"
               onChange={setSenderAddress}
               value={senderAddress}
             />
-            <Label>Recipient</Label>
+          </CardSection>
+          <GetMultipleKeysSection keyList={keyList} setKeyList={setKeyList} />
+        </CardBody>
+      </Card>
+      <Card>
+        <CardHeader>
+          <h3 className="title">Transaction Information</h3>
+          <Text>
+            Enter the recipient's address and KLAY amount. If you'd like to
+            transfer KIP-7 or ERC-20 token, enter the contract address and token
+            amount instead of KLAY amount.
+          </Text>
+        </CardHeader>
+        <CardBody>
+          <CardSection>
+            <Text>Testnet</Text>
+          </CardSection>
+          <CardSection>
+            <Label>Recipient Address</Label>
             <FormInput
               placeholder="Recipient Address"
               onChange={setRecipientAddress}
@@ -356,56 +259,6 @@ const SendMultiSigTx = (): ReactElement => {
             </FormBlock>
           </CardSection>
           <SuccessMsgForm result={resultMsg} />
-        </CardBody>
-      </Card>
-      <Card>
-        <CardHeader>
-          <h3 className="title">Upload Keystore File</h3>
-          <Text>
-            You need private keys to sign transaction. Upload here keystore
-            files to be used for private keys. Once decryption succeeds, you can
-            see filename added in decrypted keystore list below.
-          </Text>
-        </CardHeader>
-        <CardBody>
-          <CardSection>
-            <Label>Keystore</Label>
-            <FormFile
-              placeholder="Keystore File"
-              accept=".json"
-              onChange={handleSenderKeystoreChange}
-            />
-            <Label>Password</Label>
-            <FormInput
-              type="password"
-              placeholder="Password"
-              onChange={setSenderKeystorePassword}
-              value={senderKeystorePassword}
-            />
-            <Button onClick={decryptSenderKeystore}>Decrypt</Button>
-          </CardSection>
-          <SuccessMsgForm result={decryptMsg} />
-          <CardSection>
-            <Label>Decrypted Keystore List </Label>
-            {keyList.length > 0 ? (
-              keyList.map((_, index: number) => (
-                <FormBlock>
-                  <FormChildBlock>
-                    <Text>{keyList[index].filename}</Text>
-                  </FormChildBlock>
-                  <FormChildBlock>
-                    <Button onClick={() => handleKeystoreRemove(index)}>
-                      Remove
-                    </Button>
-                  </FormChildBlock>
-                </FormBlock>
-              ))
-            ) : (
-              <Text style={{ color: COLOR.error }}>
-                There's no keystore uploaded.
-              </Text>
-            )}
-          </CardSection>
         </CardBody>
       </Card>
     </Column>
