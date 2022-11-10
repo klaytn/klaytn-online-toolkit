@@ -76,7 +76,7 @@ const AccountKeyMultiSig = (): ReactElement => {
   const privateKey = keyring && 'key' in keyring ? keyring.key : ''
 
   const [numOfNewPrivateKey, setNumOfNewPrivateKey] = useState(2)
-  const [threshold, setThreshold] = useState(1)
+  const [threshold, setThreshold] = useState(2)
   const [weights, setWeights] = useState<number[]>([1, 1])
   const [newPrivateKeyList, setNewPrivateKeyList] = useState<string[]>([])
   const [password, setPassword] = useState('')
