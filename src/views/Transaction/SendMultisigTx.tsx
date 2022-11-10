@@ -85,7 +85,6 @@ const SendMultiSigTx = (): ReactElement => {
       setButtonDisabled(true)
       let storedKeys: string[] = []
       for (const element of keyList) {
-        console.log('elemeng:', element)
         storedKeys.push(...element.privateKeys)
       }
       const newKeyring = caver.wallet.keyring.createWithMultipleKey(
