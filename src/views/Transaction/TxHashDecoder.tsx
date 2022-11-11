@@ -17,6 +17,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -66,8 +67,8 @@ const TxHashDecoder = (): ReactElement => {
         <CardHeader>
           <h3 className="title">TxHash Decoder</h3>
           <Text>
-            On this page, you can query a transaction by transaction hash from
-            the Klaytn network to get a caver transaction instance.
+            Query a transaction by transaction hash from Klaytn to get a
+            transaction instance.
           </Text>
         </CardHeader>
         <CardBody>
@@ -86,19 +87,19 @@ const TxHashDecoder = (): ReactElement => {
           <CardSection>
             <Label>Transaction Hash</Label>
             <CardExample exValue={exValue} onClickTry={setTxHash} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={txHash}
-              onChange={setTxHash}
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={decodeTxHash}>Decode</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`const decoded = caver.transaction.getTransactionByHash(txHash)
-const rawTransaction = decoded.getRawTransaction()`}
-            />
+            <View style={{ rowGap: 10 }}>
+              <FormTextarea
+                style={{ height: 100 }}
+                value={txHash}
+                onChange={setTxHash}
+              />
+              <Button onClick={decodeTxHash}>Decode</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`const tx = caver.transaction.getTransactionByHash(txHash)
+const rawTransaction = tx.getRawTransaction()`}
+              />
+            </View>
           </CardSection>
           <ResultForm result={result} />
           {result?.success && (
