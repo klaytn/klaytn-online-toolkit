@@ -14,6 +14,8 @@ import {
   CardSection,
   CodeBlock,
   FormFile,
+  PrivateKeyWarning,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -42,7 +44,8 @@ const LoadKeystore = (): ReactElement => {
       //decrypt and add priv key to PrivKey list
       try {
         const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)
-        const message = `${keyring.type} ${JSON.stringify(keyring)}`
+        const message = `${keyring.type}
+${JSON.stringify(keyring, null, 2)}`
 
         setResult({
           success: true,
@@ -67,31 +70,38 @@ const LoadKeystore = (): ReactElement => {
             Decrypt a keystore v3 or v4 JSON and return the decrypted Keyring
             instance.{' '}
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
           <CardSection>
-            <Label>Keystore</Label>
-            <FormFile
-              placeholder="Keystore File"
-              accept=".json"
-              onChange={handleKeystoreChange}
-            />
-          </CardSection>
-          <CardSection>
-            <Label>Password</Label>
-            <FormInput
-              type="password"
-              placeholder="Password"
-              onChange={setPassword}
-              value={password}
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={decrypt}>Decrypt</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
-            />
+            <View style={{ rowGap: 10 }}>
+              <View>
+                <Label>Keystore</Label>
+                <FormFile
+                  placeholder="Keystore File"
+                  accept=".json"
+                  onChange={handleKeystoreChange}
+                />
+              </View>
+              <View>
+                <Label>Password</Label>
+                <FormInput
+                  type="password"
+                  placeholder="Password"
+                  onChange={setPassword}
+                  value={password}
+                />
+              </View>
+              <Button onClick={decrypt}>Decrypt</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`import { Keystore } from 'caver-js'
+keystoreJSON: Keystore
+password: string
+
+const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
+              />
+            </View>
           </CardSection>
           <ResultForm result={result} />
         </CardBody>

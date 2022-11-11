@@ -16,6 +16,7 @@ import {
   FormInput,
   CardSection,
   CodeBlock,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -101,15 +102,17 @@ const CheckAccountKey = (): ReactElement => {
             />
           </CardSection>
           <CardSection>
-            <Label>Address</Label>
-            <FormInput value={inputAddress} onChange={setInputAddress} />
-          </CardSection>
-          <CardSection>
-            <Button onClick={checkAddress}>Check</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`const accountKeyForRPC = await caver.rpc.klay.getAccountKey(inputAddress)`}
-            />
+            <View style={{ rowGap: 10 }}>
+              <View>
+                <Label>Address</Label>
+                <FormInput value={inputAddress} onChange={setInputAddress} />
+              </View>
+              <Button onClick={checkAddress}>Check</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`const accountKeyForRPC = await caver.rpc.klay.getAccountKey(inputAddress)`}
+              />
+            </View>
           </CardSection>
           <ResultForm title={title} result={result} />
         </CardBody>

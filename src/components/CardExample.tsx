@@ -25,6 +25,7 @@ const CardExample = ({
           onClick={(): void => {
             onClickTry(exValue)
           }}
+          style={{ fontSize: 14 }}
         >
           Try it out
         </Button>
