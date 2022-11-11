@@ -16,6 +16,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -76,35 +77,36 @@ const FunctionSignature = (): ReactElement => {
           </Text>
         </CardHeader>
         <CardBody>
-          <CardSection style={{ width: 200 }}>
-            <Label>Type</Label>
-            <FormRadio
-              itemList={[
-                { title: 'String', value: InputTypeEnum.STRING },
-                { title: 'ABI', value: InputTypeEnum.ABI },
-              ]}
-              selectedValue={inputType}
-              onClick={setInputType}
-            />
-          </CardSection>
           <CardSection>
-            <Label>Input</Label>
-            <CardExample exValue={exValue} onClickTry={setInputValue} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={inputValue}
-              onChange={setInputValue}
-              placeholder="Enter the comma-separated value types."
-            />
-            <CodeBlock
-              title="caver-js code"
-              text={`import { AbiItem } from 'caver-js'
+            <Label>Input Type</Label>
+            <View style={{ rowGap: 10 }}>
+              <FormRadio
+                itemList={[
+                  { title: 'String', value: InputTypeEnum.STRING },
+                  { title: 'ABI', value: InputTypeEnum.ABI },
+                ]}
+                selectedValue={inputType}
+                onClick={setInputType}
+              />
+              <View>
+                <Label>Input</Label>
+                <CardExample exValue={exValue} onClickTry={setInputValue} />
+                <FormTextarea
+                  style={{ height: 100 }}
+                  value={inputValue}
+                  onChange={setInputValue}
+                  placeholder="Enter the comma-separated value types."
+                />
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`import { AbiItem } from 'caver-js'
 param: string | AbiItem
 
 const encoded = caver.abi.encodeFunctionSignature(param)`}
-            />
+              />
+            </View>
           </CardSection>
-
           <ResultForm result={result} />
         </CardBody>
       </Card>

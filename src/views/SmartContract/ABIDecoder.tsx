@@ -16,6 +16,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -56,38 +57,38 @@ const ABIEncoder = (): ReactElement => {
       <Card>
         <CardHeader>
           <h3 className="title">ABI Decoder</h3>
-          <Text>The tool is designed to decode ABI encoded parameters.</Text>
+          <Text>Will decode ABI encoded parameters.</Text>
         </CardHeader>
         <CardBody>
           <CardSection>
             <Label>Argument Types</Label>
             <CardExample exValue={exType} onClickTry={setArgTypes} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={argTypes}
-              onChange={setArgTypes}
-              placeholder="Enter the comma-separated value types."
-            />
-          </CardSection>
-          <CardSection>
+            <View style={{ paddingBottom: 10 }}>
+              <FormTextarea
+                style={{ height: 100 }}
+                value={argTypes}
+                onChange={setArgTypes}
+                placeholder="Enter the comma-separated value types."
+              />
+            </View>
             <Label>Encoded Data</Label>
             <CardExample exValue={exData} onClickTry={setEncodedData} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={encodedData}
-              onChange={setEncodedData}
-              placeholder=" Enter the encoded data to be decoded."
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={encodeABI}>Decode</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`types: (string | object)[]
+            <View style={{ rowGap: 10 }}>
+              <FormTextarea
+                style={{ height: 100 }}
+                value={encodedData}
+                onChange={setEncodedData}
+                placeholder=" Enter the encoded data to be decoded."
+              />
+              <Button onClick={encodeABI}>Decode</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`types: (string | object)[]
 encodedData: string
 
 const decoded = caver.abi.decodeParameters(types, encodedData)`}
-            />
+              />
+            </View>
           </CardSection>
           <ResultForm result={result} />
         </CardBody>

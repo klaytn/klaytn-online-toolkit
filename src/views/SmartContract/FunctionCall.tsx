@@ -49,6 +49,7 @@ const FunctionCall = (): ReactElement => {
   const [encodeResultMsg, setEncodeResultMsg] = useState('')
   const [functionCallDisabled, setFunctionCallDisabled] = useState(false)
   const [result, setResult] = useState<ResultFormType<string>>()
+
   const caver = useMemo(
     () => new Caver(URLMAP.network[network]['rpc']),
     [network]
@@ -83,11 +84,11 @@ const FunctionCall = (): ReactElement => {
 
   const parseABI = async (): Promise<void> => {
     try {
-      const parsedABI = JSON.parse(abi)
+      const parsedABI = JSON.parse(abi) as AbiItem
       if (false === _.has(parsedABI, 'inputs')) {
         throw Error('This JSON object doesn\'t include "inputs" field.')
       }
-      const params = new Array(parsedABI?.inputs.length)
+      const params = new Array(parsedABI.inputs?.length)
       params.fill('')
       setABIParsed(parsedABI)
       setParams(params)
@@ -151,12 +152,14 @@ const FunctionCall = (): ReactElement => {
               exValue={JSON.stringify(balanceOfABI)}
               onClickTry={setABI}
             />
-            <FormTextarea
-              style={{ height: '100px' }}
-              value={abi}
-              onChange={setABI}
-              placeholder="Enter the ABI(JSON interface object of function)"
-            />
+            <View style={{ paddingBottom: 10 }}>
+              <FormTextarea
+                style={{ height: '100px' }}
+                value={abi}
+                onChange={setABI}
+                placeholder="Enter the ABI(JSON interface object of function)"
+              />
+            </View>
             <Button onClick={parseABI}>Parse ABI</Button>
           </CardSection>
           <SuccessMsgForm result={parseResultMsg} />
@@ -189,7 +192,10 @@ const FunctionCall = (): ReactElement => {
                 </View>
                 <CodeBlock
                   title="caver-js code"
-                  text={`const parsedABI = JSON.parse(abi)
+                  text={`import { AbiItem } from 'caver-js'
+parameters: string[]
+
+const parsedABI = JSON.parse(abi) as AbiItem
 const data = caver.abi.encodeFunctionCall(abiParsed, parameters)`}
                 />
               </CardSection>

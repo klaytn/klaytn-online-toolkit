@@ -16,6 +16,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -57,38 +58,40 @@ const ABIEncoder = (): ReactElement => {
       <Card>
         <CardHeader>
           <h3 className="title">ABI Encoder</h3>
-          <Text>The tool is designed to encode Solidity ABI data.</Text>
+          <Text>Will encode Solidity ABI data.</Text>
         </CardHeader>
         <CardBody>
           <CardSection>
-            <Label>Argument Types</Label>
-            <CardExample exValue={exType} onClickTry={setArgTypes} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={argTypes}
-              onChange={setArgTypes}
-              placeholder="Enter the comma-separated value types."
-            />
-          </CardSection>
-          <CardSection>
-            <Label>Argument Values</Label>
-            <CardExample exValue={exValue} onClickTry={setArgValues} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={argValues}
-              onChange={setArgValues}
-              placeholder="Enter the comma-separated values to match the number of types shown above."
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={encodeABI}>Encode</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`types: (string | object)[]
+            <View style={{ rowGap: 10 }}>
+              <View>
+                <Label>Argument Types</Label>
+                <CardExample exValue={exType} onClickTry={setArgTypes} />
+                <FormTextarea
+                  style={{ height: 100 }}
+                  value={argTypes}
+                  onChange={setArgTypes}
+                  placeholder="Enter the comma-separated value types."
+                />
+              </View>
+              <View>
+                <Label>Argument Values</Label>
+                <CardExample exValue={exValue} onClickTry={setArgValues} />
+                <FormTextarea
+                  style={{ height: 100 }}
+                  value={argValues}
+                  onChange={setArgValues}
+                  placeholder="Enter the comma-separated values to match the number of types shown above."
+                />
+              </View>
+              <Button onClick={encodeABI}>Encode</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`types: (string | object)[]
 params: any[]
 
-const encoded = caver.abi.encodeParameters(types, values)`}
-            />
+const encoded = caver.abi.encodeParameters(types, params)`}
+              />
+            </View>
           </CardSection>
 
           <ResultForm result={result} />
