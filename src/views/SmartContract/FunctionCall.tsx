@@ -17,6 +17,8 @@ import {
   CardHeader,
   FormInput,
   FormSelect,
+  View,
+  CodeBlock,
 } from 'components'
 import { ResultFormType } from 'types'
 import { COLOR } from 'consts'
@@ -157,62 +159,90 @@ const FunctionCall = (): ReactElement => {
             />
             <Button onClick={parseABI}>Parse ABI</Button>
           </CardSection>
-          {!!parseResultMsg && <SuccessMsgForm result={parseResultMsg} />}
+          <SuccessMsgForm result={parseResultMsg} />
           {!!abiParsed && parameters.length > 0 && (
             <>
-              <Text>
-                {' '}
-                2. When all parameters are entered, click the Encode button to
-                encode the function call. The encoded function call is used as
-                input data of the transaction call object.
-              </Text>
+              <View style={{ marginBottom: 10 }}>
+                <Text>
+                  2. When all parameters are entered, click the Encode button to
+                  encode the function call. The encoded function call is used as
+                  input data of the transaction call object.
+                </Text>
+              </View>
               <CardSection>
                 {parameters.map((val, index: number) => (
                   <>
                     <Label>{`${abiParsed.inputs?.at(index)?.name}`}</Label>
-                    <FormInput
-                      placeholder={`${abiParsed.inputs?.at(index)?.name}(${
-                        abiParsed.inputs?.at(index)?.type
-                      })`}
-                      value={val}
-                      onChange={(e): void => handleParameterChange(e, index)}
-                    />
+                    <View style={{ marginBottom: 10 }}>
+                      <FormInput
+                        placeholder={`${abiParsed.inputs?.at(index)?.name}(${
+                          abiParsed.inputs?.at(index)?.type
+                        })`}
+                        value={val}
+                        onChange={(e): void => handleParameterChange(e, index)}
+                      />
+                    </View>
                   </>
                 ))}
-                <Button onClick={encodeFunctionCall}>Encode</Button>
+                <View style={{ marginBottom: 10 }}>
+                  <Button onClick={encodeFunctionCall}>Encode</Button>
+                </View>
+                <CodeBlock
+                  title="caver-js code"
+                  text={`const parsedABI = JSON.parse(abi)
+const data = caver.abi.encodeFunctionCall(abiParsed, parameters)`}
+                />
               </CardSection>
             </>
           )}
-          {!!encodeResultMsg && <SuccessMsgForm result={encodeResultMsg} />}
+          <SuccessMsgForm result={encodeResultMsg} />
           {!!data && (
             <>
-              <Text>
-                3. Select which network to send a message call to and enter the
-                contract address. Then click the Execute button to execute a new
-                message call. This execution does not alter the state of the
-                contract and does not consume gas.
-              </Text>
+              <View style={{ marginBottom: 10 }}>
+                <Text>
+                  3. Select which network to send a message call to and enter
+                  the contract address. Then click the Execute button to execute
+                  a new message call. This execution does not alter the state of
+                  the contract and does not consume gas.
+                </Text>
+              </View>
               <CardSection>
                 <Label>Network</Label>
-                <FormSelect
-                  defaultValue={network}
-                  itemList={[
-                    { value: 'mainnet', label: 'Mainnet' },
-                    { value: 'testnet', label: 'Testnet' },
-                  ]}
-                  onChange={setNetwork}
-                  containerStyle={{ width: 200 }}
-                />
+                <View style={{ marginBottom: 10 }}>
+                  <FormSelect
+                    defaultValue={network}
+                    itemList={[
+                      { value: 'mainnet', label: 'Mainnet' },
+                      { value: 'testnet', label: 'Testnet' },
+                    ]}
+                    onChange={setNetwork}
+                    containerStyle={{ width: 200 }}
+                  />
+                </View>
                 <Label>Contract Address</Label>
-                <FormInput
-                  type="text"
-                  value={contractAddress}
-                  placeholder="Contract Address"
-                  onChange={setContractAddress}
+                <View style={{ marginBottom: 10 }}>
+                  <FormInput
+                    type="text"
+                    value={contractAddress}
+                    placeholder="Contract Address"
+                    onChange={setContractAddress}
+                  />
+                </View>
+                <View style={{ marginBottom: 10 }}>
+                  <Button
+                    disabled={functionCallDisabled}
+                    onClick={functionCall}
+                  >
+                    Message Call
+                  </Button>
+                </View>
+                <CodeBlock
+                  title="caver-js code"
+                  text={`const result = await caver.rpc.klay.call({
+  to: contractAddress,
+  input: data,
+})`}
                 />
-                <Button disabled={functionCallDisabled} onClick={functionCall}>
-                  Message Call
-                </Button>
               </CardSection>
               <ResultForm
                 result={result}
