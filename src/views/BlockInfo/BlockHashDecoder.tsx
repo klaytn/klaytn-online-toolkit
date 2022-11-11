@@ -17,6 +17,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -64,7 +65,7 @@ const BlockHashDecoder = (): ReactElement => {
       <Card>
         <CardHeader>
           <h3 className="title">Block Hash Decoder</h3>
-          <Text>Here you can get block information by block hash.</Text>
+          <Text>Will return block information by block hash.</Text>
         </CardHeader>
         <CardBody>
           <CardSection>
@@ -82,18 +83,18 @@ const BlockHashDecoder = (): ReactElement => {
           <CardSection>
             <Label>Block Hash</Label>
             <CardExample exValue={exValue} onClickTry={setBlockHash} />
-            <FormInput
-              value={blockHash}
-              onChange={setBlockHash}
-              placeholder="Enter the Block Hash."
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={decodeBlockHash}>Decode</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`const block = caver.rpc.klay.getBlockByHash(blockHash)`}
-            />
+            <View style={{ rowGap: 10 }}>
+              <FormInput
+                value={blockHash}
+                onChange={setBlockHash}
+                placeholder="Enter the Block Hash."
+              />
+              <Button onClick={decodeBlockHash}>Decode</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`const block = caver.rpc.klay.getBlockByHash(blockHash)`}
+              />
+            </View>
           </CardSection>
           <ResultForm result={result} />
         </CardBody>
