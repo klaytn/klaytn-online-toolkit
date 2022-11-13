@@ -1,4 +1,4 @@
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -13,15 +13,16 @@ import {
   Text,
   LinkA,
   FormInput,
-  FormSelect,
   CardSection,
+  PrivateKeyWarning,
+  CodeBlock,
+  View,
 } from 'components'
 import FormFile from 'components/FormFile'
 
-type NetworkType = 'mainnet' | 'testnet'
+const caver = new Caver(URLMAP.network['testnet']['rpc'])
 
 const KIP7Deploy = (): ReactElement => {
-  const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
@@ -34,11 +35,6 @@ const KIP7Deploy = (): ReactElement => {
   const [decimal, setDecimal] = useState('')
   const [initialSupply, setInitialSupply] = useState('')
   const [contractAddress, setContractAddress] = useState('')
-
-  const caver = useMemo(
-    () => new Caver(URLMAP.network[network]['rpc']),
-    [network]
-  )
 
   const exposureTime = 5000
 
@@ -130,23 +126,18 @@ const KIP7Deploy = (): ReactElement => {
             function is used to deploy a KIP-7 token contract. After successful
             deployment, you can find contract account in explorer.
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
           <h3 className="title"> Upload Deployer Keystore File</h3>
-          <Text>
-            Upload keystore file. This account must have enough KLAY to deploy a
-            token contract.
-          </Text>
+          <View style={{ marginBottom: 10 }}>
+            <Text>
+              Upload keystore file. This account must have enough KLAY to deploy
+              a token contract.
+            </Text>
+          </View>
           <CardSection>
-            <Label> Network </Label>
-            <FormSelect
-              defaultValue={network}
-              itemList={[
-                { value: 'mainnet', label: 'Mainnet' },
-                { value: 'testnet', label: 'Testnet' },
-              ]}
-              onChange={setNetwork}
-            />
+            <Text>Testnet</Text>
           </CardSection>
           <CardSection>
             <Label>Kesytore</Label>
@@ -166,7 +157,17 @@ const KIP7Deploy = (): ReactElement => {
             />
           </CardSection>
           <CardSection>
-            <Button onClick={decryptSenderKeystore}>Decrypt</Button>
+            <View style={{ marginBottom: 10 }}>
+              <Button onClick={decryptSenderKeystore}>Decrypt</Button>
+            </View>
+            <CodeBlock
+              title="caver-js code"
+              text={`import { Keystore } from 'caver-js'
+keystoreJSON: Keystore
+password: string
+
+const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
+            />
           </CardSection>
           {!!senderDecryptMsg &&
             (!!senderAddress ? (
@@ -211,7 +212,7 @@ const KIP7Deploy = (): ReactElement => {
           <CardSection>
             <Label>Decimal</Label>
             <FormInput
-              type="number"
+              type="text"
               placeholder="Decimal (e.g., 18)"
               onChange={setDecimal}
               value={decimal}
@@ -220,16 +221,30 @@ const KIP7Deploy = (): ReactElement => {
           <CardSection>
             <Label>Initial Supply</Label>
             <FormInput
-              type="number"
+              type="text"
               placeholder="Initial Supply (e.g., 1e18)"
               onChange={setInitialSupply}
               value={initialSupply}
             />
           </CardSection>
           <CardSection>
-            <Button disabled={deployButtonDisabled} onClick={deploy}>
-              Deploy
-            </Button>
+            <View style={{ marginBottom: 10 }}>
+              <Button disabled={deployButtonDisabled} onClick={deploy}>
+                Deploy
+              </Button>
+            </View>
+            <CodeBlock
+              title="caver-js code"
+              text={`const kip7 = await caver.kct.kip7.deploy(
+  {
+    name: tokenName,
+    symbol: tokenSymbol,
+    decimals: Number(decimal),
+    initialSupply: initialSupply,
+  },
+  { from: senderAddress }
+)`}
+            />
           </CardSection>
           {!!deployMsg && (
             <CardSection>
@@ -239,7 +254,7 @@ const KIP7Deploy = (): ReactElement => {
                   link:
                   <br />
                   <LinkA
-                    link={`${URLMAP.network[network]['finderToken']}${contractAddress}`}
+                    link={`${URLMAP.network['testnet']['finderToken']}${contractAddress}`}
                   >
                     {contractAddress}
                   </LinkA>
