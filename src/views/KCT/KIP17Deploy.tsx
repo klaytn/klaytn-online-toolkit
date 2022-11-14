@@ -1,4 +1,4 @@
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -11,26 +11,26 @@ import {
   Label,
   Container,
   Text,
-  FormGroup,
   FormInput,
-  FormSelect,
   FormRadio,
   CardSection,
   CardExample,
   LinkA,
+  PrivateKeyWarning,
+  CodeBlock,
+  View,
 } from 'components'
 import FormFile from 'components/FormFile'
 
-type NetworkType = 'mainnet' | 'testnet'
-
 enum FunctionEnum {
   BURN = 'Burn',
-  SEND = 'Send',
+  Transfer = 'Transfer',
   PUP = 'Pause/Unpause',
 }
 
+const caver = new Caver(URLMAP.network['testnet']['rpc'])
+
 const KIP17Deploy = (): ReactElement => {
-  const [network, setNetwork] = useState<NetworkType>('mainnet')
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
@@ -62,11 +62,6 @@ const KIP17Deploy = (): ReactElement => {
   const [unpauseMsg, setUnpauseMsg] = useState('')
   const [unpauseButtonDisabled, setUnpauseButtonDisabled] = useState(false)
   const [belowPage, setBelowPage] = useState<FunctionEnum>(FunctionEnum.BURN)
-
-  const caver = useMemo(
-    () => new Caver(URLMAP.network[network]['rpc']),
-    [network]
-  )
 
   const exTokenURI = 'https://cryptologos.cc/logos/klaytn-klay-logo.svg?v=023'
 
@@ -323,26 +318,18 @@ const KIP17Deploy = (): ReactElement => {
             </LinkA>
             .
           </Text>
+          <PrivateKeyWarning />
         </CardHeader>
         <CardBody>
           <h3 className="title"> Upload Deployer Keystore File</h3>
-          <Text>
-            Upload the Keystore file. This account must have enough KLAY to
-            deploy a KIP-17 smart contract.
-          </Text>
+          <View style={{ marginBottom: 10 }}>
+            <Text>
+              Upload the Keystore file. This account must have enough KLAY to
+              deploy a KIP-17 smart contract.
+            </Text>
+          </View>
           <CardSection>
-            <FormGroup>
-              <Label>Network</Label>
-              <FormSelect
-                defaultValue={network}
-                itemList={[
-                  { value: 'mainnet', label: 'Mainnet' },
-                  { value: 'testnet', label: 'Testnet' },
-                ]}
-                onChange={setNetwork}
-                containerStyle={{ width: 200 }}
-              />
-            </FormGroup>
+            <Text>Testnet</Text>
           </CardSection>
           <CardSection>
             <Label>Keystore</Label>
@@ -362,7 +349,17 @@ const KIP17Deploy = (): ReactElement => {
             />
           </CardSection>
           <CardSection>
-            <Button onClick={decryptSenderKeystore}>Decrypt</Button>
+            <View style={{ marginBottom: 10 }}>
+              <Button onClick={decryptSenderKeystore}>Decrypt</Button>
+            </View>
+            <CodeBlock
+              title="caver-js code"
+              text={`import { Keystore } from 'caver-js'
+keystoreJSON: Keystore
+password: string
+
+const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
+            />
           </CardSection>
           {senderDecryptMessage &&
             (!!senderAddress ? (
@@ -406,9 +403,21 @@ const KIP17Deploy = (): ReactElement => {
             />
           </CardSection>
           <CardSection>
-            <Button disabled={deployButtonDisabled} onClick={deploy}>
-              Deploy
-            </Button>
+            <View style={{ marginBottom: 10 }}>
+              <Button disabled={deployButtonDisabled} onClick={deploy}>
+                Deploy
+              </Button>
+            </View>
+            <CodeBlock
+              title="caver-js code"
+              text={`const kip17 = await caver.kct.kip17.deploy(
+  {
+    name: tokenName,
+    symbol: tokenSymbol,
+  },
+  { from: senderAddress }
+)`}
+            />
           </CardSection>
           {!!deployMsg && (
             <CardSection>
@@ -417,7 +426,7 @@ const KIP17Deploy = (): ReactElement => {
                   {deployMsg}You can check it below link:
                   <br />
                   <LinkA
-                    link={`${URLMAP.network[network]['finderNFT']}${contractAddress}`}
+                    link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}`}
                   >
                     NFT Address
                   </LinkA>
@@ -440,32 +449,48 @@ const KIP17Deploy = (): ReactElement => {
           </CardHeader>
           <CardBody>
             <CardSection>
-              <Label>NFT Receiver</Label>
-              <CardExample
-                exValue={exTokenReceiver}
-                onClickTry={setNftReceiver}
-              />
-              <FormInput
-                type="text"
-                placeholder="Receiver's address"
-                onChange={setNftReceiver}
-                value={nftReceiver}
-              />
+              <View style={{ rowGap: 5 }}>
+                <Label>NFT Receiver</Label>
+                <CardExample
+                  exValue={exTokenReceiver}
+                  onClickTry={setNftReceiver}
+                />
+                <FormInput
+                  type="text"
+                  placeholder="Receiver's address"
+                  onChange={setNftReceiver}
+                  value={nftReceiver}
+                />
+              </View>
             </CardSection>
             <CardSection>
-              <Label>Token URI</Label>
-              <CardExample exValue={exTokenURI} onClickTry={setTokenURI} />
-              <FormInput
-                type="text"
-                placeholder="Token URI"
-                onChange={setTokenURI}
-                value={tokenURI}
-              />
+              <View style={{ rowGap: 5 }}>
+                <Label>Token URI</Label>
+                <CardExample exValue={exTokenURI} onClickTry={setTokenURI} />
+                <FormInput
+                  type="text"
+                  placeholder="Token URI"
+                  onChange={setTokenURI}
+                  value={tokenURI}
+                />
+              </View>
             </CardSection>
             <CardSection>
-              <Button disabled={mintButtonDisabled} onClick={mint}>
-                Mint
-              </Button>
+              <View style={{ marginBottom: 10 }}>
+                <Button disabled={mintButtonDisabled} onClick={mint}>
+                  Mint
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`const deployedContract = new caver.kct.kip17(contractAddress)
+deployedContract.options.from = senderAddress
+const minted = await deployedContract.mintWithTokenURI(
+  nftReceiver,
+  newTokenId,
+  tokenURI
+)`}
+              />
             </CardSection>
             {!!mintMsg && (
               <CardSection>
@@ -474,7 +499,7 @@ const KIP17Deploy = (): ReactElement => {
                     {mintMsg} You can check it below link:
                     <br />
                     <LinkA
-                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${nftReceiver}`}
+                      link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}?tabId=nftInventory&search=${nftReceiver}`}
                     >
                       NFT Inventory
                     </LinkA>
@@ -491,7 +516,7 @@ const KIP17Deploy = (): ReactElement => {
         <FormRadio
           itemList={[
             { title: 'Burn', value: FunctionEnum.BURN },
-            { title: 'Send', value: FunctionEnum.SEND },
+            { title: 'Transfer', value: FunctionEnum.Transfer },
             { title: 'Pause/Unpause', value: FunctionEnum.PUP },
           ]}
           selectedValue={belowPage}
@@ -515,9 +540,17 @@ const KIP17Deploy = (): ReactElement => {
               />
             </CardSection>
             <CardSection>
-              <Button disabled={burnButtonDisabled} onClick={burn}>
-                Burn
-              </Button>
+              <View style={{ marginBottom: 10 }}>
+                <Button disabled={burnButtonDisabled} onClick={burn}>
+                  Burn
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`const deployedContract = new caver.kct.kip17(contractAddress)
+deployedContract.options.from = senderAddress
+const burned = await deployedContract.burn(burnTokenId)`}
+              />
             </CardSection>
             {!!burnMsg && (
               <CardSection>
@@ -526,7 +559,7 @@ const KIP17Deploy = (): ReactElement => {
                     {burnMsg} You can see that the NFT you just removed no
                     longer exists:{' '}
                     <LinkA
-                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${senderAddress}`}
+                      link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}?tabId=nftInventory&search=${senderAddress}`}
                     >
                       NFT Inventory
                     </LinkA>
@@ -539,7 +572,7 @@ const KIP17Deploy = (): ReactElement => {
           </CardBody>
         </Card>
       )}
-      {mintSuccess && belowPage === FunctionEnum.SEND && (
+      {mintSuccess && belowPage === FunctionEnum.Transfer && (
         <Card>
           <CardHeader>
             <h3 className="title">Send the Non-fungible Token (NFT)</h3>
@@ -547,17 +580,19 @@ const KIP17Deploy = (): ReactElement => {
           </CardHeader>
           <CardBody>
             <CardSection>
-              <Label>Transfer Receiver</Label>
-              <CardExample
-                exValue={exTokenReceiver}
-                onClickTry={setTransferReceiver}
-              />
-              <FormInput
-                type="text"
-                placeholder="The address of the receiver"
-                onChange={setTransferReceiver}
-                value={transferReceiver}
-              />
+              <View style={{ rowGap: 5 }}>
+                <Label>Transfer Receiver</Label>
+                <CardExample
+                  exValue={exTokenReceiver}
+                  onClickTry={setTransferReceiver}
+                />
+                <FormInput
+                  type="text"
+                  placeholder="The address of the receiver"
+                  onChange={setTransferReceiver}
+                  value={transferReceiver}
+                />
+              </View>
             </CardSection>
             <CardSection>
               <Label>Transfer Token Id</Label>
@@ -569,9 +604,21 @@ const KIP17Deploy = (): ReactElement => {
               />
             </CardSection>
             <CardSection>
-              <Button disabled={transferButtonDisabled} onClick={transfer}>
-                Transfer
-              </Button>
+              <View style={{ marginBottom: 10 }}>
+                <Button disabled={transferButtonDisabled} onClick={transfer}>
+                  Transfer
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`const deployedContract = new caver.kct.kip17(contractAddress)
+deployedContract.options.from = senderAddress
+const transferred = await deployedContract.safeTransferFrom(
+  senderAddress,
+  transferReceiver,
+  transferTokenId
+)`}
+              />
             </CardSection>
             {!!transferMsg && (
               <CardSection>
@@ -579,7 +626,7 @@ const KIP17Deploy = (): ReactElement => {
                   <Text>
                     {transferMsg} You can see that the NFT you just sent:{' '}
                     <LinkA
-                      link={`${URLMAP.network[network]['finderNFT']}${contractAddress}?tabId=nftInventory&search=${transferReceiver}`}
+                      link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}?tabId=nftInventory&search=${transferReceiver}`}
                     >
                       NFT Inventory
                     </LinkA>
@@ -603,9 +650,17 @@ const KIP17Deploy = (): ReactElement => {
           </CardHeader>
           <CardBody>
             <CardSection>
-              <Button disabled={pauseButtonDisabled} onClick={pause}>
-                Pause
-              </Button>
+              <View style={{ marginBottom: 10 }}>
+                <Button disabled={pauseButtonDisabled} onClick={pause}>
+                  Pause
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`const deployedContract = new caver.kct.kip17(contractAddress)
+deployedContract.options.from = senderAddress
+await deployedContract.pause()`}
+              />
             </CardSection>
             {!!unpauseMsg && (
               <CardSection>
@@ -630,9 +685,17 @@ const KIP17Deploy = (): ReactElement => {
           </CardHeader>
           <CardBody>
             <CardSection>
-              <Button disabled={unpauseButtonDisabled} onClick={unpause}>
-                Unpause
-              </Button>
+              <View style={{ marginBottom: 10 }}>
+                <Button disabled={unpauseButtonDisabled} onClick={unpause}>
+                  Unpause
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`const deployedContract = new caver.kct.kip17(contractAddress)
+deployedContract.options.from = senderAddress
+await deployedContract.unpause()`}
+              />
             </CardSection>
             {!!pauseMsg && (
               <CardSection>

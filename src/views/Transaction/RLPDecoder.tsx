@@ -16,6 +16,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -54,26 +55,26 @@ const RLPDecoder = (): ReactElement => {
         <CardHeader>
           <h3 className="title">RLP Decoder</h3>
           <Text>
-            You can get the transaction by decoding the RLP-encoded transaction
-            string.
+            Will decode RLP-encoded transaction string, a raw transaction, and
+            show a Transaction instance.
           </Text>
         </CardHeader>
         <CardBody>
           <CardSection>
             <Label>RLP-Encoded Transaction</Label>
             <CardExample exValue={exValue} onClickTry={setRlpEncoded} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={rlpEncoded}
-              onChange={setRlpEncoded}
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={rlpDecode}>Decode</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`const decoded = caver.transaction.decode(rlpEncoded)`}
-            />
+            <View style={{ rowGap: 10 }}>
+              <FormTextarea
+                style={{ height: 100 }}
+                value={rlpEncoded}
+                onChange={setRlpEncoded}
+              />
+              <Button onClick={rlpDecode}>Decode</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`const decoded = caver.transaction.decode(rlpEncoded)`}
+              />
+            </View>
           </CardSection>
           <ResultForm result={result} />
         </CardBody>

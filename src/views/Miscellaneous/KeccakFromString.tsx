@@ -15,6 +15,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -57,18 +58,19 @@ const KeccakFromString = (): ReactElement => {
           <CardSection>
             <Label>Input</Label>
             <CardExample exValue={exValue} onClickTry={setInputValue} />
-            <FormTextarea
-              style={{ height: 100 }}
-              value={inputValue}
-              onChange={setInputValue}
-              placeholder="Enter the comma-separated value types."
-            />
+            <View style={{ paddingBottom: 10 }}>
+              <FormTextarea
+                style={{ height: 100 }}
+                value={inputValue}
+                onChange={setInputValue}
+                placeholder="Enter the comma-separated value types."
+              />
+            </View>
             <CodeBlock
               title="caver-js code"
               text={`const sha3 = caver.utils.sha3(inputValue)`}
             />
           </CardSection>
-
           <ResultForm result={result} />
         </CardBody>
       </Card>

@@ -17,6 +17,7 @@ import {
   CardSection,
   CodeBlock,
   CardExample,
+  View,
 } from 'components'
 import { ResultFormType } from 'types'
 
@@ -132,7 +133,6 @@ const RLPEncoder = (): ReactElement => {
           from,
           rlpEncodedAccountKey
         )
-
         txObject.account = account
       }
 
@@ -161,8 +161,8 @@ const RLPEncoder = (): ReactElement => {
         <CardHeader>
           <h3 className="title">RLP Encoder</h3>
           <Text>
-            On this page, you can get a RLP-encoded transaction string for each
-            transaction type.
+            Will encode the transaction instance and return RLP-encoded
+            transaction string for each transaction type.
           </Text>
         </CardHeader>
         <CardBody>
@@ -181,24 +181,24 @@ const RLPEncoder = (): ReactElement => {
           <CardSection>
             <Label>{TX_TYPE[txType]}</Label>
             <CardExample exValue={exValue} onClickTry={setInputTx} />
-            <FormTextarea
-              style={{ height: 200 }}
-              value={inputTx}
-              onChange={setInputTx}
-            />
-          </CardSection>
-          <CardSection>
-            <Button onClick={encodeTx}>Encode</Button>
-            <CodeBlock
-              title="caver-js code"
-              text={`import { CreateTransactionObject } from 'caver-js'
-txType: CreateTransactionObject
+            <View style={{ rowGap: 10 }}>
+              <FormTextarea
+                style={{ height: 200 }}
+                value={inputTx}
+                onChange={setInputTx}
+              />
+              <Button onClick={encodeTx}>Encode</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`import { CreateTransactionObject } from 'caver-js'
+txObject: CreateTransactionObject
 txType: "legacyTransaction" | "valueTransfer" | "valueTransferMemo" ...
 
 const transaction = caver.transaction[txType].create(txObject)
 await transaction.fillTransaction()
 const encoded = transaction.getRLPEncoding()`}
-            />
+              />
+            </View>
           </CardSection>
           <ResultForm result={result} />
         </CardBody>

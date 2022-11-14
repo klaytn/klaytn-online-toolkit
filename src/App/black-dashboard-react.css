@@ -11090,7 +11090,6 @@ textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   font-family: "Poppins", sans-serif;
-  margin-bottom: 1rem;
   background-color: var(--light);
   color: black;
   width: 100%;
@@ -13352,7 +13351,7 @@ textarea.form-control {
   margin-bottom: 30px;
   box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.1); }
   .card label {
-    color: rgba(255, 255, 255, 0.6); }
+    color: rgba(255, 255, 255); }
   .card .card-title {
     margin-bottom: .75rem; }
   .card .card-body {

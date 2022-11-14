@@ -10,15 +10,16 @@ import {
   CardBody,
   Text,
   Button,
-  ButtonGroup,
   Label,
   FormInput,
-  ResultForm,
   CardSection,
   FormRadio,
   LinkA,
+  View,
+  CodeBlock,
 } from 'components'
 import { ResultFormType } from 'types'
+import KeystoreResultForm from './components/KeystoreResultForm'
 
 type SingleType = {
   singleProps: {
@@ -43,13 +44,20 @@ const SingleKey = ({ singleProps }: SingleType): ReactElement => {
   return (
     <CardSection>
       <Label>Private Key</Label>
-      <FormInput
-        type="text"
-        placeholder="Private Key"
-        onChange={setPrivateKey}
-        value={privateKey}
-      />
+      <View style={{ paddingBottom: 10 }}>
+        <FormInput
+          type="text"
+          placeholder="Private Key"
+          onChange={setPrivateKey}
+          value={privateKey}
+        />
+      </View>
       <Button onClick={generateSingleKey}>Generate Key</Button>
+      <CodeBlock
+        title="caver-js code"
+        text={`const singleKey = caver.wallet.keyring.generateSingleKey()
+const singleKeyring = caver.wallet.keyring.createFromPrivateKey(singleKey)`}
+      />
     </CardSection>
   )
 }
@@ -90,35 +98,42 @@ const MultipleKey = ({ multiProps }: MultiType): ReactElement => {
   return (
     <CardSection>
       <Label>Number of Private Keys</Label>
-      <FormRadio
-        itemList={[
-          { title: '2', value: 2 },
-          { title: '3', value: 3 },
-          { title: '4', value: 4 },
-          { title: '5', value: 5 },
-        ]}
-        selectedValue={numOfPrivateKeys}
-        onClick={handleNumberChange}
-      />
-      {!!numOfPrivateKeys && <Label>Private Keys</Label>}
-      {!!numOfPrivateKeys &&
-        privateKeys.map((key, idx) => {
+      <View style={{ paddingBottom: 10 }}>
+        <FormRadio
+          itemList={[
+            { title: '2', value: 2 },
+            { title: '3', value: 3 },
+            { title: '4', value: 4 },
+            { title: '5', value: 5 },
+          ]}
+          selectedValue={numOfPrivateKeys}
+          onClick={handleNumberChange}
+        />
+      </View>
+      <View style={{ paddingBottom: 10 }}>
+        <Label>Private Keys</Label>
+        {privateKeys.map((key, idx) => {
           return (
-            <FormInput
-              key={`multiple-privateKey-${idx}`}
-              type="text"
-              placeholder="Private Key"
-              onChange={(v): void => {
-                handleInputChange(v, idx)
-              }}
-              value={key}
-              style={{ marginTop: '5px' }}
-            />
+            <View style={{ paddingBottom: 10 }}>
+              <FormInput
+                key={`multiple-privateKey-${idx}`}
+                type="text"
+                placeholder="Private Key"
+                onChange={(v): void => {
+                  handleInputChange(v, idx)
+                }}
+                value={key}
+              />
+            </View>
           )
         })}
-      {!!numOfPrivateKeys && (
         <Button onClick={generateMultipleKeys}>Generate All Keys</Button>
-      )}
+        <CodeBlock
+          title="caver-js code"
+          text={`numOfPrivateKeys: number
+const multipleKeys = caver.wallet.keyring.generateMultipleKeys(numOfPrivateKeys)`}
+        />
+      </View>
     </CardSection>
   )
 }
@@ -179,51 +194,61 @@ const RoleBasedKey = ({ roleBasedProps }: RoleBasedType): ReactElement => {
 
   return (
     <CardSection>
-      <Row>
+      <Row style={{ columnGap: 8, justifyContent: 'space-around' }}>
         {numOfRolePrivateKeys.map((val, idx) => {
           return (
-            <Container key={`column-${idx}`}>
+            <View key={`column-${idx}`} style={{ width: '32%' }}>
               <Label>{`Number of ${types[idx]}s`}</Label>
-              <FormRadio
-                itemList={[
-                  { title: '1', value: 1 },
-                  { title: '2', value: 2 },
-                  { title: '3', value: 3 },
-                ]}
-                selectedValue={val}
-                onClick={(v): void => {
-                  handleNumberChange(v, idx)
-                }}
-              />
-              {!!numOfRolePrivateKeys[idx] && <Label>Private Keys</Label>}
-              {!!numOfRolePrivateKeys[idx] &&
-                rolePrivateKeys[idx].map((key, i) => {
-                  return (
-                    <FormInput
-                      key={`rolebased-privateKey-${types[idx]}-${i}`}
-                      type="text"
-                      placeholder="Private Key"
-                      onChange={(v): void => {
-                        handleInputChange(v, idx, i)
-                      }}
-                      value={key}
-                      style={{ marginTop: '5px', width: '100%' }}
-                    />
-                  )
-                })}
-            </Container>
+              <View style={{ paddingBottom: 10 }}>
+                <FormRadio
+                  itemList={[
+                    { title: '1', value: 1 },
+                    { title: '2', value: 2 },
+                    { title: '3', value: 3 },
+                  ]}
+                  selectedValue={val}
+                  onClick={(v): void => {
+                    handleNumberChange(v, idx)
+                  }}
+                />
+              </View>
+              {!!numOfRolePrivateKeys[idx] && (
+                <>
+                  <Label>Private Keys</Label>
+                  {rolePrivateKeys[idx].map((key, i) => {
+                    return (
+                      <View style={{ paddingBottom: 10 }}>
+                        <FormInput
+                          key={`rolebased-privateKey-${types[idx]}-${i}`}
+                          type="text"
+                          placeholder="Private Key"
+                          onChange={(v): void => {
+                            handleInputChange(v, idx, i)
+                          }}
+                          value={key}
+                        />
+                      </View>
+                    )
+                  })}
+                </>
+              )}
+            </View>
           )
         })}
       </Row>
       {!!numOfRolePrivateKeys[0] ||
       !!numOfRolePrivateKeys[1] ||
       !!numOfRolePrivateKeys[2] ? (
-        <Button onClick={generateRoleBasedKeys}>Generate All Keys</Button>
+        <>
+          <Button onClick={generateRoleBasedKeys}>Generate All Keys</Button>
+          <CodeBlock
+            title="caver-js code"
+            text={`keys: Array<number>
+const roleBasedKeys = caver.wallet.keyring.generateRoleBasedKeys(keys)`}
+          />
+        </>
       ) : (
-        <Text>
-          <br />
-          Please click the number of private keys.
-        </Text>
+        <Text>Please click the number of private keys.</Text>
       )}
     </CardSection>
   )
@@ -258,8 +283,12 @@ const GenerateKeystore = (): ReactElement => {
     setPassword('')
     setAddress('')
     setPrivateKey('')
-    setPrivateKeys([])
-    setRolePrivateKeys([[], [], []])
+    setPrivateKeys(['', ''])
+    setRolePrivateKeys([
+      ['', ''],
+      ['', ''],
+      ['', ''],
+    ])
     setKeystoreShown(false)
   }
 
@@ -305,43 +334,11 @@ const GenerateKeystore = (): ReactElement => {
     }
   }
 
-  const downloadFile = (): void => {
-    if (result?.success === true) {
-      const date = new Date()
-      const filename = `keystore-${address}-${date.getFullYear()}-${
-        date.getMonth() + 1
-      }-${date.getDate()}.json`
-      let element = document.createElement('a')
-
-      const ks = JSON.stringify(result.value)
-      element.setAttribute(
-        'href',
-        'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(ks))
-      )
-      element.setAttribute('download', filename)
-      element.style.display = 'none'
-      document.body.appendChild(element)
-      element.click()
-      document.body.removeChild(element)
-    }
-  }
-
   return (
     <Container>
       <Card>
         <CardHeader>
           <h3 className="title">Generate Keystore</h3>
-          <FormRadio
-            itemList={[
-              { title: 'Single', value: AccountKeyTypeEnum.SINGLE },
-              { title: 'Multiple', value: AccountKeyTypeEnum.MULTIPLE },
-              { title: 'Role-Based', value: AccountKeyTypeEnum.ROLEBASED },
-            ]}
-            selectedValue={accountKeyType}
-            onClick={(v): void => {
-              changeAccountKeyType(v)
-            }}
-          />
           <Text>
             Generate Private Key(s), encrypt a keyring, and return a keystore.
             Since Klaytn provides various account key types such as
@@ -353,22 +350,29 @@ const GenerateKeystore = (): ReactElement => {
             <LinkA link="https://kips.klaytn.foundation/KIPs/kip-3">
               [KIP 3: Klaytn Keystore Format v4]
             </LinkA>
-            . <br />
-            <br />
           </Text>
-          <Text style={{ color: 'red', fontWeight: 600, fontSize: 18 }}>
+          <Text style={{ color: 'red', fontWeight: 600, fontSize: 15 }}>
             NOTE: CREATING A KEYSTORE DOES NOT UPDATE YOUR ACCOUNT!
           </Text>
         </CardHeader>
         <CardBody>
+          <CardSection>
+            <Label>Account Key Type</Label>
+            <FormRadio
+              itemList={[
+                { title: 'Single', value: AccountKeyTypeEnum.SINGLE },
+                { title: 'Multiple', value: AccountKeyTypeEnum.MULTIPLE },
+                { title: 'Role-Based', value: AccountKeyTypeEnum.ROLEBASED },
+              ]}
+              selectedValue={accountKeyType}
+              onClick={(v): void => {
+                changeAccountKeyType(v)
+              }}
+            />
+          </CardSection>
           {accountKeyType === AccountKeyTypeEnum.SINGLE && (
             <SingleKey
-              singleProps={{
-                setPrivateKey,
-                privateKey,
-                setAddress,
-                caver,
-              }}
+              singleProps={{ setPrivateKey, privateKey, setAddress, caver }}
             />
           )}
           {accountKeyType === AccountKeyTypeEnum.MULTIPLE && (
@@ -381,20 +385,24 @@ const GenerateKeystore = (): ReactElement => {
           )}
           <CardSection>
             <Label>Address</Label>
-            <FormInput
-              type="text"
-              placeholder="Address"
-              onChange={setAddress}
-              value={address}
-            />
+            <View style={{ paddingBottom: 10 }}>
+              <FormInput
+                type="text"
+                placeholder="Address"
+                onChange={setAddress}
+                value={address}
+              />
+            </View>
             <Label>Password</Label>
-            <FormInput
-              type="password"
-              placeholder="Password"
-              onChange={setPassword}
-              value={password}
-            />
-            <ButtonGroup>
+            <View style={{ paddingBottom: 10 }}>
+              <FormInput
+                type="password"
+                placeholder="Password"
+                onChange={setPassword}
+                value={password}
+              />
+            </View>
+            <Row style={{ columnGap: 8 }}>
               {accountKeyType === AccountKeyTypeEnum.SINGLE && (
                 <Button onClick={generateKeystoreV3}>
                   Generate Keystore (v3)
@@ -403,15 +411,29 @@ const GenerateKeystore = (): ReactElement => {
               <Button onClick={generateKeystoreV4}>
                 Generate Keystore (v4)
               </Button>
-            </ButtonGroup>
+            </Row>
+            <CodeBlock
+              title="caver-js code"
+              text={`privateKey: string
+privateKeys: Array<string>
+rolePrivateKeys: Array<Array<string>>
+//generate Keystore (v3)
+const keyring = caver.wallet.keyring.create(address, privateKey)
+
+//generate Keystore (v4)
+//1) Account Key Type: Single
+const keyring = caver.wallet.keyring.create(address, privateKey)
+//2) Account Key Type: Multiple
+const keyring = caver.wallet.keyring.create(address, privateKeys)
+//3) Account Key Type: Role-Based
+const keyring = caver.wallet.keyring.create(address, rolePrivateKeys)
+`}
+            />
           </CardSection>
           {keystoreShown && (
-            <CardSection>
-              <ResultForm title={'Keystore'} result={result} />
-              {result?.success && (
-                <Button onClick={downloadFile}>Download</Button>
-              )}
-            </CardSection>
+            <>
+              <KeystoreResultForm title={'Keystore'} result={result} />
+            </>
           )}
         </CardBody>
       </Card>

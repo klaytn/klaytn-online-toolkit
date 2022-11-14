@@ -17,6 +17,8 @@ import {
   CardSection,
   ResultForm,
   LinkA,
+  CodeBlock,
+  View,
 } from 'components'
 
 type NetworkType = 'mainnet' | 'testnet'
@@ -90,6 +92,8 @@ const DetectKCT = (): ReactElement => {
             technical specifications. You can check which KCT the smart contract
             implements using its address.
           </Text>
+        </CardHeader>
+        <CardBody>
           <CardSection>
             <Label>Network</Label>
             <FormSelect
@@ -102,18 +106,30 @@ const DetectKCT = (): ReactElement => {
               containerStyle={{ width: 200 }}
             />
           </CardSection>
-        </CardHeader>
-        <CardBody>
           <CardSection>
-            <Label>Contract Address</Label>
-            <FormInput
-              type="text"
-              placeholder="Address"
-              onChange={setContractAddress}
-              value={contractAddress}
-            />
-            <br />
-            <Button onClick={detectKCT}>Check</Button>
+            <View style={{ rowGap: 10 }}>
+              <View>
+                <Label>Contract Address</Label>
+                <FormInput
+                  type="text"
+                  placeholder="Address"
+                  onChange={setContractAddress}
+                  value={contractAddress}
+                />
+              </View>
+              <Button onClick={detectKCT}>Check</Button>
+              <CodeBlock
+                title="caver-js code"
+                text={`//1) KIP7
+const kip7 = await caver.kct.kip7.detectInterface(contractAddress)
+
+//2) KIP17
+const kip17 = await caver.kct.kip17.detectInterface(contractAddress)
+
+//3) KIP37
+const kip37 = await caver.kct.kip37.detectInterface(contractAddress)`}
+              />
+            </View>
           </CardSection>
           <ResultForm title={'Result'} result={result} />
           {result?.success && description === KCTEnum.KIP7 && (

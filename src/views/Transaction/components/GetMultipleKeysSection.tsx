@@ -30,16 +30,7 @@ const StyledContainer = styled(View)`
   display: grid;
   grid-template-columns: 140px 1fr;
   gap: 8px;
-`
-
-const FormChildBlock = styled.div`
-  display: flex;
-  align-items: center;
-  width: 50%;
-`
-const FormBlock = styled.div`
-  display: flex;
-  margin-bottom: 5px;
+  padding-bottom: 10px;
 `
 
 const GetMultipleKeysSection = ({
@@ -131,6 +122,7 @@ const GetMultipleKeysSection = ({
             keyring,
           },
         ])
+        setKeyringErrMsg('')
       } catch (error) {
         setKeyringErrMsg(_.toString(error))
       }
@@ -165,14 +157,11 @@ const GetMultipleKeysSection = ({
         // just try decrypt
       }
     }
-
-    return (): void => {
-      setKeyringErrMsg('')
-    }
   }, [privateKey, keystoreJSON])
 
   useEffect(() => {
     setKeystorePassword('')
+    setKeyringErrMsg('')
   }, [keystoreJSON])
 
   return (
@@ -246,28 +235,26 @@ const GetMultipleKeysSection = ({
               />
             </View>
           )}
-        </StyledContainer>{' '}
-      </CardSection>
-      <CardSection>
+        </StyledContainer>
         <Label>Decrypted Keystore List </Label>
         {keyList.length > 0 ? (
           keyList.map((_, index: number) => (
             <>
-              <FormBlock>
-                <FormChildBlock>
+              <Row style={{ justifyContent: 'space-between' }}>
+                <View style={{ justifyContent: 'center' }}>
                   <Text>{keyList[index].filename}</Text>
-                </FormChildBlock>
-                <FormChildBlock>
-                  <Button onClick={(): void => handleKeystoreRemove(index)}>
-                    Remove
-                  </Button>
-                </FormChildBlock>
-              </FormBlock>
-              <CodeBlock
-                text={JSON.stringify(keyList[index].keyring, null, 2)}
-                toggle={true}
-                title={'Keyring'}
-              />
+                </View>
+                <Button onClick={(): void => handleKeystoreRemove(index)}>
+                  Remove
+                </Button>
+              </Row>
+              <View style={{ paddingBottom: 10 }}>
+                <CodeBlock
+                  text={JSON.stringify(keyList[index].keyring, null, 2)}
+                  toggle={true}
+                  title={'Keyring'}
+                />
+              </View>
             </>
           ))
         ) : (
