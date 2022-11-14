@@ -17,10 +17,9 @@ import {
   LinkA,
   View,
   CodeBlock,
-  ResultForm, // temp
 } from 'components'
 import { ResultFormType } from 'types'
-// import KeystoreResultForm from './components/KeystoreResultForm'
+import KeystoreResultForm from './components/KeystoreResultForm'
 
 type SingleType = {
   singleProps: {
@@ -433,8 +432,7 @@ const keyring = caver.wallet.keyring.create(address, rolePrivateKeys)
           </CardSection>
           {keystoreShown && (
             <>
-              {/* <KeystoreResultForm title={'Keystore'} result={result} /> */}
-              <ResultForm result={result}></ResultForm>
+              <KeystoreResultForm title={'Keystore'} result={result} />
             </>
           )}
         </CardBody>
