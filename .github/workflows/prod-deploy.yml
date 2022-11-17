@@ -1,0 +1,44 @@
+name: klaytn-online-toolkit prod deploy workflow
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+  deploy:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN_PROD }}
+          role-session-name: SessionForKlaytnActions
+          aws-region: ${{ secrets.AWS_REGION_PROD }}
+
+      - name: Installing Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Installing dependencies
+        run: |
+          npm install
+          npm test
+
+      - name: Build static files
+        run: npm run build
+
+      - name: Sync to S3 bucket and validation cloudfront
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET_TOOLKIT_PROD }}
+          CLOUDFRONT_ID: ${{ secrets.CLOUDFRONT_ID_TOOLKIT_PROD }}
+        run: |
+          aws s3 sync build s3://$S3_BUCKET --delete
+          aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths "/*"
