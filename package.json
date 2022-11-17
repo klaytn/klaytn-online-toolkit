@@ -2,7 +2,6 @@
   "name": "klaytn-online-toolkit",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://klaytn.github.io/klaytn-online-toolkit",
   "dependencies": {
     "@klaytn/kaikas-web3-provider": "^1.0.3",
     "@klaytn/klip-web3-provider": "^1.0.2",

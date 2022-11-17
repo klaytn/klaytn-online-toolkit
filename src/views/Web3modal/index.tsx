@@ -440,12 +440,8 @@ const Web3modalExample = (): ReactElement => {
                 <CardHeader>
                   <h3>KIP-7 Token</h3>
                   <Text>
-                    Check{' '}
-                    <LinkA link="/klaytn-online-toolkit/smartcontract/KCTDetection">
-                      here
-                    </LinkA>{' '}
-                    which KCT the smart contract implements by using Contract
-                    Address.
+                    Check <LinkA link="/kct/KCTDetection">here</LinkA> which KCT
+                    the smart contract implements by using Contract Address.
                   </Text>
                 </CardHeader>
                 <CardBody>
