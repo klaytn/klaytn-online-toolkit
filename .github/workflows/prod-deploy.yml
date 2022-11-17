@@ -28,9 +28,7 @@ jobs:
           node-version: '16'
 
       - name: Installing dependencies
-        run: |
-          npm install
-          npm test
+        run: npm install
 
       - name: Build static files
         run: npm run build
