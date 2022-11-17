@@ -33,7 +33,7 @@ const RouteItem = ({ route }: { route: RouteType }): ReactElement => {
           return (
             <DropdownItem
               key={`${item.name}-${j}`}
-              href={'/klaytn-online-toolkit' + route.path + item.path}
+              href={route.path + item.path}
             >
               {item.name}
             </DropdownItem>
@@ -59,7 +59,7 @@ const Navigator = (): ReactElement => {
       </NavbarToggler>
       <Collapse isOpen={isOpen} navbar>
         <Nav navbar>
-          <NavLink href="/klaytn-online-toolkit"> Home </NavLink>
+          <NavLink href="/"> Home </NavLink>
           {routes.map((route, key) => (
             <RouteItem key={key} route={route} />
           ))}

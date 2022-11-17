@@ -29,7 +29,7 @@ const getRoutes = (routes: RouteType[]): ReactElement[][] =>
 function App(): ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/klaytn-online-toolkit">
+      <BrowserRouter>
         <div className="content">
           <Navigator />
           <Routes>
