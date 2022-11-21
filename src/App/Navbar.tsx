@@ -33,7 +33,7 @@ const RouteItem = ({ route }: { route: RouteType }): ReactElement => {
           return (
             <DropdownItem
               key={`${item.name}-${j}`}
-              href={route.path + item.path}
+              href={'#' + route.path + item.path}
             >
               {item.name}
             </DropdownItem>

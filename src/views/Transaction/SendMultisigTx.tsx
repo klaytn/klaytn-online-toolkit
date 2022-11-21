@@ -20,9 +20,12 @@ import {
   PrivateKeyWarning,
   Row,
   CodeBlock,
+  FormSelect,
 } from 'components'
 import { KeystoreType } from './components/GetMultipleKeysSection'
 import GetMultipleKeysSection from './components/GetMultipleKeysSection'
+
+type NetworkType = 'mainnet' | 'testnet'
 
 const SFormInput = styled(FormInput)`
   margin-bottom: 10px;
@@ -66,6 +69,8 @@ type SuccessMsgType = {
 }
 
 const SendMultiSigTx = (): ReactElement => {
+  const [network, setNetwork] = useState<NetworkType>('mainnet')
+
   const [senderAddress, setSenderAddress] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
   const [tokenType, setTokenType] = useState<TokenTypeEnum>(TokenTypeEnum.KLAY)
@@ -75,7 +80,10 @@ const SendMultiSigTx = (): ReactElement => {
   const [amount, setAmount] = useState('')
   const [contractAddress, setContractAddress] = useState('')
   const [rawTx, setRawTx] = useState('')
-  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
+  const caver = useMemo(
+    () => new Caver(URLMAP.network[network]['rpc']),
+    [network]
+  )
 
   useEffect(() => {
     setResultMsg(undefined)
@@ -146,7 +154,7 @@ const SendMultiSigTx = (): ReactElement => {
           <Text>
             {'Transaction Hash: '}
             <LinkA
-              link={`${URLMAP.network['testnet']['finder']}${vtReceipt.transactionHash}`}
+              link={`${URLMAP.network[network]['finder']}${vtReceipt.transactionHash}`}
             >
               {vtReceipt.transactionHash}
             </LinkA>
@@ -211,7 +219,16 @@ const SendMultiSigTx = (): ReactElement => {
         </CardHeader>
         <CardBody>
           <CardSection>
-            <Text>Testnet</Text>
+            <Label>Network</Label>
+            <FormSelect
+              defaultValue={network}
+              itemList={[
+                { value: 'mainnet', label: 'Mainnet' },
+                { value: 'testnet', label: 'Testnet' },
+              ]}
+              onChange={setNetwork}
+              containerStyle={{ width: 200 }}
+            />
           </CardSection>
           <CardSection>
             <Label>Recipient Address</Label>

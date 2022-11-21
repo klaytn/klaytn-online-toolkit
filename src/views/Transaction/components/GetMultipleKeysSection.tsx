@@ -237,31 +237,26 @@ const GetMultipleKeysSection = ({
           )}
         </StyledContainer>
         <Label>Decrypted Keystore List </Label>
-        {keyList.length > 0 ? (
-          keyList.map((_, index: number) => (
-            <>
-              <Row style={{ justifyContent: 'space-between' }}>
-                <View style={{ justifyContent: 'center' }}>
-                  <Text>{keyList[index].filename}</Text>
-                </View>
-                <Button onClick={(): void => handleKeystoreRemove(index)}>
-                  Remove
-                </Button>
-              </Row>
-              <View style={{ paddingBottom: 10 }}>
-                <CodeBlock
-                  text={JSON.stringify(keyList[index].keyring, null, 2)}
-                  toggle={true}
-                  title={'Keyring'}
-                />
-              </View>
-            </>
-          ))
-        ) : (
-          <Text style={{ color: COLOR.error }}>
-            There's no keystore uploaded.
-          </Text>
-        )}
+        <View style={{ rowGap: 10 }}>
+          {keyList.length > 0 ? (
+            keyList.map((_, index: number) => (
+              <>
+                <Row style={{ justifyContent: 'space-between' }}>
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text>{keyList[index].filename}</Text>
+                  </View>
+                  <Button onClick={(): void => handleKeystoreRemove(index)}>
+                    Remove
+                  </Button>
+                </Row>
+              </>
+            ))
+          ) : (
+            <Text style={{ color: COLOR.error }}>
+              There's no keystore uploaded.
+            </Text>
+          )}
+        </View>
       </CardSection>
     </>
   )

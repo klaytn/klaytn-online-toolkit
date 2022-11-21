@@ -2,6 +2,8 @@
   "name": "klaytn-online-toolkit",
   "version": "0.1.0",
   "private": true,
+  "main": "./public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "@klaytn/kaikas-web3-provider": "^1.0.3",
     "@klaytn/klip-web3-provider": "^1.0.2",
@@ -36,7 +38,13 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.26",
-    "gh-pages": "^4.0.0"
+    "concurrently": "^7.5.0",
+    "cross-env": "^7.0.3",
+    "electron": "^21.3.0",
+    "electron-builder": "^23.6.0",
+    "electronmon": "^2.0.2",
+    "gh-pages": "^4.0.0",
+    "wait-on": "^6.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -44,15 +52,31 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "lint": "eslint --fix src/**/*.{jsx,ts,tsx}",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron:start": "concurrently -k \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3000 && electronmon .\"",
+    "electron:package:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js"
+  },
+  "build": {
+    "appId": "com.electron.myapp",
+    "productName": "Klaytn Online Toolkit",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "public"
+    },
+    "mac": {
+      "target": "dmg"
+    }
   },
   "eslintConfig": {
     "extends": [
       "react-app"
     ],
     "rules": {
-      "@typescript-eslint/explicit-function-return-type": "error",
-      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-unused-vars": "off",
       "import/no-anonymous-default-export": "off",
       "react-hooks/exhaustive-deps": "off"
     }
@@ -63,14 +87,10 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "last 1 electron version"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 1 electron version"
     ]
   }
 }
