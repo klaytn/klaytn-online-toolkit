@@ -63,7 +63,8 @@ const KIP37Deploy = (): ReactElement => {
   const exURI =
     'https://ipfs.io/ipfs/bafybeihjjkwdrxxjnuwevlqtqmh3iegcadc32sio4wmo7bv2gbf34qs34a/3.json'
 
-  const exTokenURI = 'http://www.wenyou.com/image/SC-01%20SCISSORS.JPG'
+  const exTokenURI =
+    'https://ipfs.io/ipfs/bafybeihjjkwdrxxjnuwevlqtqmh3iegcadc32sio4wmo7bv2gbf34qs34a/2.json'
 
   const exAddress = '0x6CEe3d8c038ab74E2854C158d7B1b55544E814C8'
 
@@ -256,18 +257,19 @@ const KIP37Deploy = (): ReactElement => {
     <Container>
       <Card>
         <CardHeader>
-          <h3 className="title">Deploy KIP-37 Token</h3>
+          <h3 className="title">Deploy Multiple Token (KIP-37)</h3>
           <Text>
-            Here you can deploy a KIP-37 smart contract to the Klaytn Cypress or
-            Baobab network. Please refer to{' '}
-            <LinkA link="http://kips.klaytn.foundation/KIPs/kip-37">
-              KIP-37: Token Standard
-            </LinkA>{' '}
-            and{' '}
-            <LinkA link="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip37">
-              caver.kct.kip37
-            </LinkA>
-            .
+            You can deploy multiple token (KIP-37) contracts. A single deployed
+            contract following the KIP-37 token standard may include any
+            combination of fungible tokens, non-fungible tokens, or other
+            configurations. KIP-37 is derived from ERC-1155. However, there are
+            some differences between KIP-37 and ERC-1155; the totalSupply
+            function is added to obtain the number of tokens, and more optional
+            extensions are defined, like minting, burning, and pausing
+            extensions. You can find more information{' '}
+            <LinkA link="http://kips.klaytn.foundation/KIPs/kip-37">here</LinkA>
+            . After successful deployment, you can find a contract account in
+            the block explorer.
           </Text>
           <PrivateKeyWarning />
         </CardHeader>

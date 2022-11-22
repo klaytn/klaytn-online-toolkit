@@ -305,18 +305,19 @@ const KIP17Deploy = (): ReactElement => {
     <Container>
       <Card>
         <CardHeader>
-          <h3 className="title">Deploy KIP-17 Non-fungible Token (NFT)</h3>
+          <h3 className="title">Deploy Non-fungible Token (KIP-17)</h3>
           <Text>
-            Here you can deploy a KIP-17 smart contract to the Klaytn Cypress or
-            Baobab network. Please refer to{' '}
+            You can deploy non-fungible token (KIP-17) contracts which provide
+            basic functionality to transfer NFTs on the Klaytn testnet. KIP-17
+            is derived from ERC-721. But, there are some differences between
+            KIP-17 and ERC-721; More optional extensions are defined, like
+            minting with URI, burning, and pausing extensions. You can find more
+            information{' '}
             <LinkA link="https://kips.klaytn.foundation/KIPs/kip-17">
-              KIP-17: Non-fungible Token Standard
-            </LinkA>{' '}
-            and{' '}
-            <LinkA link="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip17">
-              caver.kct.kip17
+              here
             </LinkA>
-            .
+            . After successful deployment, you can find a contract account in
+            the block explorer.
           </Text>
           <PrivateKeyWarning />
         </CardHeader>
@@ -575,7 +576,7 @@ const burned = await deployedContract.burn(burnTokenId)`}
       {mintSuccess && belowPage === FunctionEnum.Transfer && (
         <Card>
           <CardHeader>
-            <h3 className="title">Send the Non-fungible Token (NFT)</h3>
+            <h3 className="title">Transfer the Non-fungible Token (NFT)</h3>
             <Text>Enter the token Id you own and want to transfer.</Text>
           </CardHeader>
           <CardBody>

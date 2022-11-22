@@ -117,14 +117,18 @@ const KIP7Deploy = (): ReactElement => {
     <Container>
       <Card>
         <CardHeader>
-          <h3 className="title">Deploy KIP-7 Token</h3>
+          <h3 className="title">Deploy Fungible Token (KIP-7)</h3>
           <Text>
-            You can deploy a KIP-7 token contract to the Klaytn blockchain.{' '}
-            <LinkA link="https://docs.klaytn.foundation/dapp/sdk/caver-js/api-references/caver.kct/kip7#caver-klay-kip7-deploy">
-              caver.kct.kip7.deploy
-            </LinkA>{' '}
-            function is used to deploy a KIP-7 token contract. After successful
-            deployment, you can find contract account in explorer.
+            You can deploy fungible token (KIP-7) contracts which provide basic
+            functionality to transfer tokens on the Klaytn testnet. This token
+            standard is ERC-20 compliant. Therefore, you can use this token
+            standard if you want to use ERC-20 for the Klaytn. However, there
+            are some differences between KIP-7 and ERC-20; More optional
+            functions are included like mint, burn and pause extensions. You can
+            find more information{' '}
+            <LinkA link="https://kips.klaytn.foundation/KIPs/kip-7">here</LinkA>
+            . After successful deployment, you can find contract account in the
+            block explorer.
           </Text>
           <PrivateKeyWarning />
         </CardHeader>
@@ -132,8 +136,8 @@ const KIP7Deploy = (): ReactElement => {
           <h3 className="title"> Upload Deployer Keystore File</h3>
           <View style={{ marginBottom: 10 }}>
             <Text>
-              Upload keystore file. This account must have enough KLAY to deploy
-              a token contract.
+              Upload the Keystore file. This account must have enough KLAY to
+              deploy a token contract.
             </Text>
           </View>
           <CardSection>
