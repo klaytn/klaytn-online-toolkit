@@ -137,28 +137,28 @@ const routes: RouteType[] = [
     ],
   },
   {
-    name: 'KCT',
     path: '/kct',
+    name: 'Klaytn Tokens',
     items: [
       {
-        path: '/KCTDetection',
-        name: 'KCT Detection',
-        component: DetectKCT,
-      },
-      {
         path: '/KIP7Deploy',
-        name: 'Deploy KIP-7 Token',
+        name: 'Deploy Fungible Token (KIP-7)',
         component: KIP7Deploy,
       },
       {
         path: '/KIP17Deploy',
-        name: 'Deploy KIP-17 Token',
+        name: 'Deploy Non-Fungible Token (KIP-17)',
         component: KIP17Deploy,
       },
       {
         path: '/KIP37Deploy',
-        name: 'Deploy KIP-37 Token',
+        name: 'Deploy Multiple Token (KIP-37)',
         component: KIP37Deploy,
+      },
+      {
+        path: '/KCTDetection',
+        name: 'Detect Klaytn Compatible Token (KCT)',
+        component: DetectKCT,
       },
     ],
   },
