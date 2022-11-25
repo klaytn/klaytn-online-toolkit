@@ -1,4 +1,5 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Collapse,
   Navbar,
@@ -11,12 +12,55 @@ import {
   NavLink,
   Form,
 } from 'reactstrap'
+
+import { COLOR } from 'consts'
+
 import githubIcon from 'images/GitHub-Mark-Light-64px.png'
 import routes from '../routes'
 import { RouteType } from 'types'
 
 const RouteItem = ({ route }: { route: RouteType }): ReactElement => {
   const [isOpen, setIsOpen] = useState(false)
+  const { pathname } = useLocation()
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const navigate = useNavigate()
+
+  const SubItem = ({
+    name,
+    href,
+    index,
+  }: {
+    name: string
+    href: string
+    index: number
+  }): ReactElement => {
+    useEffect(() => {
+      if (pathname.includes(href)) {
+        setSelectedIndex(index)
+      }
+    }, [])
+
+    return (
+      <DropdownItem
+        style={{
+          color: selectedIndex === index ? COLOR.primary : 'gray',
+          fontWeight: selectedIndex === index ? 700 : 400,
+        }}
+        onClick={(): void => {
+          navigate(href)
+        }}
+      >
+        {name}
+      </DropdownItem>
+    )
+  }
+
+  useEffect(() => {
+    if (false === pathname.includes(route.path)) {
+      setSelectedIndex(-1)
+    }
+  }, [pathname])
+
   return (
     <Dropdown
       tag="nav"
@@ -25,18 +69,29 @@ const RouteItem = ({ route }: { route: RouteType }): ReactElement => {
       onMouseLeave={(): void => setIsOpen(false)}
       toggle={(): void => setIsOpen(!isOpen)}
     >
-      <DropdownToggle caret={false} nav>
+      <DropdownToggle
+        caret={false}
+        nav
+        style={{
+          color: selectedIndex > -1 ? COLOR.primary : 'white',
+        }}
+        onClick={(): void => {
+          navigate(`${route.path}${route.items[0].path}`)
+        }}
+      >
         {route.name}
       </DropdownToggle>
       <DropdownMenu>
         {route.items.map((item, j) => {
+          const path = `${route.path}${item.path}`
+
           return (
-            <DropdownItem
+            <SubItem
               key={`${item.name}-${j}`}
-              href={route.path + item.path}
-            >
-              {item.name}
-            </DropdownItem>
+              index={j}
+              name={item.name}
+              href={path}
+            />
           )
         })}
       </DropdownMenu>
