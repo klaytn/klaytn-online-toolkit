@@ -53,3 +53,17 @@ const provider = await web3Modal.connect();
 
 const web3 = new Web3(provider);
 ```
+
+## Instructions
+
+1. Install dependencies
+
+```bash
+$ npm install
+```
+
+2. Run
+
+```bash
+$ npm start
+```
