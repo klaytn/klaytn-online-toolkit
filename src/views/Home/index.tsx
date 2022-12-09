@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { Fragment, ReactElement } from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
 
@@ -63,10 +63,9 @@ const Main = (): ReactElement => {
           SDK(caver-js).
         </Text>
         <StyledGridV>
-          {_.map(
-            routes,
-            (prop) =>
-              prop.name !== 'Web3Modal' && (
+          {_.map(routes, (prop, i) => (
+            <Fragment key={`routes-${i}`}>
+              {prop.name !== 'Web3Modal' && (
                 <StyledCard>
                   <View style={{ alignItems: 'center', paddingBottom: '8px' }}>
                     <Text
@@ -85,15 +84,16 @@ const Main = (): ReactElement => {
                       paddingBottom: '10px',
                     }}
                   ></View>
-                  {_.map(prop.items, (item) => (
-                    <Text>
+                  {_.map(prop.items, (item, j) => (
+                    <Text key={`routes-${i}-${j}`}>
                       <a href={prop.path + item.path}>{item.name}</a>:{' '}
                       {item.description}
                     </Text>
                   ))}
                 </StyledCard>
-              )
-          )}
+              )}
+            </Fragment>
+          ))}
         </StyledGridV>
       </StyledView>
       <BorderLine />
@@ -119,20 +119,20 @@ const Main = (): ReactElement => {
           </LinkA>{' '}
           package.
         </Text>
-        {_.map(
-          routes,
-          (prop) =>
-            prop.name === 'Web3Modal' && (
+        {_.map(routes, (prop, i) => (
+          <Fragment key={`routes-${i}`}>
+            {prop.name === 'Web3Modal' && (
               <StyledCard>
-                {_.map(prop.items, (item) => (
-                  <Text>
+                {_.map(prop.items, (item, j) => (
+                  <Text key={`routes-${i}-${j}`}>
                     <a href={prop.path + item.path}>{item.name}</a>:{' '}
                     {item.description}
                   </Text>
                 ))}
               </StyledCard>
-            )
-        )}
+            )}
+          </Fragment>
+        ))}
       </StyledView>
       <BorderLine />
       <StyledView>
