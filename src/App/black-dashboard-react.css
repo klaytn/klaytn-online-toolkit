@@ -148,11 +148,12 @@ sup {
   top: -.5em; }
 
 a {
-  color: #e14eca;
+  color: #1d8cf8;
+  font-weight: 400;
   text-decoration: none;
   background-color: transparent; }
   a:hover {
-    color: #c221a9;
+    opacity: 0.8;
     text-decoration: none; }
 
 a:not([href]):not([class]) {
@@ -11110,10 +11111,10 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(255, 255, 255, 0.8); }
 
 a {
-  color: #ba54f5;
+  color: #1d8cf8;
   font-weight: 400; }
   a:hover, a:focus {
-    color: #e14eca; }
+    opacity: 0.8; }
 
 h1, .h1 {
   line-height: 1.05;

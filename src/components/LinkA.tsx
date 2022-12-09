@@ -8,7 +8,7 @@ const StyledA = styled.a`
   color: ${COLOR.primary};
   text-decoration: none;
   :hover {
-    opacity: 1;
+    opacity: 0.7;
   }
   :visited {
     color: ${COLOR.primary};
