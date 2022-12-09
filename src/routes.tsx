@@ -39,11 +39,15 @@ const routes: RouteType[] = [
         path: '/example',
         name: 'Function Examples',
         component: Web3modalExample,
+        description:
+          'Tests several functions using Metamask, Kaikas, and Klip: signMessage, valueTransfer, and balanceOf',
       },
       {
         path: '/NFT',
         name: 'Deploy & Mint & Transfer NFT (KIP-17)',
         component: Web3modalNFT,
+        description:
+          'Deploys, mints, and transfers NFT(KIP-17) on klaytn network using Metamask, Kaikas, and Klip',
       },
     ],
   },
@@ -55,6 +59,7 @@ const routes: RouteType[] = [
         path: '/blockhashDecode',
         name: 'Decoder from BlockHash',
         component: BlockHashDecoder,
+        description: 'Returns block info by block hash',
       },
     ],
   },
@@ -66,21 +71,26 @@ const routes: RouteType[] = [
         path: '/accountKeyLegacy',
         name: 'Basic Account',
         component: AccountKeyLegacy,
+        description: 'Generates account with AccountKeyLegacy',
       },
       {
         path: '/accountKeyPublic',
         name: 'Advanced (AccountKeyPublic)',
         component: AccountKeyPublic,
+        description: 'Updates the private key of account to AccountKeyPublic',
       },
       {
         path: '/accountKeyMultiSig',
         name: 'Advanced (AccountKeyMultiSig)',
         component: AccountKeyMultiSig,
+        description: 'Updates the private key of account to AccountKeyMultiSig',
       },
       {
         path: '/accountKeyRoleBased',
         name: 'Advanced (AccountKeyRoleBased)',
         component: AccountKeyRoleBased,
+        description:
+          'Updates the private key of account to AccountKeyRoleBased',
       },
     ],
   },
@@ -92,21 +102,27 @@ const routes: RouteType[] = [
         path: '/rlpEncode',
         name: 'RLP Encoder',
         component: RLPEncoder,
+        description:
+          'Encodes a transaction instance and returns RLP-encoded transaction string',
       },
       {
         path: '/rlpDecode',
         name: 'Decoder from RLP',
         component: RLPDecoder,
+        description:
+          'Decodes RLP-encoded transaction string and returns a transaction instance',
       },
       {
         path: '/txHashDecode',
         name: 'Decoder from txHash',
         component: TxHashDecoder,
+        description: 'Returns transaction instance by transaction hash',
       },
       {
         path: '/sendMultisigTx',
         name: 'Send Multisig Transaction',
         component: SendMultisigTx,
+        description: 'Sends a value transfer transaction with a multisig Key',
       },
     ],
   },
@@ -118,21 +134,26 @@ const routes: RouteType[] = [
         path: '/ABIEncoder',
         name: 'ABI Encoder',
         component: ABIEncoder,
+        description: 'Encodes Solidity ABI data',
       },
       {
         path: '/ABIDecoder',
         name: 'ABI Decoder',
         component: ABIDecoder,
+        description: 'Decodes ABI encoded parameters',
       },
       {
         path: '/functionCall',
         name: 'Function Call with ABI & Params',
         component: FunctionCall,
+        description:
+          'Executes a new message call without sending a transaction',
       },
       {
         path: '/functionSig',
         name: 'Encode Function Signature',
         component: FunctionSignature,
+        description: 'Encodes the function signature to its ABI signature',
       },
     ],
   },
@@ -144,21 +165,28 @@ const routes: RouteType[] = [
         path: '/KIP7Deploy',
         name: 'Deploy Fungible Token (KIP-7)',
         component: KIP7Deploy,
+        description: 'Deploys fungible token(KIP-7) contract',
       },
       {
         path: '/KIP17Deploy',
         name: 'Deploy Non-Fungible Token (KIP-17)',
         component: KIP17Deploy,
+        description:
+          'Deploys non-fungible token(KIP-17) contract and tests functions: Mint, Burn, Transfer, and Pause/Unpause',
       },
       {
         path: '/KIP37Deploy',
         name: 'Deploy Multiple Token (KIP-37)',
         component: KIP37Deploy,
+        description:
+          'Deploys multiple token(KIP-37( contract and tests functions: Create, Mint, and Transfer',
       },
       {
         path: '/KCTDetection',
         name: 'Detect Klaytn Compatible Token (KCT)',
         component: DetectKCT,
+        description:
+          'Checks which KCT the smart contract implements using its address',
       },
     ],
   },
@@ -170,21 +198,27 @@ const routes: RouteType[] = [
         path: '/loadKeystore',
         name: 'Load Keystore',
         component: LoadKeystore,
+        description:
+          'Decrypts a keystore v3 or v4 JSON and returns the decrypted Keyring instance',
       },
       {
         path: '/generateKeystore',
         name: 'Generate Keystore',
         component: GenerateKeystore,
+        description:
+          'Generates private key(s), encrypts a keyring, and returns a keystore',
       },
       {
         path: '/hashFromStr',
         name: 'Hash From String(Keccak256)',
         component: KeccakFromString,
+        description: 'Returns Keccak-256 function result of given input string',
       },
       {
         path: '/checkAccountKey',
         name: 'Check Account Key Type by Address',
         component: CheckAccountKey,
+        description: 'Returns account key type of the given address',
       },
     ],
   },
