@@ -169,7 +169,7 @@ return {
               </Button>
             </CardSection>
           )}
-          <ResultForm title={'Recipt of transaction'} result={result} />
+          <ResultForm title={'Receipt of transaction'} result={result} />
         </CardBody>
       </Card>
     </Container>

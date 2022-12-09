@@ -46,7 +46,7 @@ const AccountKeyPublic = (): ReactElement => {
 
   const [password, setPassword] = useState('')
   const [keystoreV4, setKeystoreV4] = useState<EncryptedKeystoreV4Json>()
-  const [keystoreV3, setkeystoreV3] = useState<EncryptedKeystoreV3Json>()
+  const [keystoreV3, setKeystoreV3] = useState<EncryptedKeystoreV3Json>()
 
   const [isUpdating, setIsUpdating] = useState(false)
   const [isUpdated, setIsUpdated] = useState(false)
@@ -108,7 +108,7 @@ const AccountKeyPublic = (): ReactElement => {
   const generateKeystores = (): void => {
     if (newKeyring) {
       setKeystoreV4(newKeyring.encrypt(password))
-      'encryptV3' in newKeyring && setkeystoreV3(newKeyring.encryptV3(password))
+      'encryptV3' in newKeyring && setKeystoreV3(newKeyring.encryptV3(password))
     }
   }
 
@@ -118,7 +118,7 @@ const AccountKeyPublic = (): ReactElement => {
 
   useEffect(() => {
     setKeystoreV4(undefined)
-    setkeystoreV3(undefined)
+    setKeystoreV3(undefined)
   }, [password])
 
   return (
@@ -272,7 +272,7 @@ caver.wallet.remove(keyring.address)`}
             </>
           )}
 
-          <ResultForm title={'Recipt of transaction'} result={result} />
+          <ResultForm title={'Receipt of transaction'} result={result} />
         </CardBody>
       </Card>
     </Container>
