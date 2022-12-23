@@ -5,6 +5,7 @@ import Web3Modal from '@klaytn/web3modal'
 import { KaikasWeb3Provider } from '@klaytn/kaikas-web3-provider'
 import { KlipWeb3Provider } from '@klaytn/klip-web3-provider'
 import _ from 'lodash'
+import { isMobile } from 'react-device-detect'
 
 import {
   Button,
@@ -17,6 +18,7 @@ import {
   CardSection,
   Loading,
   View,
+  LinkA,
 } from 'components'
 import { IAssetData } from 'types'
 import { WEB3MODAL } from 'consts'
@@ -111,6 +113,7 @@ const Web3modalNFT = (): ReactElement => {
   const [toAddressForMint, setToAddressForMint] = useState<string>('')
   const [tokenIdForMint, setTokenIdForMint] = useState<string>('')
   const [tokenURIForMint, setTokenURIForMint] = useState<string>('')
+  const href = window.location.href
 
   const getAccountAssets = async ({
     changedAddress,
@@ -417,6 +420,14 @@ const Web3modalNFT = (): ReactElement => {
           ) : (
             <SLanding>
               <h2>{`Test Web3Modal`}</h2>
+              {isMobile && (
+                <View style={{ paddingBottom: 10 }}>
+                  <LinkA link={`https://app.kaikas.io/u/${href}`}>
+                    If using mobile device, please click here to open in-app
+                    browser of Kaikas Mobile
+                  </LinkA>
+                </View>
+              )}
               <Button onClick={onConnect}> Connect </Button>
             </SLanding>
           )}
