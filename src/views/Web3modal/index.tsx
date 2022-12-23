@@ -16,11 +16,12 @@ import {
   Label,
   FormInput,
   Text,
-  LinkA,
   View,
   CardSection,
   Loading,
+  LinkA,
 } from 'components'
+import useLayout from 'hooks/useLayout'
 import { IAssetData } from 'types'
 import { WEB3MODAL } from 'consts'
 import {
@@ -37,6 +38,7 @@ import {
   Modal,
 } from './web3modalComponents'
 import { callBalanceOf, callTransfer } from './helpers/web3'
+import { isMobile } from 'react-device-detect'
 
 const SLayout = styled.div`
   position: relative;
@@ -112,6 +114,7 @@ const STestButton = styled(Button)`
 `
 
 const Web3modalExample = (): ReactElement => {
+  const { isUnderTabletWidth } = useLayout()
   const [chainId, setChainId] = useState<number>(1)
   const [networkId, setNetworkId] = useState<number>(1)
   const [connected, setConnected] = useState<boolean>(false)
@@ -124,6 +127,8 @@ const Web3modalExample = (): ReactElement => {
   const [kip7ContractAddress, setKip7ContractAddress] = useState('')
   const [web3modal, setWeb3modal] = useState<any>()
   const [web3, setWeb3] = useState<any>()
+  const href = window.location.href
+
   const getAccountAssets = async ({
     changedAddress,
     changedChainId,
@@ -421,7 +426,11 @@ const Web3modalExample = (): ReactElement => {
                         {WEB3MODAL.PERSONAL_SIGN}
                       </STestButton>
                     </STestButtonContainer>
-                    <Text style={{ padding: '0 120px' }}>
+                    <Text
+                      style={{
+                        padding: `${isUnderTabletWidth ? 0 : '0 120px'}`,
+                      }}
+                    >
                       Sendtransaction(): send 0.000001 KLAY to the sender
                       account on Klaytn Network(Mainnet, Testnet). On other
                       networks, the amount is zero.{'\n'}
@@ -475,6 +484,14 @@ const Web3modalExample = (): ReactElement => {
           ) : (
             <SLanding>
               <h2>{`Test Web3Modal`}</h2>
+              {isMobile && (
+                <View style={{ paddingBottom: 10 }}>
+                  <LinkA link={`https://app.kaikas.io/u/${href}`}>
+                    If using mobile device, please click here to open in-app
+                    browser of Kaikas Mobile
+                  </LinkA>
+                </View>
+              )}
               <Button onClick={onConnect}> Connect </Button>
             </SLanding>
           )}

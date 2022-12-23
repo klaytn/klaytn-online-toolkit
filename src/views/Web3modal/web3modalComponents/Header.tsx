@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import * as PropTypes from 'prop-types'
 import { getChainData } from '../helpers/utilities'
 import Banner from './Banner'
+import useLayout from 'hooks/useLayout'
 
 export const transitions = {
   short: 'all 0.1s ease-in-out',
@@ -15,18 +16,18 @@ const SHeader = styled.div`
   margin-top: -1px;
   margin-bottom: 1px;
   width: 100%;
-  height: 100px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
+  padding: 20px 16px;
 `
 
 const SActiveAccount = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   position: relative;
   font-weight: 500;
+  flex-direction: column;
+  text-align: right;
 `
 
 const SActiveChain = styled(SActiveAccount)`
@@ -50,17 +51,17 @@ const SAddress = styled.p<IHeaderStyle>`
   transition: ${transitions.base};
   font-weight: bold;
   margin: ${({ connected }): string => (connected ? '-2px auto 0.7em' : '0')};
+  padding-bottom: 5;
 `
 
 const SDisconnect = styled.div<IHeaderStyle>`
   transition: ${transitions.button};
   font-size: 12px;
   font-family: monospace;
-  position: absolute;
-  right: 0;
   top: 20px;
   opacity: 0.7;
   cursor: pointer;
+  text-align: right;
 
   opacity: ${({ connected }): number => (connected ? 1 : 0)};
   visibility: ${({ connected }): string => (connected ? 'visible' : 'hidden')};
@@ -80,12 +81,20 @@ interface IHeaderProps {
 }
 
 const Header = (props: IHeaderProps): ReactElement => {
+  const { isUnderMobileWidth } = useLayout()
+
   const { connected, address, chainId, killSession } = props
   const chainData = chainId ? getChainData(chainId) : null
   return (
-    <SHeader {...props}>
+    <SHeader
+      style={{
+        justifyContent: isUnderMobileWidth ? 'center' : 'space-between',
+        flexDirection: isUnderMobileWidth ? 'column' : 'row',
+      }}
+      {...props}
+    >
       {connected && chainData ? (
-        <SActiveChain>
+        <SActiveChain style={{ paddingBottom: isUnderMobileWidth ? 20 : 0 }}>
           <p>{`Connected to`}</p>
           <p>{chainData.name}</p>
         </SActiveChain>
@@ -94,7 +103,16 @@ const Header = (props: IHeaderProps): ReactElement => {
       )}
       {address && (
         <SActiveAccount>
-          <SAddress connected={connected}>{address}</SAddress>
+          <SAddress
+            style={{
+              overflowWrap: 'anywhere',
+              fontSize: isUnderMobileWidth ? 12 : 14,
+              marginBottom: 0,
+            }}
+            connected={connected}
+          >
+            {address}
+          </SAddress>
           <SDisconnect connected={connected} onClick={killSession}>
             {'Disconnect'}
           </SDisconnect>
