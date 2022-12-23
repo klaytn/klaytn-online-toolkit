@@ -18,11 +18,10 @@ const SLightbox = styled.div<ILightboxStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
   position: absolute;
-  width: 100vw;
-  height: 100vh;
-  margin-left: -50vw;
-  top: ${({ offset }): string | number => (offset ? `-${offset}px` : 0)};
-  left: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
   z-index: 2;
   will-change: opacity;
   background-color: ${({ opacity }): string => {
@@ -41,21 +40,14 @@ const SLightbox = styled.div<ILightboxStyleProps>`
 `
 
 const SModalContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 15px;
-  display: flex;
+  padding: 10px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   align-items: center;
   justify-content: center;
-`
-
-const SHitbox = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: min(500px, 100%);
 `
 
 interface ICloseButtonStyleProps {
@@ -93,9 +85,7 @@ const SCloseButton = styled.div<ICloseButtonStyleProps>`
 `
 
 const SCard = styled.div`
-  position: relative;
-  width: 100%;
-  max-width: 500px;
+  width: min(500px, 100%);
   padding: 25px;
   background-color: white;
   border-radius: 6px;
@@ -175,8 +165,6 @@ class Modal extends React.Component<IModalProps, IModalState> {
         ref={(c: any): void => (this.lightbox = c)}
       >
         <SModalContainer>
-          <SHitbox onClick={this.toggleModal} />
-
           <SCard>
             <SCloseButton size={25} color="black" onClick={this.toggleModal} />
             <SModalContent>{children}</SModalContent>
