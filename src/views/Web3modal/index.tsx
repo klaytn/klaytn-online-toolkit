@@ -6,6 +6,7 @@ import { KaikasWeb3Provider } from '@klaytn/kaikas-web3-provider'
 import { KlipWeb3Provider } from '@klaytn/klip-web3-provider'
 import _ from 'lodash'
 import { TransactionReceipt } from 'web3-core'
+import { isMobile } from 'react-device-detect'
 
 import {
   Button,
@@ -38,7 +39,6 @@ import {
   Modal,
 } from './web3modalComponents'
 import { callBalanceOf, callTransfer } from './helpers/web3'
-import { isMobile } from 'react-device-detect'
 
 const SLayout = styled.div`
   position: relative;
