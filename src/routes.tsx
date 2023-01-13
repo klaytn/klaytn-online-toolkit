@@ -28,6 +28,9 @@ import LoadKeystore from './views/Miscellaneous/LoadKeystore'
 import Web3modalExample from './views/Web3modal'
 import Web3modalNFT from './views/Web3modal/web3modalNFT'
 
+import KaisKasTutorial1 from './views/Kaikas/KaikasTutorial1'
+import KaisKasTutorial2 from './views/Kaikas/KaikasTutorial2'
+
 import { RouteType } from 'types'
 
 const routes: RouteType[] = [
@@ -187,6 +190,26 @@ const routes: RouteType[] = [
         component: DetectKCT,
         description:
           'Checks which KCT the smart contract implements using its address',
+      },
+    ],
+  },
+  {
+    name: 'Kaikas',
+    path: '/kaikas',
+    items: [
+      {
+        path: '/kaikasTutorial1',
+        name: 'KaiKas Tutorial 1',
+        component: KaisKasTutorial1,
+        description:
+          'Test several functions(legacy transaction, add token, etc,.) of kaikas wallet',
+      },
+      {
+        path: '/kaikasTutorial2',
+        name: 'KaiKas Tutorial 2',
+        component: KaisKasTutorial2,
+        description:
+          'Test several functions(value transfer, value transfer with memo, etc,.) of kaikas wallet',
       },
     ],
   },
