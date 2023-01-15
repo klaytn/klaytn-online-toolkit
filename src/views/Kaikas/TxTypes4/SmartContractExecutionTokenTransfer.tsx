@@ -11,10 +11,9 @@ import {
   ResultForm,
   CodeBlock,
   View,
-  CardExample,
 } from 'components'
 
-import exBytecode from '../Common/exBytecode'
+import exFunctionCall from '../Common/exFunctionCall'
 
 const caver = new Caver(window.klaytn)
 
@@ -24,11 +23,15 @@ type WalletInfoType = {
   }
 }
 
-const SmartContractDeploy = ({ walletProps }: WalletInfoType): ReactElement => {
+const SmartContractExecutionTokenTransfer = ({
+  walletProps,
+}: WalletInfoType): ReactElement => {
   const { walletAddress } = walletProps
 
-  const [bytecode, setBytecode] = useState('')
-  const [value, setValue] = useState('')
+  const [toAddress, setToAddress] = useState('')
+  const [contractAddress, setContractAddress] = useState('')
+  const [decimal, setDecimal] = useState('18')
+  const [amount, setAmount] = useState('')
   const [gas, setGas] = useState('3000000')
 
   const [txHash, setTxHash] = useState('')
@@ -36,13 +39,21 @@ const SmartContractDeploy = ({ walletProps }: WalletInfoType): ReactElement => {
   const [error, setError] = useState<ResultFormType>()
 
   const signAndSendTransaction = (): void => {
+    const encodedData = caver.klay.abi.encodeFunctionCall(exFunctionCall, [
+      toAddress,
+      caver.utils
+        .toBN(amount)
+        .mul(caver.utils.toBN(Number(`1e${decimal}`)))
+        .toString(),
+    ])
+
     try {
       caver.klay
         .sendTransaction({
-          type: 'SMART_CONTRACT_DEPLOY',
+          type: 'SMART_CONTRACT_EXECUTION',
           from: walletAddress,
-          data: bytecode,
-          value: caver.utils.toPeb(value, 'KLAY'),
+          to: contractAddress,
+          data: encodedData,
           gas: gas,
         })
         .once('transactionHash', (transactionHash) => {
@@ -70,7 +81,7 @@ const SmartContractDeploy = ({ walletProps }: WalletInfoType): ReactElement => {
   return (
     <>
       <CardSection>
-        <h4>Smart Contract Deploy</h4>
+        <h4>Smart Contract Execution: Token Transfer</h4>
         <View style={{ rowGap: 10 }}>
           <View>
             <Label>From</Label>
@@ -80,30 +91,33 @@ const SmartContractDeploy = ({ walletProps }: WalletInfoType): ReactElement => {
               onChange={(): void => {}}
               value={walletAddress}
             />
-            <Label>
-              Bytecode Example (GX Token contract). You can deploy 9999 GroundX
-              Tokens.
-            </Label>
-            <CardExample
-              exValue={exBytecode}
-              onClickTry={(): void => {
-                setBytecode(exBytecode)
-                setValue('0')
-              }}
-            />
-            <Label>Data (bytecode)</Label>
+            <Label>To</Label>
             <FormInput
               type="text"
-              placeholder="A bytecode of smart contract to be deployed"
-              onChange={setBytecode}
-              value={bytecode}
+              placeholder="Address you want to send token to"
+              onChange={setToAddress}
+              value={toAddress}
             />
-            <Label>Value</Label>
+            <Label>Token Contract Address</Label>
             <FormInput
               type="text"
-              placeholder="Value (KLAY)"
-              onChange={setValue}
-              value={value}
+              placeholder="The address of the deployed token contract. You could get the contract address from 'Smart Contract Deploy' type transaction."
+              onChange={setContractAddress}
+              value={contractAddress}
+            />
+            <Label>Token Decimal</Label>
+            <FormInput
+              type="text"
+              placeholder="Token Decimal"
+              onChange={setDecimal}
+              value={decimal}
+            />
+            <Label>Amount</Label>
+            <FormInput
+              type="text"
+              placeholder="Amount of token you want to send"
+              onChange={setAmount}
+              value={amount}
             />
             <Label>Gas</Label>
             <FormInput
@@ -120,12 +134,34 @@ const SmartContractDeploy = ({ walletProps }: WalletInfoType): ReactElement => {
             title="caver-js code"
             text={`const caver = new Caver(window.klaytn)
 
+const encodedData = caver.klay
+  .abi.encodeFunctionCall({
+    name: 'transfer',
+    type: 'function',
+    inputs: [
+      {
+        type: 'address',
+        name: 'recipient',
+      },
+      {
+        type: 'uint256',
+        name: 'amount',
+      },
+    ],
+  }, [
+  toAddress,
+  caver.utils
+    .toBN(amount)
+    .mul(caver.utils.toBN(Number(\`1e\${decimal}\`)))
+    .toString(),
+  ])
+
 caver.klay
   .sendTransaction({
-    type: 'SMART_CONTRACT_DEPLOY',
+    type: 'SMART_CONTRACT_EXECUTION',
     from: walletAddress,
-    data: bytecode,
-    value: caver.utils.toPeb(value, 'KLAY'),
+    to: contractAddress,
+    data: encodedData,
     gas: gas,
   })
   .once('transactionHash', (transactionHash) => {
@@ -157,4 +193,4 @@ caver.klay
   )
 }
 
-export default SmartContractDeploy
+export default SmartContractExecutionTokenTransfer

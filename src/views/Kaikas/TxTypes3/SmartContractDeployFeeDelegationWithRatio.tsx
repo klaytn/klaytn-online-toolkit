@@ -92,7 +92,7 @@ const SmartContractDeployFeeDelegationWithRatio = ({
             </Label>
             <CardExample
               exValue={exBytecode}
-              onClickTry={() => {
+              onClickTry={(): void => {
                 setBytecode(exBytecode)
                 setValue('0')
               }}

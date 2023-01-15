@@ -11,10 +11,9 @@ import {
   ResultForm,
   CodeBlock,
   View,
-  CardExample,
 } from 'components'
 
-import exBytecode from '../Common/exBytecode'
+import exFunctionCall from '../Common/exFunctionCall'
 import FeeDelegation from '../Common/FeeDelegation'
 
 const caver = new Caver(window.klaytn)
@@ -25,14 +24,16 @@ type WalletInfoType = {
   }
 }
 
-const SmartContractDeployFeeDelegation = ({
+const SmartContractExecutionTokenTransferFD = ({
   walletProps,
 }: WalletInfoType): ReactElement => {
   const { walletAddress } = walletProps
   const [senderAddress, setSenderAddress] = useState('')
 
-  const [bytecode, setBytecode] = useState('')
-  const [value, setValue] = useState('')
+  const [toAddress, setToAddress] = useState('')
+  const [contractAddress, setContractAddress] = useState('')
+  const [decimal, setDecimal] = useState('18')
+  const [amount, setAmount] = useState('')
   const [gas, setGas] = useState('3000000')
 
   const [signError, setSignError] = useState<ResultFormType>()
@@ -40,11 +41,19 @@ const SmartContractDeployFeeDelegation = ({
 
   const signTransaction = (): void => {
     try {
+      const encodedData = caver.klay.abi.encodeFunctionCall(exFunctionCall, [
+        toAddress,
+        caver.utils
+          .toBN(amount)
+          .mul(caver.utils.toBN(Number(`1e${decimal}`)))
+          .toString(),
+      ])
+
       const tx = {
-        type: 'FEE_DELEGATED_SMART_CONTRACT_DEPLOY',
+        type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
         from: walletAddress,
-        data: bytecode,
-        value: caver.utils.toPeb(value, 'KLAY'),
+        to: contractAddress,
+        data: encodedData,
         gas: gas,
       }
 
@@ -74,40 +83,43 @@ const SmartContractDeployFeeDelegation = ({
   return (
     <>
       <CardSection>
-        <h4>Smart Contract Deploy (Fee Delegation)</h4>
+        <h4>Smart Contract Execution: Token Transfer (Fee Delegation)</h4>
         <View style={{ rowGap: 10 }}>
           <View>
             <Label>From</Label>
             <FormInput
               type="text"
-              placeholder="Address you want to sign transaction"
+              placeholder="Address you logged in kaikas"
               onChange={(): void => {}}
               value={senderAddress || walletAddress}
             />
-            <Label>
-              Bytecode Example (GX Token contract). You can deploy 9999 GroundX
-              Tokens.
-            </Label>
-            <CardExample
-              exValue={exBytecode}
-              onClickTry={(): void => {
-                setBytecode(exBytecode)
-                setValue('0')
-              }}
-            />
-            <Label>Data (bytecode)</Label>
+            <Label>To</Label>
             <FormInput
               type="text"
-              placeholder="A bytecode of smart contract to be deployed"
-              onChange={setBytecode}
-              value={bytecode}
+              placeholder="Address you want to send token to"
+              onChange={setToAddress}
+              value={toAddress}
             />
-            <Label>Value</Label>
+            <Label>Token Contract Address</Label>
             <FormInput
               type="text"
-              placeholder="Value (KLAY)"
-              onChange={setValue}
-              value={value}
+              placeholder="The address of the deployed token contract. You could get the contract address from 'Smart Contract Deploy' type transaction."
+              onChange={setContractAddress}
+              value={contractAddress}
+            />
+            <Label>Token Decimal</Label>
+            <FormInput
+              type="text"
+              placeholder="Token Decimal"
+              onChange={setDecimal}
+              value={decimal}
+            />
+            <Label>Amount</Label>
+            <FormInput
+              type="text"
+              placeholder="Amount of token you want to send"
+              onChange={setAmount}
+              value={amount}
             />
             <Label>Gas</Label>
             <FormInput
@@ -122,19 +134,35 @@ const SmartContractDeployFeeDelegation = ({
             title="caver-js code"
             text={`const caver = new Caver(window.klaytn)
 
+const encodedData = caver.klay
+  .abi.encodeFunctionCall(exFunctionCall, [
+    toAddress,
+    caver.utils
+      .toBN(amount)
+      .mul(caver.utils.toBN(Number(\`1e\${decimal}\`)))
+      .toString(),
+  ])
+
 const tx = {
-  type: 'FEE_DELEGATED_SMART_CONTRACT_DEPLOY',
+  type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
   from: walletAddress,
-  data: bytecode,
-  value: caver.utils.toPeb(value, 'KLAY'),
+  to: contractAddress,
+  data: encodedData,
   gas: gas,
 }
 
 caver.klay.signTransaction(tx, (err, res) => {
   if (err) {
-    setSignError({ success: false, message: _.toString(err.message) })
+    setSignError({
+      success: false,
+      message: _.toString(err.message),
+    })
   } else {
-    const { rawTransaction: senderRawTransaction } = JSON.parse(JSON.stringify(res))
+    const { rawTransaction: senderRawTransaction } = JSON.parse(
+      JSON.stringify(res)
+    )
+    setSignError(undefined)
+    setSenderAddress(walletAddress)
     setSignedTx(senderRawTransaction)
   }
 })`}
@@ -157,4 +185,4 @@ caver.klay.signTransaction(tx, (err, res) => {
   )
 }
 
-export default SmartContractDeployFeeDelegation
+export default SmartContractExecutionTokenTransferFD

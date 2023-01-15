@@ -31,6 +31,7 @@ import Web3modalNFT from './views/Web3modal/web3modalNFT'
 import KaiKasTutorial1 from './views/Kaikas/KaikasTutorial1'
 import KaiKasTutorial2 from './views/Kaikas/KaikasTutorial2'
 import KaikasTutorial3 from './views/Kaikas/KaikasTutorial3'
+import KaikasTutorial4 from './views/Kaikas/KaikasTutorial4'
 
 import { RouteType } from 'types'
 
@@ -218,6 +219,13 @@ const routes: RouteType[] = [
         component: KaikasTutorial3,
         description:
           'Test several functions(account update, smart contract deploy, etc,.) of kaikas wallet',
+      },
+      {
+        path: '/kaikasTutorial4',
+        name: 'KaiKas Tutorial 4',
+        component: KaikasTutorial4,
+        description:
+          'Test several functions(token transfer, token transfer fee delegation, etc,.) of kaikas wallet',
       },
     ],
   },
