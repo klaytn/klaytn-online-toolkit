@@ -27,11 +27,12 @@ const ValueTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
   const [toAddress, setToAddress] = useState('')
   const [value, setValue] = useState('')
   const [gas, setGas] = useState('3000000')
+
   const [txHash, setTxHash] = useState('')
   const [receipt, setReceipt] = useState<ResultFormType<TransactionReceipt>>()
   const [error, setError] = useState<ResultFormType>()
 
-  const signTransaction = (): void => {
+  const signAndSendTransaction = (): void => {
     try {
       caver.klay
         .sendTransaction({
@@ -97,7 +98,9 @@ const ValueTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
               value={gas}
             />
           </View>
-          <Button onClick={signTransaction}>Sign Transaction</Button>
+          <Button onClick={signAndSendTransaction}>
+            Sign & Send Transaction
+          </Button>
           <CodeBlock
             title="caver-js code"
             text={`const caver = new Caver(window.klaytn)
@@ -105,7 +108,7 @@ const ValueTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
 caver.klay.sendTransaction({
   from: walletAddress,
   to: toAddress,
-  value: caver.utils.toPeb(stringValue.toString(), 'KLAY'),
+  value: caver.utils.toPeb(value, 'KLAY'),
   gas: gas,
   })
   .once('transactionHash', (transactionHash) => {

@@ -17,19 +17,14 @@ import {
   PrivateKeyWarning,
 } from 'components'
 
-import SmartContractExecutionTokenTransfer from './TxTypes4/SmartContractExecutionTokenTransfer'
-import SmartContractExecutionTokenTransferFD from './TxTypes4/SmartContractExecutionTokenTransferFD'
-import SmartContractExecutionTokenTransferFDwithRatio from './TxTypes4/SmartContractExecutionTokenTransferFDwithRatio'
+import AddToken from './TxTypes4/AddToken'
+import SignMessage from './TxTypes4/SignMessage'
 
 const caver = new Caver(window.klaytn)
 
 const TransactionType = {
-  smartContractExecutionTokenTransfer:
-    'Smart Contract Execution: Token Transfer',
-  smartContractExecutionTokenTransferFD:
-    'Smart Contract Execution: Token Transfer (Fee Delegation)',
-  smartContractExecutionTokenTransferFDwithRatio:
-    'Smart Contract Execution: Token Transfer (Fee Delegation with Ratio)',
+  addToken: 'Add Token (Not Tx Type)',
+  signMessage: 'Sign Message (Not Tx Type)',
 }
 
 const NetworkName: { [key: string]: string } = {
@@ -51,7 +46,7 @@ const KaikasTutorial4 = (): ReactElement => {
   const [walletAddress, setWalletAddress] = useState('')
   const [walletBalance, setWalletBalance] = useState('')
   const [network, setNetwork] = useState('0')
-  const [txType, setTxType] = useState('smartContractExecutionTokenTransfer')
+  const [txType, setTxType] = useState('addToken')
 
   const setNetworkInfo = (): void => {
     const { klaytn } = window
@@ -106,17 +101,20 @@ const KaikasTutorial4 = (): ReactElement => {
         <CardHeader>
           <h3 className="title">Kaikas Tutorial 4</h3>
           <Text>
-            {
-              'You can test the following transaction types on this page:\n - Smart Contract Execution: Token Transfer\n'
-            }
-            {
-              ' - Smart Contract Execution: Token Transfer (Fee Delegation)\n - Smart Contract Execution: Token Transfer (Fee Delegation with Ratio)\n\n'
-            }
-            {'You can get some test KLAY from the'}{' '}
+            {'You can test the following functions on this page:\n'}
+            <LinkA link="https://docs.kaikas.io/03_best_practices/02_registering_your_token">
+              - Add Token (Not Tx Type)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.kaikas.io/02_api_reference/02_caver_methods#caver.klay.sign">
+              - Sign Message (Not Tx Type)
+            </LinkA>
+            {'\n\n'}
+            {'You can get some test KLAY from the '}
             <LinkA link="https://baobab.wallet.klaytn.foundation/faucet">
               faucet
-            </LinkA>{' '}
-            {"and try out the Kaikas' features on the Testnet."}
+            </LinkA>
+            {" and try out the Kaikas' features on the Testnet."}
           </Text>
           <PrivateKeyWarning />
         </CardHeader>
@@ -157,24 +155,13 @@ const KaikasTutorial4 = (): ReactElement => {
                       value: val,
                     }))}
                     onChange={setTxType}
-                    containerStyle={{ width: 500 }}
+                    containerStyle={{ width: 400 }}
                   />
                 </CardSection>
-                {txType === 'smartContractExecutionTokenTransfer' && (
-                  <SmartContractExecutionTokenTransfer
-                    walletProps={{ walletAddress }}
-                  />
-                )}
-                {txType === 'smartContractExecutionTokenTransferFD' && (
-                  <SmartContractExecutionTokenTransferFD
-                    walletProps={{ walletAddress }}
-                  />
-                )}
-                {txType ===
-                  'smartContractExecutionTokenTransferFDwithRatio' && (
-                  <SmartContractExecutionTokenTransferFDwithRatio
-                    walletProps={{ walletAddress }}
-                  />
+
+                {txType === 'addToken' && <AddToken />}
+                {txType === 'signMessage' && (
+                  <SignMessage walletProps={{ walletAddress }} />
                 )}
               </>
             )}

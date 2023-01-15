@@ -112,17 +112,31 @@ const KaikasTutorial2 = (): ReactElement => {
         <CardHeader>
           <h3 className="title">Kaikas Tutorial 2</h3>
           <Text>
-            {
-              'You can test the following transaction types on this page:\n - Value Transfer\n'
-            }
-            {
-              ' - Value Transfer (Fee Delegation)\n - Value Transfer (Fee Delegation with Ratio)\n'
-            }
-            {
-              ' - Value Transfer with Memo\n - Value Transfer with Memo (Fee Delegation)\n'
-            }
-            {' - Value Transfer with Memo (Fee Delegation with Ratio)\n'}
+            {'You can test the following transaction types on this page:\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypevaluetransfer">
+              - Value Transfer
+            </LinkA>
             {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedvaluetransfer">
+              - Value Transfer (Fee Delegation)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedvaluetransferwithratio">
+              - Value Transfer (Fee Delegation with Ratio)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypevaluetransfermemo">
+              - Value Transfer with Memo
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedvaluetransfermemo">
+              - Value Transfer with Memo (Fee Delegation)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedvaluetransfermemowithratio">
+              - Value Transfer with Memo (Fee Delegation with Ratio)
+            </LinkA>
+            {'\n\n'}
             {'You can get some test KLAY from the'}{' '}
             <LinkA link="https://baobab.wallet.klaytn.foundation/faucet">
               faucet
@@ -168,7 +182,7 @@ const KaikasTutorial2 = (): ReactElement => {
                       value: val,
                     }))}
                     onChange={setTxType}
-                    containerStyle={{ width: 300 }}
+                    containerStyle={{ width: 400 }}
                   />
                 </CardSection>
                 {txType === 'valueTransfer' && (

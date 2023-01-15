@@ -201,31 +201,31 @@ const routes: RouteType[] = [
     items: [
       {
         path: '/kaikasTutorial1',
-        name: 'KaiKas Tutorial 1',
+        name: 'Tutorial 1 (Legacy, Account Update)',
         component: KaiKasTutorial1,
         description:
-          'Test several functions(legacy transaction, add token, etc,.) of kaikas wallet',
+          'Test several functions(legacy transaction, account update, etc,.) of kaikas wallet',
       },
       {
         path: '/kaikasTutorial2',
-        name: 'KaiKas Tutorial 2',
+        name: 'Tutorial 2 (Value Transfer)',
         component: KaiKasTutorial2,
         description:
           'Test several functions(value transfer, value transfer with memo, etc,.) of kaikas wallet',
       },
       {
         path: '/kaikasTutorial3',
-        name: 'KaiKas Tutorial 3',
+        name: 'Tutorial 3 (Contract Deploy, Execution)',
         component: KaikasTutorial3,
         description:
-          'Test several functions(account update, smart contract deploy, etc,.) of kaikas wallet',
+          'Test several functions(smart contract deploy, smart contract execution, etc,.) of kaikas wallet',
       },
       {
         path: '/kaikasTutorial4',
-        name: 'KaiKas Tutorial 4',
+        name: 'Tutorial 4 (Add Token, Sign Message)',
         component: KaikasTutorial4,
         description:
-          'Test several functions(token transfer, token transfer fee delegation, etc,.) of kaikas wallet',
+          'Test several functions(add token, sign message, etc,.) of kaikas wallet',
       },
     ],
   },

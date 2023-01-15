@@ -13,6 +13,8 @@ import {
   View,
 } from 'components'
 
+import exFunctionCall from '../Common/exFunctionCall'
+
 const caver = new Caver(window.klaytn)
 
 type WalletInfoType = {
@@ -21,45 +23,29 @@ type WalletInfoType = {
   }
 }
 
-const TokenTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
+const SmartContractExecutionTokenTransferLegacy = ({
+  walletProps,
+}: WalletInfoType): ReactElement => {
   const { walletAddress } = walletProps
+
   const [toAddress, setToAddress] = useState('')
   const [contractAddress, setContractAddress] = useState('')
   const [decimal, setDecimal] = useState('18')
   const [amount, setAmount] = useState('')
   const [gas, setGas] = useState('3000000')
+
   const [txHash, setTxHash] = useState('')
   const [receipt, setReceipt] = useState<ResultFormType<TransactionReceipt>>()
   const [error, setError] = useState<ResultFormType>()
 
-  const transfer = (): void => {
-    if (Number(decimal) > 20) {
-      return alert('Decimal should be less than 21')
-    }
-
-    const encodedData = caver.klay.abi.encodeFunctionCall(
-      {
-        name: 'transfer',
-        type: 'function',
-        inputs: [
-          {
-            type: 'address',
-            name: 'recipient',
-          },
-          {
-            type: 'uint256',
-            name: 'amount',
-          },
-        ],
-      },
-      [
-        toAddress,
-        caver.utils
-          .toBN(amount)
-          .mul(caver.utils.toBN(Number(`1e${decimal}`)))
-          .toString(),
-      ]
-    )
+  const signAndSendTransaction = (): void => {
+    const encodedData = caver.klay.abi.encodeFunctionCall(exFunctionCall, [
+      toAddress,
+      caver.utils
+        .toBN(amount)
+        .mul(caver.utils.toBN(Number(`1e${decimal}`)))
+        .toString(),
+    ])
 
     try {
       caver.klay
@@ -94,7 +80,7 @@ const TokenTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
   return (
     <>
       <CardSection>
-        <h4>Token Transfer (Legacy)</h4>
+        <h4>Smart Contract Execution: Token Transfer (Legacy)</h4>
         <View style={{ rowGap: 10 }}>
           <View>
             <Label>From</Label>
@@ -114,7 +100,7 @@ const TokenTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
             <Label>Token Contract Address</Label>
             <FormInput
               type="text"
-              placeholder="The address of the deployed token contract. Please get the contract address from 'Smart Contract Deploy (Legacy)' type transaction."
+              placeholder="The address of the deployed token contract. You could get the contract address from 'Smart Contract Deploy' type transaction."
               onChange={setContractAddress}
               value={contractAddress}
             />
@@ -140,7 +126,9 @@ const TokenTransferLegacy = ({ walletProps }: WalletInfoType): ReactElement => {
               value={gas}
             />
           </View>
-          <Button onClick={transfer}>Sign Transaction</Button>
+          <Button onClick={signAndSendTransaction}>
+            Sign & Send Transaction
+          </Button>
           <CodeBlock
             title="caver-js code"
             text={`const caver = new Caver(window.klaytn)
@@ -206,4 +194,4 @@ caver.klay
   )
 }
 
-export default TokenTransferLegacy
+export default SmartContractExecutionTokenTransferLegacy

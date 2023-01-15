@@ -16,6 +16,7 @@ const AddToken = (): ReactElement => {
   const [tokenSymbol, setTokenSymbol] = useState('')
   const [decimal, setDecimal] = useState('')
   const [url, setUrl] = useState('')
+
   const [success, setSuccess] = useState('')
 
   const exToken = {
@@ -68,7 +69,7 @@ const AddToken = (): ReactElement => {
   return (
     <>
       <CardSection>
-        <h4>Smart Contract Deploy (Legacy)</h4>
+        <h4>Add Token (Not Tx Type)</h4>
         <View style={{ rowGap: 10 }}>
           <CardExample
             exValue={JSON.stringify(exToken, null, 4)}
@@ -129,7 +130,13 @@ klaytn.sendAsync(
     id: Math.round(Math.random() * 100000),
   },
   (err, result) => { 
-    console.log(err, result)
+    if (err) {
+      setSuccess('no')
+    } else if (res.result === true) {
+      setSuccess('yes')
+    } else if (res.result === false) {
+      setSuccess('cancel')
+    }
   }
 )`}
           />

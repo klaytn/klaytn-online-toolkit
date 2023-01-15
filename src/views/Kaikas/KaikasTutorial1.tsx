@@ -19,18 +19,22 @@ import {
 
 import ValueTransferLegacy from './TxTypes1/ValueTransferLegacy'
 import SmartContractDeployLegacy from './TxTypes1/SmartContractDeployLegacy'
-import TokenTransferLegacy from './TxTypes1/TokenTransferLegacy'
-import AddToken from './TxTypes1/AddToken'
-import SignMessage from './TxTypes1/SignMessage'
+import SmartContractExecutionTokenTransferLegacy from './TxTypes1/SmartContractExecutionTokenTransferLegacy'
+import AccountUpdate from './TxTypes1/AccountUpdate'
+import AccountUpdateFeeDelegation from './TxTypes1/AccountUpdateFeeDelegation'
+import AccountUpdateFeeDelegationWithRatio from './TxTypes1/AccountUpdateFeeDelegationWithRatio'
 
 const caver = new Caver(window.klaytn)
 
 const TransactionType = {
   valueTransferLegacy: 'Value Transfer (Legacy)',
   smartContractDeployLegacy: 'Smart Contract Deploy (Legacy)',
-  tokenTransferLegacy: 'Token Transfer (Legacy)',
-  addToken: 'Add Token',
-  signMessage: 'Sign Message',
+  smartContractExecutionTokenTransferLegacy:
+    'Smart Contract Execution: Token Transfer (Legacy)',
+  accountUpdate: 'Account Update',
+  accountUpdateFeeDelegation: 'Account Update (Fee Delegation)',
+  accountUpdateFeeDelegationWithRatio:
+    'Account Update (Fee Delegation with Ratio)',
 }
 
 const NetworkName: { [key: string]: string } = {
@@ -107,18 +111,36 @@ const KaikasTutorial1 = (): ReactElement => {
         <CardHeader>
           <h3 className="title">Kaikas Tutorial 1</h3>
           <Text>
-            {
-              'You can test the following transaction types on this page:\n - Value Transfer (Legacy)\n'
-            }{' '}
-            {
-              '- Smart Contract Deploy (Legacy)\n - Token Transfer (Legacy)\n - Add Token\n - Sign Message \n'
-            }
+            {'You can test the following transaction types on this page:\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypelegacytransaction">
+              - Value Transfer (Legacy)
+            </LinkA>
             {'\n'}
-            {'You can get some test KLAY from the'}{' '}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypelegacytransaction">
+              - Smart Contract Deploy (Legacy)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypelegacytransaction">
+              - Smart Contract Execution: Token Transfer (Legacy)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypeaccountupdate">
+              - Account Update
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedaccountupdate">
+              - Account Update (Fee Delegated)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedaccountupdatewithratio">
+              - Account Update (Fee Delegated with Ratio)
+            </LinkA>
+            {'\n\n'}
+            {'You can get some test KLAY from the '}
             <LinkA link="https://baobab.wallet.klaytn.foundation/faucet">
               faucet
-            </LinkA>{' '}
-            {"and try out the Kaikas' features on the Testnet."}
+            </LinkA>
+            {" and try out the Kaikas' features on the Testnet."}
           </Text>
           <PrivateKeyWarning />
         </CardHeader>
@@ -159,7 +181,7 @@ const KaikasTutorial1 = (): ReactElement => {
                       value: val,
                     }))}
                     onChange={setTxType}
-                    containerStyle={{ width: 300 }}
+                    containerStyle={{ width: 400 }}
                   />
                 </CardSection>
                 {txType === 'valueTransferLegacy' && (
@@ -168,12 +190,21 @@ const KaikasTutorial1 = (): ReactElement => {
                 {txType === 'smartContractDeployLegacy' && (
                   <SmartContractDeployLegacy walletProps={{ walletAddress }} />
                 )}
-                {txType === 'tokenTransferLegacy' && (
-                  <TokenTransferLegacy walletProps={{ walletAddress }} />
+                {txType === 'smartContractExecutionTokenTransferLegacy' && (
+                  <SmartContractExecutionTokenTransferLegacy
+                    walletProps={{ walletAddress }}
+                  />
                 )}
-                {txType === 'addToken' && <AddToken />}
-                {txType === 'signMessage' && (
-                  <SignMessage walletProps={{ walletAddress }} />
+                {txType === 'accountUpdate' && (
+                  <AccountUpdate walletProps={{ walletAddress }} />
+                )}
+                {txType === 'accountUpdateFeeDelegation' && (
+                  <AccountUpdateFeeDelegation walletProps={{ walletAddress }} />
+                )}
+                {txType === 'accountUpdateFeeDelegationWithRatio' && (
+                  <AccountUpdateFeeDelegationWithRatio
+                    walletProps={{ walletAddress }}
+                  />
                 )}
               </>
             )}

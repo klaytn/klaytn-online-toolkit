@@ -22,6 +22,7 @@ type WalletInfoType = {
 
 const SignMessage = ({ walletProps }: WalletInfoType): ReactElement => {
   const { walletAddress } = walletProps
+
   const [message, setMessage] = useState('Hello, world!')
   const [result, setResult] = useState<ResultFormType>()
 
@@ -40,7 +41,7 @@ const SignMessage = ({ walletProps }: WalletInfoType): ReactElement => {
   return (
     <>
       <CardSection>
-        <h4>Sign Message</h4>
+        <h4>Sign Message (Not Tx Type)</h4>
         <View style={{ rowGap: 10 }}>
           <View>
             <Label>From</Label>
@@ -63,8 +64,15 @@ const SignMessage = ({ walletProps }: WalletInfoType): ReactElement => {
             title="caver-js code"
             text={`const caver = new Caver(window.klaytn)
 
-const signedMessage = await caver.klay.sign(message, walletAddress)
-setResult({ success: true, value: signedMessage })`}
+try {
+  const signedMessage = await caver.klay.sign(message, walletAddress)
+  setResult({ success: true, value: signedMessage })
+} catch (err) {
+  setResult({
+    success: false,
+    message: 'Please input the appropriate values and sign it.',
+  })
+}`}
           />
         </View>
       </CardSection>

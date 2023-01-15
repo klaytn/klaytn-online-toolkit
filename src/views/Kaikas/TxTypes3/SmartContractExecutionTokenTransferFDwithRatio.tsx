@@ -155,7 +155,7 @@ const encodedData = caver.klay
   ])
 
 const tx = {
-  type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+  type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION_WITH_RATIO',
   from: walletAddress,
   to: contractAddress,
   data: encodedData,

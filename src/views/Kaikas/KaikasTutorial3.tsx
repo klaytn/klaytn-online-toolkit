@@ -17,24 +17,26 @@ import {
   PrivateKeyWarning,
 } from 'components'
 
-import AccountUpdate from './TxTypes3/AccountUpdate'
-import AccountUpdateFeeDelegation from './TxTypes3/AccountUpdateFeeDelegation'
-import AccountUpdateFeeDelegationWithRatio from './TxTypes3/AccountUpdateFeeDelegationWithRatio'
 import SmartContractDeploy from './TxTypes3/SmartContractDeploy'
 import SmartContractDeployFeeDelegation from './TxTypes3/SmartContractDeployFeeDelegation'
 import SmartContractDeployFeeDelegationWithRatio from './TxTypes3/SmartContractDeployFeeDelegationWithRatio'
+import SmartContractExecutionTokenTransfer from './TxTypes3/SmartContractExecutionTokenTransfer'
+import SmartContractExecutionTokenTransferFD from './TxTypes3/SmartContractExecutionTokenTransferFD'
+import SmartContractExecutionTokenTransferFDwithRatio from './TxTypes3/SmartContractExecutionTokenTransferFDwithRatio'
 
 const caver = new Caver(window.klaytn)
 
 const TransactionType = {
-  accountUpdate: 'Account Update',
-  accountUpdateFeeDelegation: 'Account Update (Fee Delegation)',
-  accountUpdateFeeDelegationWithRatio:
-    'Account Update (Fee Delegation with Ratio)',
   smartContractDeploy: 'Smart Contract Deploy',
   smartContractDeployFeeDelegation: 'Smart Contract Deploy (Fee Delegation)',
   smartContractDeployFeeDelegationWithRatio:
     'Smart Contract Deploy (Fee Delegation with Ratio)',
+  smartContractExecutionTokenTransfer:
+    'Smart Contract Execution: Token Transfer',
+  smartContractExecutionTokenTransferFD:
+    'Smart Contract Execution: Token Transfer (Fee Delegation)',
+  smartContractExecutionTokenTransferFDwithRatio:
+    'Smart Contract Execution: Token Transfer (Fee Delegation with Ratio)',
 }
 
 const NetworkName: { [key: string]: string } = {
@@ -56,7 +58,7 @@ const KaikasTutorial3 = (): ReactElement => {
   const [walletAddress, setWalletAddress] = useState('')
   const [walletBalance, setWalletBalance] = useState('')
   const [network, setNetwork] = useState('0')
-  const [txType, setTxType] = useState('accountUpdate')
+  const [txType, setTxType] = useState('smartContractDeploy')
 
   const setNetworkInfo = (): void => {
     const { klaytn } = window
@@ -111,20 +113,37 @@ const KaikasTutorial3 = (): ReactElement => {
         <CardHeader>
           <h3 className="title">Kaikas Tutorial 3</h3>
           <Text>
-            {
-              'You can test the following transaction types on this page:\n - Account Update\n'
-            }
-            {
-              ' - Account Update (Fee Delegation)\n - Account Update (Fee Delegation with Ratio)\n - Smart Contract Deploy\n'
-            }
-            {
-              ' - Smart Contract Deploy (Fee Delegation)\n - Smart Contract Deploy (Fee Delegation with Ratio)\n\n'
-            }
-            {'You can get some test KLAY from the'}{' '}
+            {'You can test the following transaction types on this page:\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypesmartcontractdeploy">
+              - Smart Contract Deploy
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedsmartcontractdeploy">
+              - Smart Contract Deploy (Fee Delegation)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedsmartcontractdeploywithratio">
+              - Smart Contract Deploy (Fee Delegation with Ratio)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypesmartcontractexecution">
+              - Smart Contract Execution: Token Transfer
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedsmartcontractexecution">
+              - Smart Contract Execution: Token Transfer (Fee Delegation)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/json-rpc/api-references/klay/transaction/transaction-type-support#txtypefeedelegatedsmartcontractexecutionwithratio">
+              - Smart Contract Execution: Token Transfer (Fee Delegation with
+              Ratio)
+            </LinkA>
+            {'\n\n'}
+            {'You can get some test KLAY from the '}
             <LinkA link="https://baobab.wallet.klaytn.foundation/faucet">
               faucet
-            </LinkA>{' '}
-            {"and try out the Kaikas' features on the Testnet."}
+            </LinkA>
+            {" and try out the Kaikas' features on the Testnet."}
           </Text>
           <PrivateKeyWarning />
         </CardHeader>
@@ -165,20 +184,9 @@ const KaikasTutorial3 = (): ReactElement => {
                       value: val,
                     }))}
                     onChange={setTxType}
-                    containerStyle={{ width: 300 }}
+                    containerStyle={{ width: 500 }}
                   />
                 </CardSection>
-                {txType === 'accountUpdate' && (
-                  <AccountUpdate walletProps={{ walletAddress }} />
-                )}
-                {txType === 'accountUpdateFeeDelegation' && (
-                  <AccountUpdateFeeDelegation walletProps={{ walletAddress }} />
-                )}
-                {txType === 'accountUpdateFeeDelegationWithRatio' && (
-                  <AccountUpdateFeeDelegationWithRatio
-                    walletProps={{ walletAddress }}
-                  />
-                )}
                 {txType === 'smartContractDeploy' && (
                   <SmartContractDeploy walletProps={{ walletAddress }} />
                 )}
@@ -189,6 +197,22 @@ const KaikasTutorial3 = (): ReactElement => {
                 )}
                 {txType === 'smartContractDeployFeeDelegationWithRatio' && (
                   <SmartContractDeployFeeDelegationWithRatio
+                    walletProps={{ walletAddress }}
+                  />
+                )}
+                {txType === 'smartContractExecutionTokenTransfer' && (
+                  <SmartContractExecutionTokenTransfer
+                    walletProps={{ walletAddress }}
+                  />
+                )}
+                {txType === 'smartContractExecutionTokenTransferFD' && (
+                  <SmartContractExecutionTokenTransferFD
+                    walletProps={{ walletAddress }}
+                  />
+                )}
+                {txType ===
+                  'smartContractExecutionTokenTransferFDwithRatio' && (
+                  <SmartContractExecutionTokenTransferFDwithRatio
                     walletProps={{ walletAddress }}
                   />
                 )}
