@@ -28,6 +28,11 @@ import LoadKeystore from './views/Miscellaneous/LoadKeystore'
 import Web3modalExample from './views/Web3modal'
 import Web3modalNFT from './views/Web3modal/web3modalNFT'
 
+import KaiKasTutorial1 from './views/Kaikas/KaikasTutorial1'
+import KaiKasTutorial2 from './views/Kaikas/KaikasTutorial2'
+import KaikasTutorial3 from './views/Kaikas/KaikasTutorial3'
+import KaikasTutorial4 from './views/Kaikas/KaikasTutorial4'
+
 import { RouteType } from 'types'
 
 const routes: RouteType[] = [
@@ -187,6 +192,40 @@ const routes: RouteType[] = [
         component: DetectKCT,
         description:
           'Checks which KCT the smart contract implements using its address',
+      },
+    ],
+  },
+  {
+    name: 'Kaikas',
+    path: '/kaikas',
+    items: [
+      {
+        path: '/kaikasTutorial1',
+        name: 'Tutorial 1 (Legacy, Account Update)',
+        component: KaiKasTutorial1,
+        description:
+          'Test several functions(legacy transaction, account update, etc,.) of kaikas wallet',
+      },
+      {
+        path: '/kaikasTutorial2',
+        name: 'Tutorial 2 (Value Transfer)',
+        component: KaiKasTutorial2,
+        description:
+          'Test several functions(value transfer, value transfer with memo, etc,.) of kaikas wallet',
+      },
+      {
+        path: '/kaikasTutorial3',
+        name: 'Tutorial 3 (Contract Deploy, Execution)',
+        component: KaikasTutorial3,
+        description:
+          'Test several functions(smart contract deploy, smart contract execution, etc,.) of kaikas wallet',
+      },
+      {
+        path: '/kaikasTutorial4',
+        name: 'Tutorial 4 (Add Token, Sign Message)',
+        component: KaikasTutorial4,
+        description:
+          'Test several functions(add token, sign message, etc,.) of kaikas wallet',
       },
     ],
   },
