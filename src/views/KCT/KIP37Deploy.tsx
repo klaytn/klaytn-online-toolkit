@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -27,9 +27,9 @@ enum FunctionEnum {
   MINT = 'Mint',
 }
 
-const caver = new Caver(URLMAP.network['testnet']['rpc'])
-
 const KIP37Deploy = (): ReactElement => {
+  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
+
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
@@ -120,10 +120,9 @@ const KIP37Deploy = (): ReactElement => {
 
       setDeployButtonDisabled(true)
       const kip37 = await caver.kct.kip37.deploy(
-        {
-          uri: uri,
-        },
-        { from: senderAddress }
+        { uri: uri },
+        { from: senderAddress },
+        caver.wallet
       )
 
       setDeployMsg('KIP-37 smart contract is successfully deployed! ')
@@ -147,6 +146,7 @@ const KIP37Deploy = (): ReactElement => {
       setCreateButtonDisabled(true)
 
       const deployedContract = new caver.kct.kip37(contractAddress)
+      deployedContract.setWallet(caver.wallet)
       deployedContract.options.from = senderAddress
       const currentTokenId = lastTokenId
       const created = await deployedContract.create(
@@ -182,6 +182,7 @@ const KIP37Deploy = (): ReactElement => {
       setTransferButtonDisabled(true)
 
       const deployedContract = new caver.kct.kip37(contractAddress)
+      deployedContract.setWallet(caver.wallet)
       deployedContract.options.from = senderAddress
       const transferred = await deployedContract.safeTransferFrom(
         senderAddress,
@@ -224,6 +225,7 @@ const KIP37Deploy = (): ReactElement => {
       setMintButtonDisabled(true)
 
       const deployedContract = new caver.kct.kip37(contractAddress)
+      deployedContract.setWallet(caver.wallet)
       deployedContract.options.from = senderAddress
       const currentTokenId = lastTokenId - 1
       const minted = await deployedContract.mint(
