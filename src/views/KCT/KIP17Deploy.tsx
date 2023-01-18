@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -28,9 +28,9 @@ enum FunctionEnum {
   PUP = 'Pause/Unpause',
 }
 
-const caver = new Caver(URLMAP.network['testnet']['rpc'])
-
 const KIP17Deploy = (): ReactElement => {
+  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
+
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
@@ -123,7 +123,8 @@ const KIP17Deploy = (): ReactElement => {
           name: tokenName,
           symbol: tokenSymbol,
         },
-        { from: senderAddress }
+        { from: senderAddress },
+        caver.wallet
       )
 
       setDeployMsg('KIP-17 smart contract is successfully deployed! ')

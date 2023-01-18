@@ -1,6 +1,6 @@
 const network = {
   testnet: {
-    rpc: 'https://api.baobab.klaytn.net:8651',
+    rpc: 'https://public-node-api.klaytnapi.com/v1/baobab',
     finder: 'https://baobab.klaytnfinder.io/tx/',
     finderToken: 'https://baobab.klaytnfinder.io/token/',
     finderNFT: 'https://baobab.klaytnfinder.io/nft/',

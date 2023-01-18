@@ -365,7 +365,7 @@ const Web3modalNFT = (): ReactElement => {
                       onChange={setTokenIdForMint}
                       value={tokenIdForMint}
                     />
-                    <Label>Toekn URI</Label>
+                    <Label>Token URI</Label>
                     <SFormInput
                       placeholder={'Token URI'}
                       onChange={setTokenURIForMint}
