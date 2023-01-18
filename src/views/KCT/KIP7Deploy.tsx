@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import Caver, { Keystore } from 'caver-js'
 import _ from 'lodash'
 
@@ -20,9 +20,9 @@ import {
 } from 'components'
 import FormFile from 'components/FormFile'
 
-const caver = new Caver(URLMAP.network['testnet']['rpc'])
-
 const KIP7Deploy = (): ReactElement => {
+  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
+
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
   const [senderKeystorePassword, setSenderKeystorePassword] = useState('')
@@ -94,7 +94,8 @@ const KIP7Deploy = (): ReactElement => {
           decimals: Number(decimal),
           initialSupply: initialSupply,
         },
-        { from: senderAddress }
+        { from: senderAddress },
+        caver.wallet
       )
 
       setDeploySuccess(true)

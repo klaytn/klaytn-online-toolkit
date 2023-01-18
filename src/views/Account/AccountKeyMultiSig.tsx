@@ -93,7 +93,7 @@ const AccountKeyMultiSig = (): ReactElement => {
   }
 
   const { newKeyring, newKeyringErrMsg } = useMemo(() => {
-    if (keyring && newPrivateKeyList) {
+    if (keyring && numOfNewPrivateKey <= newPrivateKeyList.length) {
       try {
         return {
           newKeyring: caver.wallet.keyring.create(
