@@ -159,7 +159,7 @@ const SoulboundNFT = (): ReactElement => {
       )
       sbt.options.from = senderAddress
       const currentTokenId = lastTokenId
-      let minted = await sbt.send(
+      const minted = await sbt.send(
         { from: senderAddress, gas: 1000000 },
         'safeMint',
         sbtReceiver,
@@ -271,8 +271,9 @@ const SoulboundNFT = (): ReactElement => {
           <Text>
             A soulbound token (SBT) is a non-fungible token bound to a single
             account. You can easily deploy SBT contracts here. Through the
-            process below, you will find the difference between general NFTs and
-            SBTs. You are able to find more information about soulboundToken{' '}
+            process below, you will check the difference between general NFTs
+            and SBTs. You are able to find more information about
+            soulboundToken:{' '}
             <LinkA link="https://github.com/Bisonai/sbt-contracts">
               SBT Smart Contracts Github
             </LinkA>{' '}
@@ -280,8 +281,8 @@ const SoulboundNFT = (): ReactElement => {
             <LinkA link="https://vitalik.ca/general/2022/01/26/soulbound.html">
               Vitalik's blog: Soulbound
             </LinkA>
-            . After successful deployment, you can find a contract account in
-            the block explorer.
+            . After successful deployment, you can verify a contract account
+            status in the block explorer.
           </Text>
           <PrivateKeyWarning />
         </CardHeader>
@@ -384,10 +385,15 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
             </View>
             <CodeBlock
               title="caver-js code"
-              text={`
-              //////////////////////////////////////////////////////////////////
-              
-              `}
+              text={`const sbt = caver.contract.create(JSON.parse(JSON.stringify(exSBTAbi)))
+      
+const sbtInstance = await sbt.deploy(
+  { from: senderAddress, gas: 6000000 },
+  exSBTBytecode,
+  tokenName,
+  tokenSymbol,
+  tokenURI
+)`}
             />
           </CardSection>
           {!!deployMsg && (
@@ -413,7 +419,10 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
         <Card>
           <CardHeader>
             <h3 className="title">Mint the Soulbound NFT (SBT)</h3>
-            <Text>Enter the SBT's receiver.</Text>
+            <Text>
+              Enter the SBT's receiver. Token CANNOT be re-issued to users who
+              already own it.
+            </Text>
           </CardHeader>
           <CardBody>
             <CardSection>
@@ -439,9 +448,18 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
               </View>
               <CodeBlock
                 title="caver-js code"
-                text={`
-          ////////////////////////////////////////////////
-`}
+                text={`const sbt = new caver.contract(
+  JSON.parse(JSON.stringify(exSBTAbi)),
+  contractAddress
+)
+sbt.options.from = senderAddress
+const currentTokenId = lastTokenId
+const minted = await sbt.send(
+  { from: senderAddress, gas: 1000000 },
+  'safeMint',
+  sbtReceiver,
+  currentTokenId
+)`}
               />
             </CardSection>
             {!!mintMsg && (
@@ -478,7 +496,10 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
         <Card>
           <CardHeader>
             <h3 className="title">Burn the Soulbound Token (SBT)</h3>
-            <Text>Enter the token Id you own and want to burn.</Text>
+            <Text>
+              Enter the token Id you own and want to burn. You CANNOT burn
+              tokens that you do not own.
+            </Text>
           </CardHeader>
           <CardBody>
             <CardSection>
@@ -498,10 +519,16 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
               </View>
               <CodeBlock
                 title="caver-js code"
-                text={`
-                ///////
-                
-                `}
+                text={`const sbt = new caver.contract(
+  JSON.parse(JSON.stringify(exSBTAbi)),
+  contractAddress
+)
+sbt.options.from = senderAddress
+let burned = await sbt.send(
+  { from: senderAddress, gas: 1000000 },
+  'burn',
+  burnTokenId
+)`}
               />
             </CardSection>
             {!!burnMsg && (
@@ -528,7 +555,11 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
         <Card>
           <CardHeader>
             <h3 className="title">Transfer the Soulbound NFT (SBT)</h3>
-            <Text>Enter the token Id you own and want to transfer.</Text>
+            <Text>
+              Enter the token Id you own and want to transfer. The most
+              significant feature of SBT is that it CANNOT be transferred to
+              others.
+            </Text>
           </CardHeader>
           <CardBody>
             <CardSection>
@@ -563,9 +594,18 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
               </View>
               <CodeBlock
                 title="caver-js code"
-                text={`
-                  //////
-                `}
+                text={`const sbt = new caver.contract(
+  JSON.parse(JSON.stringify(exSBTAbi)),
+  contractAddress
+)
+sbt.options.from = senderAddress
+let transferred = await sbt.send(
+  { from: senderAddress, gas: 1000000 },
+  'safeTransferFrom',
+  senderAddress,
+  transferReceiver,
+  transferTokenId
+)`}
               />
             </CardSection>
             {!!transferMsg && (
