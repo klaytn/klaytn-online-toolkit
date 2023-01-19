@@ -24,6 +24,7 @@ import CheckAccountKey from './views/Miscellaneous/CheckAccountKey'
 import GenerateKeystore from './views/Miscellaneous/GenerateKeystore'
 import KeccakFromString from './views/Miscellaneous/KeccakFromString'
 import LoadKeystore from './views/Miscellaneous/LoadKeystore'
+import SoulboundNFT from './views/Miscellaneous/SoulboundNFT'
 
 import Web3modalExample from './views/Web3modal'
 import Web3modalNFT from './views/Web3modal/web3modalNFT'
@@ -258,6 +259,13 @@ const routes: RouteType[] = [
         name: 'Check Account Key Type by Address',
         component: CheckAccountKey,
         description: 'Returns account key type of the given address',
+      },
+      {
+        path: '/soulboundNFT',
+        name: 'Soulbound NFT',
+        component: SoulboundNFT,
+        description:
+          'Deploys Soulbound NFT contract and tests functions: Mint, Transfer, and Burn',
       },
     ],
   },
