@@ -30,7 +30,6 @@ import {
 
 import { exSBTAbi } from './constants/exSBTAbi'
 import exSBTBytecode from './constants/exSBTBytecode'
-import { ERROR_EVENT } from '@klaytn/web3modal'
 
 enum FunctionEnum {
   BURN = 'Burn',
@@ -369,6 +368,7 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
             />
           </CardSection>
           <CardSection>
+            <CardExample exValue={exTokenURI} onClickTry={setTokenURI} />
             <Label>SBT URI</Label>
             <FormInput
               type="text"
