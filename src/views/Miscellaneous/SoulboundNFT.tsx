@@ -26,14 +26,14 @@ import {
   exposureTime,
   exTokenURI,
   exTokenReceiver,
-} from './constants/exSoulboundNFTdata'
+} from './constants/exSBTData'
 
 import { exSBTAbi } from './constants/exSBTAbi'
 import exSBTBytecode from './constants/exSBTBytecode'
 
 enum FunctionEnum {
   BURN = 'Burn',
-  Transfer = 'Transfer',
+  TRANSFER = 'Transfer',
 }
 
 const SoulboundNFT = (): ReactElement => {
@@ -486,7 +486,7 @@ const minted = await sbt.send(
         <FormRadio
           itemList={[
             { title: 'Burn', value: FunctionEnum.BURN },
-            { title: 'Transfer', value: FunctionEnum.Transfer },
+            { title: 'Transfer', value: FunctionEnum.TRANSFER },
           ]}
           selectedValue={belowPage}
           onClick={setBelowPage}
@@ -551,7 +551,7 @@ let burned = await sbt.send(
           </CardBody>
         </Card>
       )}
-      {mintSuccess && belowPage === FunctionEnum.Transfer && (
+      {mintSuccess && belowPage === FunctionEnum.TRANSFER && (
         <Card>
           <CardHeader>
             <h3 className="title">Transfer the Soulbound NFT (SBT)</h3>
