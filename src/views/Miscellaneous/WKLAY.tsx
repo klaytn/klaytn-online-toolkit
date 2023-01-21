@@ -50,6 +50,11 @@ const WKLAY = (): ReactElement => {
   const [balanceButtonDisabled, setBalanceButtonDisabled] = useState(false)
   const [balanceSuccess, setBalanceSuccess] = useState(false)
 
+  const [depositKlayAmount, setDepositKlayAmount] = useState('')
+  const [depositMsg, setDepositMsg] = useState('')
+  const [depositButtonDisabled, setDepositButtonDisabled] = useState(false)
+  const [depositSuccess, setDepositSuccess] = useState(false)
+
   const [belowPage, setBelowPage] = useState<FunctionEnum>(FunctionEnum.BALANCE)
 
   const handleOwnerKeystoreChange = (files?: FileList): void => {
@@ -145,15 +150,14 @@ const WKLAY = (): ReactElement => {
         contractAddress
       )
       wklay.options.from = ownerAddress
-      let balance = await wklay.call('balanceOf', ownerAddress)
-      const newDepositMsg = `${balance}`
+      const newBalanceMsg = await wklay.call('balanceOf', ownerAddress)
 
-      if (balance) {
-        setBalanceMsg(newDepositMsg)
+      if (newBalanceMsg) {
+        setBalanceMsg(newBalanceMsg)
         setBalanceButtonDisabled(false)
         setBalanceSuccess(true)
       } else {
-        throw Error('Deposit is failed')
+        throw Error('Viewing balance is failed')
       }
     } catch (err) {
       setBalanceMsg(_.toString(err))
@@ -166,12 +170,48 @@ const WKLAY = (): ReactElement => {
     }
   }
 
+  const deposit = async (): Promise<void> => {
+    try {
+      setDepositButtonDisabled(true)
+
+      const tx = caver.transaction.valueTransfer.create({
+        from: ownerAddress,
+        to: contractAddress,
+        value: caver.utils.toPeb(depositKlayAmount, 'KLAY'),
+        gas: 25000,
+      })
+
+      await tx.fillTransaction()
+      await caver.rpc.klay.sendRawTransaction(
+        JSON.parse(JSON.stringify(tx.getRawTransaction()))
+      )
+
+      const newDepositMsg = 'Deposit is successfully executed.'
+
+      if (newDepositMsg) {
+        setDepositMsg(newDepositMsg)
+        setDepositButtonDisabled(false)
+        setDepositSuccess(true)
+      } else {
+        throw Error('Deposit is failed')
+      }
+    } catch (err) {
+      setDepositMsg(_.toString(err))
+      setDepositButtonDisabled(false)
+      setDepositSuccess(false)
+
+      setTimeout(() => {
+        setBalanceMsg('')
+      }, exposureTime)
+    }
+  }
+
   return (
     <Container>
       <Card>
         <CardHeader>
           <h3 className="title">
-            Interact with Deployed Contracts - Canonical WKLAY
+            Interact with a Deployed Contract - Canonical WKLAY
           </h3>
           <Text>
             To make the user experience more efficient and reduce friction when
@@ -319,7 +359,10 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
       </Card>
       {ownerDecryptMessage && (
         <FormRadio
-          itemList={[{ title: 'Balance', value: FunctionEnum.BALANCE }]}
+          itemList={[
+            { title: 'Balance', value: FunctionEnum.BALANCE },
+            { title: 'Deposit', value: FunctionEnum.DEPOSIT },
+          ]}
           selectedValue={belowPage}
           onClick={setBelowPage}
         />
@@ -350,6 +393,45 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
                   <Text>{balanceMsg}</Text>
                 ) : (
                   <Text style={{ color: COLOR.error }}> {balanceMsg} </Text>
+                )}
+              </CardSection>
+            )}
+          </CardBody>
+        </Card>
+      )}
+      {ownerDecryptMessage && belowPage === 'Deposit' && (
+        <Card>
+          <CardHeader>
+            <h3 className="title">Deposit KLAY</h3>
+            <Text>Deposit the KLAY.</Text>
+          </CardHeader>
+          <CardBody>
+            <CardSection>
+              <View style={{ marginBottom: 10 }}>
+                <View>
+                  <Label>KLAY</Label>
+                  <FormInput
+                    value={depositKlayAmount}
+                    onChange={setDepositKlayAmount}
+                  />
+                </View>
+                <Button disabled={depositButtonDisabled} onClick={deposit}>
+                  Deposit
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`
+                //////////////////////////////
+                `}
+              />
+            </CardSection>
+            {!!depositMsg && (
+              <CardSection>
+                {depositSuccess ? (
+                  <Text>{depositMsg}</Text>
+                ) : (
+                  <Text style={{ color: COLOR.error }}> {depositMsg} </Text>
                 )}
               </CardSection>
             )}
