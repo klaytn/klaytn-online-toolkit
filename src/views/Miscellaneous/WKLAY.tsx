@@ -55,6 +55,8 @@ const WKLAY = (): ReactElement => {
   const [depositButtonDisabled, setDepositButtonDisabled] = useState(false)
   const [depositSuccess, setDepositSuccess] = useState(false)
 
+  const [txHash, setTxHash] = useState('')
+
   const [belowPage, setBelowPage] = useState<FunctionEnum>(FunctionEnum.BALANCE)
 
   const handleOwnerKeystoreChange = (files?: FileList): void => {
@@ -150,14 +152,16 @@ const WKLAY = (): ReactElement => {
         contractAddress
       )
       wklay.options.from = ownerAddress
-      const newBalanceMsg = await wklay.call('balanceOf', ownerAddress)
+      const returnedBalance = await wklay.call('balanceOf', ownerAddress)
 
-      if (newBalanceMsg) {
-        setBalanceMsg(newBalanceMsg)
+      if (returnedBalance) {
+        setBalanceMsg(
+          `${caver.utils.convertFromPeb(returnedBalance, 'KLAY')} WKLAY`
+        )
         setBalanceButtonDisabled(false)
         setBalanceSuccess(true)
       } else {
-        throw Error('Viewing balance is failed')
+        throw Error('Checking balance is failed')
       }
     } catch (err) {
       setBalanceMsg(_.toString(err))
@@ -174,19 +178,21 @@ const WKLAY = (): ReactElement => {
     try {
       setDepositButtonDisabled(true)
 
-      const tx = caver.transaction.valueTransfer.create({
+      const tx = caver.transaction.legacyTransaction.create({
         from: ownerAddress,
         to: contractAddress,
         value: caver.utils.toPeb(depositKlayAmount, 'KLAY'),
-        gas: 25000,
+        gas: 1000000,
       })
 
-      await tx.fillTransaction()
-      await caver.rpc.klay.sendRawTransaction(
-        JSON.parse(JSON.stringify(tx.getRawTransaction()))
+      const signedTx = await caver.wallet.sign(ownerAddress, tx)
+      await signedTx.fillTransaction()
+      const receipt = await caver.rpc.klay.sendRawTransaction(
+        signedTx.getRawTransaction()
       )
+      setTxHash(receipt.senderTxHash)
 
-      const newDepositMsg = 'Deposit is successfully executed.'
+      const newDepositMsg = `Deposit is successfully executed.`
 
       if (newDepositMsg) {
         setDepositMsg(newDepositMsg)
@@ -370,21 +376,25 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
       {ownerDecryptMessage && belowPage === 'Balance' && (
         <Card>
           <CardHeader>
-            <h3 className="title">Balance of WKLAY</h3>
+            <h3 className="title">Check the Balance of WKLAY</h3>
             <Text>Check the balance of WKLAY of the owner's address.</Text>
           </CardHeader>
           <CardBody>
             <CardSection>
               <View style={{ marginBottom: 10 }}>
                 <Button disabled={balanceButtonDisabled} onClick={balance}>
-                  Get Balance
+                  Balance Check
                 </Button>
               </View>
               <CodeBlock
                 title="caver-js code"
-                text={`
-                //////////////////////////////
-                `}
+                text={`const wklay = new caver.contract(
+  JSON.parse(JSON.stringify(exWKLAYAbi)),
+  contractAddress
+)
+wklay.options.from = ownerAddress
+
+const returnedBalance = await wklay.call('balanceOf', ownerAddress)`}
               />
             </CardSection>
             {!!balanceMsg && (
@@ -403,14 +413,16 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
         <Card>
           <CardHeader>
             <h3 className="title">Deposit KLAY</h3>
-            <Text>Deposit the KLAY.</Text>
+            <Text>Deposit the KLAY and get the WKLAY.</Text>
           </CardHeader>
           <CardBody>
             <CardSection>
-              <View style={{ marginBottom: 10 }}>
+              <View style={{ rowGap: 10, marginBottom: 10 }}>
                 <View>
                   <Label>KLAY</Label>
                   <FormInput
+                    type="text"
+                    placeholder="Amount of KLAY you want to deposit"
                     value={depositKlayAmount}
                     onChange={setDepositKlayAmount}
                   />
@@ -421,15 +433,32 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
               </View>
               <CodeBlock
                 title="caver-js code"
-                text={`
-                //////////////////////////////
-                `}
+                text={`const tx = caver.transaction.legacyTransaction.create({
+  from: ownerAddress,
+  to: contractAddress,
+  value: caver.utils.toPeb(depositKlayAmount, 'KLAY'),
+  gas: 1000000,
+})
+
+const signedTx = await caver.wallet.sign(ownerAddress, tx)
+await signedTx.fillTransaction()
+const receipt = await caver.rpc.klay.sendRawTransaction(
+  signedTx.getRawTransaction()
+)`}
               />
             </CardSection>
             {!!depositMsg && (
               <CardSection>
                 {depositSuccess ? (
-                  <Text>{depositMsg}</Text>
+                  <Text>
+                    {depositMsg} You can check it below link:
+                    <br />
+                    <LinkA
+                      link={`${URLMAP.network['testnet']['scope']}${txHash}`}
+                    >
+                      Block Explorer
+                    </LinkA>
+                  </Text>
                 ) : (
                   <Text style={{ color: COLOR.error }}> {depositMsg} </Text>
                 )}
