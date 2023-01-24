@@ -54,8 +54,13 @@ const WKLAY = (): ReactElement => {
   const [depositMsg, setDepositMsg] = useState('')
   const [depositButtonDisabled, setDepositButtonDisabled] = useState(false)
   const [depositSuccess, setDepositSuccess] = useState(false)
-
   const [txHash, setTxHash] = useState('')
+
+  const [withdrawKlayAmount, setWithdrawKlayAmount] = useState('')
+  const [withdrawMsg, setWithdrawMsg] = useState('')
+  const [withdrawButtonDisabled, setWithdrawButtonDisabled] = useState(false)
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false)
+  const [withdrawTxHash, setWithdrawTxHash] = useState('')
 
   const [belowPage, setBelowPage] = useState<FunctionEnum>(FunctionEnum.BALANCE)
 
@@ -207,7 +212,43 @@ const WKLAY = (): ReactElement => {
       setDepositSuccess(false)
 
       setTimeout(() => {
-        setBalanceMsg('')
+        setDepositMsg('')
+      }, exposureTime)
+    }
+  }
+
+  const withdraw = async (): Promise<void> => {
+    try {
+      setWithdrawButtonDisabled(true)
+
+      const wklay = new caver.contract(
+        JSON.parse(JSON.stringify(exWKLAYAbi)),
+        contractAddress
+      )
+      wklay.options.from = ownerAddress
+      const receipt = await wklay.send(
+        { from: ownerAddress, gas: 1000000 },
+        'withdraw',
+        caver.utils.toPeb(withdrawKlayAmount, 'KLAY')
+      )
+
+      setWithdrawTxHash(receipt.transactionHash)
+      const newWithdrawMsg = `Withdraw is successfully executed.`
+
+      if (newWithdrawMsg) {
+        setWithdrawMsg(newWithdrawMsg)
+        setWithdrawButtonDisabled(false)
+        setWithdrawSuccess(true)
+      } else {
+        throw Error('Withdraw is failed')
+      }
+    } catch (err) {
+      setWithdrawMsg(_.toString(err))
+      setWithdrawButtonDisabled(false)
+      setWithdrawSuccess(false)
+
+      setTimeout(() => {
+        setWithdrawMsg('')
       }, exposureTime)
     }
   }
@@ -368,6 +409,7 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
           itemList={[
             { title: 'Balance', value: FunctionEnum.BALANCE },
             { title: 'Deposit', value: FunctionEnum.DEPOSIT },
+            { title: 'Withdraw', value: FunctionEnum.WITHDRAW },
           ]}
           selectedValue={belowPage}
           onClick={setBelowPage}
@@ -461,6 +503,62 @@ const receipt = await caver.rpc.klay.sendRawTransaction(
                   </Text>
                 ) : (
                   <Text style={{ color: COLOR.error }}> {depositMsg} </Text>
+                )}
+              </CardSection>
+            )}
+          </CardBody>
+        </Card>
+      )}
+      {ownerDecryptMessage && belowPage === 'Withdraw' && (
+        <Card>
+          <CardHeader>
+            <h3 className="title">Withdraw KLAY</h3>
+            <Text>Withdraw as much KLAY as you want from WKLAY.</Text>
+          </CardHeader>
+          <CardBody>
+            <CardSection>
+              <View style={{ rowGap: 10, marginBottom: 10 }}>
+                <View>
+                  <Label>WKLAY</Label>
+                  <FormInput
+                    type="text"
+                    placeholder="Amount of WKLAY you want to withdraw"
+                    value={withdrawKlayAmount}
+                    onChange={setWithdrawKlayAmount}
+                  />
+                </View>
+                <Button disabled={withdrawButtonDisabled} onClick={withdraw}>
+                  Withdraw
+                </Button>
+              </View>
+              <CodeBlock
+                title="caver-js code"
+                text={`const wklay = new caver.contract(
+  JSON.parse(JSON.stringify(exWKLAYAbi)),
+  contractAddress
+)
+wklay.options.from = ownerAddress
+const receipt = await wklay.send(
+  { from: ownerAddress, gas: 1000000 },
+  'withdraw',
+  caver.utils.toPeb(withdrawKlayAmount, 'KLAY')
+)`}
+              />
+            </CardSection>
+            {!!withdrawMsg && (
+              <CardSection>
+                {withdrawSuccess ? (
+                  <Text>
+                    {withdrawMsg} You can check it below link:
+                    <br />
+                    <LinkA
+                      link={`${URLMAP.network['testnet']['scope']}${withdrawTxHash}`}
+                    >
+                      Block Explorer
+                    </LinkA>
+                  </Text>
+                ) : (
+                  <Text style={{ color: COLOR.error }}> {withdrawMsg} </Text>
                 )}
               </CardSection>
             )}
