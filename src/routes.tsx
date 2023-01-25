@@ -26,6 +26,7 @@ import KeccakFromString from './views/Miscellaneous/KeccakFromString'
 import LoadKeystore from './views/Miscellaneous/LoadKeystore'
 import SoulboundNFT from './views/Miscellaneous/SoulboundNFT'
 import WKLAY from './views/Miscellaneous/WKLAY'
+import Multicall from './views/Miscellaneous/Multicall'
 
 import Web3modalExample from './views/Web3modal'
 import Web3modalNFT from './views/Web3modal/web3modalNFT'
@@ -274,6 +275,13 @@ const routes: RouteType[] = [
         component: WKLAY,
         description:
           'Interact with canonical-WKLAY contract and tests functions: Deposit, Withdraw, Approve, and Transfer',
+      },
+      {
+        path: '/multicall',
+        name: 'Multicall',
+        component: Multicall,
+        description:
+          'Aggregates results from multiple contract constant function calls',
       },
     ],
   },
