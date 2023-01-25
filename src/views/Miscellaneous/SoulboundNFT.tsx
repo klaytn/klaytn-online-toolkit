@@ -275,10 +275,14 @@ const SoulboundNFT = (): ReactElement => {
             soulboundToken:{' '}
             <LinkA link="https://github.com/Bisonai/sbt-contracts">
               SBT Smart Contracts Github
+            </LinkA>
+            ,{' '}
+            <LinkA link="https://medium.com/bisonaiofficial/soulbound-tokens-x-bisonai-7ec7d799621c">
+              Medium Article For Soulbound Tokens
             </LinkA>{' '}
             and{' '}
             <LinkA link="https://vitalik.ca/general/2022/01/26/soulbound.html">
-              Vitalik's blog: Soulbound
+              Vitalik's Blog: Soulbound
             </LinkA>
             . After successful deployment, you can verify a contract account
             status in the block explorer.
