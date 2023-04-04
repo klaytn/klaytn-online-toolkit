@@ -11,8 +11,8 @@ const Title = styled.p`
   color: rgba(255, 255, 255, 0.8);
 `
 const Description = styled.p`
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 400;
   padding: 15px 15px 0;
   border: 0;
   color: rgba(255, 255, 255, 0.8);
@@ -42,10 +42,10 @@ const optionsExtended: {
   label: string
   decimal: number
 }[] = [
-  { key: 'Pep', label: 'Pep', decimal: -18 },
-  { key: 'kpep', label: 'kpep', decimal: -15 },
-  { key: 'Mpep', label: 'Mpep', decimal: -12 },
-  { key: 'Gpep', label: 'Gpep', decimal: -9 },
+  { key: 'Peb', label: 'Peb', decimal: -18 },
+  { key: 'KPeb', label: 'KPeb', decimal: -15 },
+  { key: 'MPeb', label: 'MPeb', decimal: -12 },
+  { key: 'GPeb', label: 'GPeb', decimal: -9 },
   { key: 'ston', label: 'ston', decimal: -9 },
   { key: 'uKLAY', label: 'uKLAY', decimal: -6 },
   { key: 'mKLAY', label: 'mKLAY', decimal: -3 },

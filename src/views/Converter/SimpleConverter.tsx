@@ -12,8 +12,8 @@ const Title = styled.p`
   color: rgba(255, 255, 255, 0.8);
 `
 const Description = styled.p`
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 400;
   padding: 15px 15px 0;
   border: 0;
   color: rgba(255, 255, 255, 0.8);
@@ -39,8 +39,8 @@ const FormGroup = styled.div`
 `
 
 const optionsSimple: { key: string; label: string; decimal: number }[] = [
-  { key: 'Pep', label: 'Pep', decimal: -18 },
-  { key: 'Gpep', label: 'Gpep', decimal: -9 },
+  { key: 'Peb', label: 'Peb', decimal: -18 },
+  { key: 'ston', label: 'ston', decimal: -9 },
   { key: 'KLAY', label: 'KLAY', decimal: 0 },
 ]
 
