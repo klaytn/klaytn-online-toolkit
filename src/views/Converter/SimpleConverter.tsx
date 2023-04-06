@@ -1,8 +1,12 @@
-import { FormInput } from 'components'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { ConverterProps } from '.'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { IconCopy } from '@tabler/icons'
 
+import useToast from 'hooks/useToast'
+import { FormInput, View } from 'components'
+import { STYLE } from 'consts'
+import { ConverterProps } from '.'
 
 const Title = styled.p`
   font-size: 24px;
@@ -36,6 +40,14 @@ const CardBodyConverter = styled.div`
 const FormGroup = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
+`
+
+const StyledCopyIconBox = styled(View)`
+  ${STYLE.clickable}
+  position: absolute;
+  transform: translateY(-30%);
+  right: 10px;
 `
 
 const optionsSimple: { key: string; label: string; decimal: number }[] = [
@@ -45,6 +57,7 @@ const optionsSimple: { key: string; label: string; decimal: number }[] = [
 ]
 
 const SimpleUnitConverter = (props: ConverterProps): ReactElement => {
+  const { toast } = useToast()
 
   const { handleChange, getValue } = props
 
@@ -68,6 +81,16 @@ const SimpleUnitConverter = (props: ConverterProps): ReactElement => {
                 onChange={(value): void => handleChange(value, item.decimal)}
                 value={getValue(item.decimal)}
               />
+              <StyledCopyIconBox>
+                <CopyToClipboard
+                  text={getValue(item.decimal)}
+                  onCopy={(): void => {
+                    toast('Copied')
+                  }}
+                >
+                  <IconCopy color={'black'} size={16} />
+                </CopyToClipboard>
+              </StyledCopyIconBox>
             </FormGroup>
           )
         })}

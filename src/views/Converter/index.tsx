@@ -1,9 +1,11 @@
-import { Card, Container } from 'components'
 import { ReactElement, useState } from 'react'
 import styled from 'styled-components'
+import BigNumber from 'bignumber.js'
+
+import { Card, Container } from 'components'
 import SimpleUnitConverter from './SimpleConverter'
 import ExtendedUnitConverter from './ExtendedConverter'
-import BigNumber from 'bignumber.js'
+
 BigNumber.config({ EXPONENTIAL_AT: 1e9 })
 
 export interface ConverterProps {
