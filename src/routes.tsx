@@ -37,6 +37,7 @@ import KaikasTutorial3 from './views/Kaikas/KaikasTutorial3'
 import KaikasTutorial4 from './views/Kaikas/KaikasTutorial4'
 
 import { RouteType } from 'types'
+import KlaytnUnitConverter from 'views/Converter'
 
 const routes: RouteType[] = [
   {
@@ -282,6 +283,19 @@ const routes: RouteType[] = [
         component: Multicall,
         description:
           'Aggregates results from multiple contract constant function calls',
+      },
+    ],
+  },
+  {
+    name: 'Converters',
+    path: '/converter',
+    items: [
+      {
+        path: '/klaytnUnitConverters',
+        name: 'Klaytn Unit Converter',
+        component: KlaytnUnitConverter,
+        description:
+          'The Peb converter from Klaytn is a simple and easy-to-use tool for converting between peb, ston, and KLAY. The page housing this tool provides a comprehensive explanation of these different units and their relationship to the expenditure of Gas in the Klaytn ecosystem.',
       },
     ],
   },
