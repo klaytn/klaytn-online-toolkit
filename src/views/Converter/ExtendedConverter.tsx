@@ -2,6 +2,7 @@ import { FormInput } from 'components'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { ConverterProps } from '.'
+import { Unit } from 'caver-js'
 
 const Title = styled.p`
   font-size: 24px;
@@ -38,22 +39,21 @@ const FormGroup = styled.div`
 `
 
 const optionsExtended: {
-  key: string
+  unit: Unit
   label: string
-  decimal: number
 }[] = [
-  { key: 'Peb', label: 'Peb', decimal: -18 },
-  { key: 'KPeb', label: 'KPeb', decimal: -15 },
-  { key: 'MPeb', label: 'MPeb', decimal: -12 },
-  { key: 'GPeb', label: 'GPeb', decimal: -9 },
-  { key: 'ston', label: 'ston', decimal: -9 },
-  { key: 'uKLAY', label: 'uKLAY', decimal: -6 },
-  { key: 'mKLAY', label: 'mKLAY', decimal: -3 },
-  { key: 'KLAY', label: 'KLAY', decimal: 0 },
-  { key: 'kKLAY', label: 'kKLAY', decimal: 3 },
-  { key: 'MKLAY', label: 'MKLAY', decimal: 6 },
-  { key: 'GKLAY', label: 'GKLAY', decimal: 9 },
-  { key: 'TKLAY', label: 'TKLAY', decimal: 12 },
+  { unit: 'peb', label: 'Peb' },
+  { unit: 'kpeb', label: 'KPeb' },
+  { unit: 'Mpeb', label: 'MPeb' },
+  { unit: 'Gpeb', label: 'GPeb' },
+  { unit: 'ston', label: 'ston' },
+  { unit: 'uKLAY', label: 'uKLAY' },
+  { unit: 'mKLAY', label: 'mKLAY' },
+  { unit: 'KLAY', label: 'KLAY' },
+  { unit: 'kKLAY', label: 'kKLAY' },
+  { unit: 'MKLAY', label: 'MKLAY' },
+  { unit: 'GKLAY', label: 'GKLAY' },
+  { unit: 'TKLAY', label: 'TKLAY' },
 ]
 
 const ExtendedUnitConverter = (props: ConverterProps): ReactElement => {
@@ -73,13 +73,13 @@ const ExtendedUnitConverter = (props: ConverterProps): ReactElement => {
       <CardBodyConverter>
         {optionsExtended.map((item) => {
           return (
-            <FormGroup key={item.key}>
+            <FormGroup key={item.unit}>
               <NameConverter>{item.label}</NameConverter>
               <SFormInput
                 type="number"
                 placeholder={item.label}
-                onChange={(value): void => handleChange(value, item.decimal)}
-                value={getValue(item.decimal)}
+                onChange={(value): void => handleChange(value, item.unit)}
+                value={getValue(item.unit)}
               />
             </FormGroup>
           )

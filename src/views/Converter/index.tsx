@@ -3,12 +3,14 @@ import { ReactElement, useState } from 'react'
 import styled from 'styled-components'
 import SimpleUnitConverter from './SimpleConverter'
 import ExtendedUnitConverter from './ExtendedConverter'
+import Caver, { Unit } from 'caver-js'
 import BigNumber from 'bignumber.js'
 BigNumber.config({ EXPONENTIAL_AT: 1e9 })
+const caver = new Caver(window.klaytn)
 
 export interface ConverterProps {
-  handleChange: (value: string, decimal: number) => void
-  getValue: (decimal: number) => string
+  handleChange: (value: string, unit: Unit) => void
+  getValue: (unit: Unit) => string
 }
 
 const TabWraper = styled.div`
@@ -54,39 +56,46 @@ const KlaytnUnitConverter = (): ReactElement => {
   const [currentTab, setCurrentTab] = useState<string>(TABSCONVERTER.Simple)
   const defaultTabs = currentTab === TABSCONVERTER.Simple
 
-  const [value, setValue] = useState({ decimal: 0, value: '' })
+  const [value, setValue] = useState<{ unit: Unit; value: string }>({
+    unit: 'peb',
+    value: '',
+  })
 
-  const getValue = (decimal: number): string => {
-    if (!value) return ''
-    const rateDown = new BigNumber(10).exponentiatedBy(-decimal)
-    const rateUp = new BigNumber(10).exponentiatedBy(value.decimal)
-
-    const decimalPlaces = decimal === value.decimal ? 1e9 : 18 + decimal
-    if (/^[0-9]+([.][0-9]+)?$/.test(value.value))
-      return rateDown
-        .multipliedBy(value.value)
-        .multipliedBy(rateUp)
-        .decimalPlaces(decimalPlaces)
-        .toString()
+  const getValue = (unit: Unit): string => {
+    const decimalUnit = caver.utils.unitMap[value.unit]
+  
+    if (!value.value) return ''
+    if (/^[0-9]+([.][0-9]+)?$/.test(value.value)) {
+      const isDecimalUnit = new BigNumber(
+        new BigNumber(decimalUnit).multipliedBy(value.value).toFixed(0)
+      )
+      .dividedBy(decimalUnit).toString();
+      return caver.utils
+        .convertFromPeb(caver.utils.convertToPeb(isDecimalUnit, value.unit), unit).toString()
+    }
     if (/^[0-9]+([.]+)?$/.test(value.value)) {
-      if (decimal === value.decimal) return value.value
-      return rateDown
-        .multipliedBy(value.value.replace('.', ''))
-        .multipliedBy(rateUp)
-        .decimalPlaces(decimalPlaces)
+      if (unit === value.unit) return value.value
+      const isDecimalUnit = new BigNumber(
+        new BigNumber(decimalUnit)
+          .multipliedBy(value.value.replace('.', ''))
+          .toFixed(0)
+      )
+        .dividedBy(decimalUnit)
         .toString()
+      return caver.utils
+        .convertFromPeb(caver.utils.convertToPeb(isDecimalUnit, value.unit), unit).toString()
     }
     return ''
   }
 
-  const handleChange = (value: string, decimal: number): void => {
-    if (!value || value === '.') setValue({ decimal, value })
-    if (/^\d*\.?\d*$/.test(value)) setValue({ decimal, value })
+  const handleChange = (value: string, unit: Unit): void => {
+    if (!value || value === '.') setValue({ unit, value })
+    if (/^\d*\.?\d*$/.test(value)) setValue({ unit, value })
   }
 
   const handleChangeTabs = (value: string): void => {
     setCurrentTab(value)
-    setValue({ decimal: 0, value: '' })
+    setValue({ unit: 'peb', value: '' })
   }
 
   return (

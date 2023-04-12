@@ -2,6 +2,7 @@ import { FormInput } from 'components'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { ConverterProps } from '.'
+import { Unit } from 'caver-js'
 
 
 const Title = styled.p`
@@ -38,10 +39,10 @@ const FormGroup = styled.div`
   align-items: center;
 `
 
-const optionsSimple: { key: string; label: string; decimal: number }[] = [
-  { key: 'Peb', label: 'Peb', decimal: -18 },
-  { key: 'ston', label: 'ston', decimal: -9 },
-  { key: 'KLAY', label: 'KLAY', decimal: 0 },
+const optionsSimple: { unit: Unit; label: string;}[] = [
+  { unit: 'peb', label: 'Peb'},
+  { unit: 'ston', label: 'ston'},
+  { unit: 'KLAY', label: 'KLAY'},
 ]
 
 const SimpleUnitConverter = (props: ConverterProps): ReactElement => {
@@ -61,12 +62,12 @@ const SimpleUnitConverter = (props: ConverterProps): ReactElement => {
       <CardBodyConverter>
         {optionsSimple.map((item) => {
           return (
-            <FormGroup key={item.key}>
+            <FormGroup key={item.unit}>
               <NameConverter>{item.label}</NameConverter>
               <SFormInput
                 placeholder={item.label}
-                onChange={(value): void => handleChange(value, item.decimal)}
-                value={getValue(item.decimal)}
+                onChange={(value): void => handleChange(value, item.unit)}
+                value={getValue(item.unit)}
               />
             </FormGroup>
           )
