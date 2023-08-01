@@ -28,8 +28,11 @@ enum FunctionEnum {
   PUP = 'Pause/Unpause',
 }
 
+const isMainnet = false
+const network = URLMAP.network[isMainnet ? 'mainnet' : 'testnet']
+
 const KIP17Deploy = (): ReactElement => {
-  const caver = useMemo(() => new Caver(URLMAP.network['testnet']['rpc']), [])
+  const caver = useMemo(() => new Caver(network['rpc']), [])
 
   const [senderAddress, setSenderAddress] = useState('')
   const [senderKeystoreJSON, setSenderKeystoreJSON] = useState<Keystore>()
@@ -155,7 +158,7 @@ const KIP17Deploy = (): ReactElement => {
         currentTokenId,
         tokenURI
       )
-      const newMintMsg = `NFT(token ID: ${currentTokenId}) is successfully mintend!`
+      const newMintMsg = `NFT(token ID: ${currentTokenId}) is successfully minted!`
 
       if (minted) {
         setMintMsg(newMintMsg)
@@ -309,7 +312,7 @@ const KIP17Deploy = (): ReactElement => {
           <h3 className="title">Deploy Non-fungible Token (KIP-17)</h3>
           <Text>
             You can deploy non-fungible token (KIP-17) contracts which provide
-            basic functionality to transfer NFTs on the Klaytn testnet. KIP-17
+            basic functionality to transfer NFTs on the Klaytn network. KIP-17
             is derived from ERC-721. But, there are some differences between
             KIP-17 and ERC-721; More optional extensions are defined, like
             minting with URI, burning, and pausing extensions. You can find more
@@ -331,7 +334,11 @@ const KIP17Deploy = (): ReactElement => {
             </Text>
           </View>
           <CardSection>
-            <Text>Testnet</Text>
+            {isMainnet ? (
+              <Text style={{ color: COLOR.primary }}>Mainnet</Text>
+            ) : (
+              <Text>Testnet</Text>
+            )}
           </CardSection>
           <CardSection>
             <Label>Keystore</Label>
@@ -427,9 +434,7 @@ const keyring = caver.wallet.keyring.decrypt(keystoreJSON, password)`}
                 <Text>
                   {deployMsg}You can check it below link:
                   <br />
-                  <LinkA
-                    link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}`}
-                  >
+                  <LinkA link={`${network['finderNFT']}${contractAddress}`}>
                     NFT Address
                   </LinkA>
                 </Text>
@@ -501,7 +506,7 @@ const minted = await deployedContract.mintWithTokenURI(
                     {mintMsg} You can check it below link:
                     <br />
                     <LinkA
-                      link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}?tabId=nftInventory&search=${nftReceiver}`}
+                      link={`${network['finderNFT']}${contractAddress}?tabId=nftInventory&search=${nftReceiver}`}
                     >
                       NFT Inventory
                     </LinkA>
@@ -561,7 +566,7 @@ const burned = await deployedContract.burn(burnTokenId)`}
                     {burnMsg} You can see that the NFT you just removed no
                     longer exists:{' '}
                     <LinkA
-                      link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}?tabId=nftInventory&search=${senderAddress}`}
+                      link={`${network['finderNFT']}${contractAddress}?tabId=nftInventory&search=${senderAddress}`}
                     >
                       NFT Inventory
                     </LinkA>
@@ -628,7 +633,7 @@ const transferred = await deployedContract.safeTransferFrom(
                   <Text>
                     {transferMsg} You can see that the NFT you just sent:{' '}
                     <LinkA
-                      link={`${URLMAP.network['testnet']['finderNFT']}${contractAddress}?tabId=nftInventory&search=${transferReceiver}`}
+                      link={`${network['finderNFT']}${contractAddress}?tabId=nftInventory&search=${transferReceiver}`}
                     >
                       NFT Inventory
                     </LinkA>
