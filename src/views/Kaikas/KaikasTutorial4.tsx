@@ -17,14 +17,17 @@ import {
   PrivateKeyWarning,
 } from 'components'
 
-import AddToken from './TxTypes4/AddToken'
+import SignAndSendTransaction from './TxTypes4/SignAndSendTransaction'
 import SignMessage from './TxTypes4/SignMessage'
+import AddToken from './TxTypes4/AddToken'
 
 const caver = new Caver(window.klaytn)
 
 const TransactionType = {
-  addToken: 'Add Token (Not Tx Type)',
+  signAndSendTransaction:
+    'Sign and Send Transaction (Deposit KLAY and Get wKLAY)',
   signMessage: 'Sign Message (Not Tx Type)',
+  addToken: 'Add Token (Not Tx Type)',
 }
 
 const NetworkName: { [key: string]: string } = {
@@ -46,7 +49,7 @@ const KaikasTutorial4 = (): ReactElement => {
   const [walletAddress, setWalletAddress] = useState('')
   const [walletBalance, setWalletBalance] = useState('')
   const [network, setNetwork] = useState('0')
-  const [txType, setTxType] = useState('addToken')
+  const [txType, setTxType] = useState('signAndSendTransaction')
 
   const setNetworkInfo = (): void => {
     const { klaytn } = window
@@ -102,12 +105,16 @@ const KaikasTutorial4 = (): ReactElement => {
           <h3 className="title">Kaikas Tutorial 4</h3>
           <Text>
             {'You can test the following functions on this page:\n'}
-            <LinkA link="https://docs.kaikas.io/03_best_practices/02_registering_your_token">
-              - Add Token (Not Tx Type)
+            <LinkA link="https://docs.klaytn.foundation/content/dapp/sdk/caver-js/api-references/caver.rpc/klay#caver-rpc-klay-signtransaction">
+              - Sign and Send Transaction (Deposit KLAY and Get wKLAY)
             </LinkA>
             {'\n'}
             <LinkA link="https://docs.kaikas.io/02_api_reference/02_caver_methods#caver.klay.sign">
               - Sign Message (Not Tx Type)
+            </LinkA>
+            {'\n'}
+            <LinkA link="https://docs.kaikas.io/03_best_practices/02_registering_your_token">
+              - Add Token (Not Tx Type)
             </LinkA>
             {'\n\n'}
             {'You can get some test KLAY from the '}
@@ -158,11 +165,13 @@ const KaikasTutorial4 = (): ReactElement => {
                     containerStyle={{ width: 400 }}
                   />
                 </CardSection>
-
-                {txType === 'addToken' && <AddToken />}
+                {txType === 'signAndSendTransaction' && (
+                  <SignAndSendTransaction walletProps={{ walletAddress }} />
+                )}
                 {txType === 'signMessage' && (
                   <SignMessage walletProps={{ walletAddress }} />
                 )}
+                {txType === 'addToken' && <AddToken />}
               </>
             )}
           {walletStatus === KaikasStatus.Normal &&
