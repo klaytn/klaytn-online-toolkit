@@ -226,10 +226,10 @@ const routes: RouteType[] = [
       },
       {
         path: '/kaikasTutorial4',
-        name: 'Tutorial 4 (Add Token, Sign Message)',
+        name: 'Tutorial 4 (Sign, Add Token)',
         component: KaikasTutorial4,
         description:
-          'Test several functions(add token, sign message, etc,.) of kaikas wallet',
+          'Test several functions(sign, add token, etc,.) of kaikas wallet',
       },
     ],
   },
